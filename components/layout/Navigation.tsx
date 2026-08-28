@@ -94,7 +94,7 @@ export function Navigation() {
         </div>
       </header>
 
-      <MobileNav open={open} onClose={() => setOpen(false)} />
+      {open ? <MobileNav open={open} onClose={() => setOpen(false)} /> : null}
     </>
   );
 }
