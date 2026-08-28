@@ -7,7 +7,9 @@ export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="cinema-grain bg-cinema text-cinema-ink">
+    <footer className="cinema-grain relative overflow-hidden bg-cinema text-cinema-ink">
+      <div aria-hidden className="glow-orb -left-24 -top-24 hidden h-72 w-72 opacity-60 lg:block" />
+
       <div className="container-editorial section-padding">
         <div className="grid grid-cols-1 gap-12 border-b border-cinema-line pb-16 md:grid-cols-12">
           <div className="md:col-span-5">

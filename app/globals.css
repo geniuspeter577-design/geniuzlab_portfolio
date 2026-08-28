@@ -36,10 +36,23 @@
      --gl-accent-2, for hover/secondary states. */
   --color-brass: #7ed957;
   --color-brass-dim: #5fc23e;
+  --color-brass-deep: #1c4a25; /* low-light emerald, used only in gradients/glows */
 
   /* --- Motion ------------------------------------------------------------ */
   --ease-cinema: cubic-bezier(0.16, 1, 0.3, 1);
   --duration-reveal: 700ms;
+
+  /* --- Signature gradient — black → emerald --------------------------------
+     One brand gradient, reused everywhere a "cinema" surface appears (Hero,
+     Footer, CTASection, work detail CTA) via .cinema-grain below, so the
+     whole site reads as one deliberate treatment rather than a per-section
+     effect. Built from true black so it still sits one shade under
+     --color-paper, with two soft emerald blooms standing in for the
+     ambient glow the brand's web app uses behind its mark. */
+  --gradient-cinema: radial-gradient(120% 85% at 88% -12%, rgba(126, 217, 87, 0.16), transparent 60%),
+    radial-gradient(75% 60% at -8% 112%, rgba(95, 194, 62, 0.14), transparent 55%),
+    linear-gradient(165deg, #000000 0%, #050505 55%, #081f0d 100%);
+  --gradient-brand-button: linear-gradient(135deg, var(--color-brass) 0%, var(--color-brass-dim) 100%);
 }
 
 @theme inline {
@@ -141,6 +154,10 @@ body {
 .cinema-grain {
   position: relative;
   isolation: isolate;
+  /* Layers on top of the flat bg-cinema utility already applied in markup —
+     the solid colour stays as a fallback/backdrop, this paints the brand
+     gradient above it. */
+  background-image: var(--gradient-cinema);
 }
 
 .cinema-grain::before {
@@ -157,6 +174,37 @@ body {
 .cinema-grain > * {
   position: relative;
   z-index: 1;
+}
+
+/* --------------------------------------------------------------------------
+   Glow orbs — decorative ambient blooms for cinema sections (Hero, CTA).
+   Static (no motion) so they never fight prefers-reduced-motion; purely a
+   soft light source in the corner of the frame, echoing the brand's own
+   glow-dot treatment behind its wordmark.
+   -------------------------------------------------------------------------- */
+
+.glow-orb {
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(126, 217, 87, 0.5), transparent 70%);
+  filter: blur(48px);
+}
+
+/* --------------------------------------------------------------------------
+   Brand pill — the badge/eyebrow treatment used for the founder credit line
+   in Hero. One bordered, rounded chip; not reused as a generic UI-kit part.
+   -------------------------------------------------------------------------- */
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  border: 1px solid var(--color-cinema-line);
+  background: rgba(255, 255, 255, 0.03);
+  padding: 0.5rem 1rem;
 }
 
 /* --------------------------------------------------------------------------

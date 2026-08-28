@@ -21,7 +21,9 @@ export function CTASection({
   buttonHref = "/contact",
 }: CTASectionProps) {
   return (
-    <section className="cinema-grain bg-cinema text-cinema-ink">
+    <section className="cinema-grain relative overflow-hidden bg-cinema text-cinema-ink">
+      <div aria-hidden className="glow-orb -right-16 top-1/2 hidden h-72 w-72 -translate-y-1/2 sm:block" />
+
       <div className="container-editorial section-padding flex flex-col items-start gap-8">
         <Reveal>
           <p className="eyebrow text-brass-dim">{eyebrow}</p>
@@ -31,7 +33,7 @@ export function CTASection({
         </Reveal>
         <Reveal delay={200}>
           <div className="flex flex-wrap items-center gap-6">
-            <Button href={buttonHref} variant="inverse">
+            <Button href={buttonHref} variant="brand">
               {buttonLabel}
             </Button>
             <a href={`mailto:${siteConfig.email}`} className="eyebrow text-cinema-muted hover:text-cinema-ink">

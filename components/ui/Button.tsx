@@ -11,6 +11,13 @@ const variants = {
     "border border-ink/25 text-ink px-6 py-3.5 hover:border-ink hover:bg-ink hover:text-paper",
   inverse: "bg-paper text-ink px-6 py-3.5 hover:bg-brass hover:text-cinema-ink",
   link: "text-ink underline underline-offset-4 decoration-ink/30 hover:decoration-brass hover:text-brass px-0 py-0",
+  /**
+   * The site's one gradient moment — reserved for the single primary
+   * action on cinema (dark) sections: Hero and the closing CTA. Everywhere
+   * else keeps the flat, editorial button language above.
+   */
+  brand:
+    "rounded-full bg-[image:var(--gradient-brand-button)] text-cinema px-7 py-3.5 shadow-[0_0_0_1px_rgba(126,217,87,0.35),0_8px_28px_-8px_rgba(126,217,87,0.55)] transition-[filter,box-shadow] hover:brightness-110 hover:shadow-[0_0_0_1px_rgba(126,217,87,0.5),0_10px_34px_-6px_rgba(126,217,87,0.7)]",
 } as const;
 
 type Variant = keyof typeof variants;

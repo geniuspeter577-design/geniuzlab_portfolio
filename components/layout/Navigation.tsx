@@ -38,7 +38,7 @@ export function Navigation() {
         dark background, and a dark nav + dark footer bookends every page in
         the same premium, cinematic register the brief asks for.
       */}
-      <header className="sticky top-0 z-50 border-b border-cinema-line bg-cinema/95 text-cinema-ink backdrop-blur-sm">
+      <header className="sticky top-0 z-50 border-b border-cinema-line bg-cinema/95 text-cinema-ink shadow-[0_1px_0_rgba(126,217,87,0.15)] backdrop-blur-sm">
         <div className="container-editorial flex h-16 items-center justify-between sm:h-20">
           <Link
             href="/"

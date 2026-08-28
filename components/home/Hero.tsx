@@ -12,7 +12,18 @@ import { categories } from "@/lib/categories";
  */
 export function Hero() {
   return (
-    <section className="cinema-grain relative flex min-h-[92svh] flex-col justify-between bg-cinema text-cinema-ink">
+    <section className="cinema-grain relative flex min-h-[92svh] flex-col justify-between overflow-hidden bg-cinema text-cinema-ink">
+      {/* Ambient emerald glow blooms — decorative, static, hidden on small
+          screens to keep the mobile hero clean and fast. */}
+      <div
+        aria-hidden
+        className="glow-orb -right-24 -top-24 hidden h-96 w-96 sm:block"
+      />
+      <div
+        aria-hidden
+        className="glow-orb -bottom-32 -left-20 hidden h-80 w-80 opacity-70 sm:block"
+      />
+
       <div className="container-editorial flex flex-1 flex-col justify-center pt-16 pb-16">
         <Reveal>
           <Image
@@ -25,7 +36,7 @@ export function Hero() {
         </Reveal>
 
         <Reveal delay={80}>
-          <p className="eyebrow mt-8 text-brass-dim">
+          <p className="pill eyebrow mt-8 text-brass-dim">
             {siteConfig.founder} — {siteConfig.founderTitle}
           </p>
         </Reveal>
@@ -46,13 +57,13 @@ export function Hero() {
 
         <Reveal delay={300}>
           <div className="mt-10 flex flex-wrap items-center gap-6">
-            <Button href="/work" variant="inverse">
+            <Button href="/work" variant="brand">
               View the work
             </Button>
             <Button
               href="/contact"
               variant="ghost"
-              className="border-cinema-line text-cinema-ink hover:bg-cinema-ink hover:text-cinema"
+              className="rounded-full border-cinema-line text-cinema-ink hover:bg-cinema-ink hover:text-cinema"
             >
               Get in touch
             </Button>
