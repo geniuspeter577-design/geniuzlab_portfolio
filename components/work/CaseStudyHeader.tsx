@@ -49,14 +49,15 @@ export function CaseStudyHeader({ project }: CaseStudyHeaderProps) {
       </div>
 
       <div className="container-editorial mt-10">
-        <div className="relative aspect-[16/10] w-full overflow-hidden bg-surface">
+        <div className="w-full bg-surface">
           <Image
             src={project.coverImage.src}
             alt={project.coverImage.alt}
-            fill
+            width={project.coverImage.width}
+            height={project.coverImage.height}
             priority
             sizes="100vw"
-            className="object-cover"
+            className="block h-auto w-full object-contain"
           />
         </div>
       </div>

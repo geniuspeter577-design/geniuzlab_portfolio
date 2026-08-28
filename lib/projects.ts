@@ -106,6 +106,46 @@ export const projects: Project[] = [
     gallery: [placeholderImage("Placeholder gallery image 1")],
     isPlaceholder: true,
   },
+  {
+    slug: "wowo-empire",
+    title: "Wowo Empire",
+    categories: ["branding-identity"],
+    year: new Date().getFullYear(),
+    summary: "Wowo Empire brand identity.",
+    coverImage: {
+      src: "/images/work/branding-identity/wowo_empire/cover.jpg",
+      alt: "Wowo Empire cover",
+      width: 3264,
+      height: 3264,
+    },
+    gallery: [
+      {
+        src: "/images/work/branding-identity/wowo_empire/01.jpg",
+        alt: "Wowo Empire gallery image 01",
+        width: 3264,
+        height: 3264,
+      },
+      {
+        src: "/images/work/branding-identity/wowo_empire/02.jpg",
+        alt: "Wowo Empire gallery image 02",
+        width: 3264,
+        height: 3264,
+      },
+      {
+        src: "/images/work/branding-identity/wowo_empire/03.jpg",
+        alt: "Wowo Empire gallery image 03",
+        width: 3264,
+        height: 3264,
+      },
+      {
+        src: "/images/work/branding-identity/wowo_empire/04.jpg",
+        alt: "Wowo Empire gallery image 04",
+        width: 3264,
+        height: 3264,
+      },
+    ],
+    isPlaceholder: false,
+  },
 ];
 
 /** Returns all projects, sorted by explicit `order` then by year (newest first). */

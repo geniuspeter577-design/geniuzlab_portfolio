@@ -9,9 +9,9 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <div className="container-editorial section-padding pt-16 sm:pt-24">
+    <div className="container-editorial section-padding pt-12 sm:pt-24">
       <p className="eyebrow text-brass">Contact</p>
-      <h1 className="mt-3 max-w-2xl font-display text-hero leading-[0.95]">
+      <h1 className="mt-4 max-w-2xl font-display text-hero leading-[0.95]">
         Let&apos;s talk about your project.
       </h1>
       <p className="mt-8 max-w-lg text-lead text-ink-muted">
@@ -19,7 +19,7 @@ export default function ContactPage() {
         about the project, timeline, and budget if you have one in mind.
       </p>
 
-      <div className="mt-10 flex flex-wrap items-center gap-4">
+      <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
         <Button href={`mailto:${siteConfig.email}`} variant="primary">
           {siteConfig.email}
         </Button>

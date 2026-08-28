@@ -21,8 +21,8 @@ export function CategoryFilter() {
   }))];
 
   return (
-    <nav aria-label="Filter by category" className="border-y border-line">
-      <ul className="container-editorial flex flex-wrap gap-x-6 gap-y-3 py-5">
+    <nav aria-label="Filter by category" className="border-y border-line/50">
+      <ul className="container-editorial flex flex-wrap gap-x-6 gap-y-4 py-6">
         {items.map((item) => {
           const isActive = pathname === item.href;
           return (
@@ -30,8 +30,10 @@ export function CategoryFilter() {
               <Link
                 href={item.href}
                 className={cn(
-                  "eyebrow transition-colors hover:text-brass",
-                  isActive ? "text-brass" : "text-ink-muted"
+                  "eyebrow transition-all hover:text-brass font-semibold",
+                  isActive 
+                    ? "text-brass border-b-2 border-brass pb-1" 
+                    : "text-ink-muted border-b-2 border-transparent pb-1 hover:border-brass/50"
                 )}
               >
                 {item.label}

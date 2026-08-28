@@ -9,13 +9,13 @@ export function FeaturedWork() {
   if (featured.length === 0) return null;
 
   return (
-    <section className="section-padding">
+    <section className="section-padding border-t-2 border-brass/40">
       <div className="container-editorial">
         <Reveal>
-          <div className="flex flex-col gap-4 border-b border-line pb-8 sm:flex-row sm:items-end sm:justify-between">
+          <div className="flex flex-col gap-6 border-b border-line pb-10 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="eyebrow text-brass">Selected Work</p>
-              <h2 className="mt-3 font-display text-display">Featured projects</h2>
+              <h2 className="mt-4 font-display text-display">Featured projects</h2>
             </div>
             <Button href="/work" variant="link">
               View all work →
@@ -23,7 +23,7 @@ export function FeaturedWork() {
           </div>
         </Reveal>
 
-        <div className="mt-12 grid grid-cols-1 gap-x-8 gap-y-14 md:grid-cols-2">
+        <div className="mt-14 grid grid-cols-1 gap-x-10 gap-y-16 md:grid-cols-2">
           {featured.map((project, index) => (
             <Reveal key={project.slug} delay={index * 100}>
               <ProjectCard project={project} size="large" priority={index === 0} />

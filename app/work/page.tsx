@@ -13,9 +13,9 @@ export default function WorkPage() {
 
   return (
     <>
-      <div className="container-editorial pt-16 pb-10">
+      <div className="container-editorial pt-12 pb-8 sm:pt-16 sm:pb-10">
         <p className="eyebrow text-brass">Portfolio</p>
-        <h1 className="mt-3 max-w-2xl font-display text-display">All work</h1>
+        <h1 className="mt-4 max-w-2xl font-display text-display">All work</h1>
       </div>
 
       <CategoryFilter />

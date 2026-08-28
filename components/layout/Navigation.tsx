@@ -38,8 +38,8 @@ export function Navigation() {
         dark background, and a dark nav + dark footer bookends every page in
         the same premium, cinematic register the brief asks for.
       */}
-      <header className="sticky top-0 z-50 border-b border-cinema-line bg-cinema/95 text-cinema-ink shadow-[0_1px_0_rgba(126,217,87,0.15)] backdrop-blur-sm">
-        <div className="container-editorial flex h-16 items-center justify-between sm:h-20">
+      <header className="sticky top-0 z-50 border-b border-cinema-line/50 bg-cinema/95 text-cinema-ink shadow-[0_1px_0_rgba(126,217,87,0.12)] backdrop-blur-md">
+        <div className="container-editorial flex h-14 items-center justify-between sm:h-16 lg:h-20">
           <Link
             href="/"
             className="shrink-0"
@@ -52,7 +52,7 @@ export function Navigation() {
               width={2726}
               height={844}
               priority
-              className="h-8 w-auto sm:h-9"
+              className="h-7 w-auto sm:h-8 lg:h-9"
             />
           </Link>
 
@@ -78,7 +78,7 @@ export function Navigation() {
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
-            className="relative flex h-10 w-10 flex-col items-center justify-center gap-1.5 md:hidden"
+            className="relative flex h-12 w-12 flex-col items-center justify-center gap-1.5 md:hidden"
           >
             <span
               className={`h-px w-6 bg-cinema-ink transition-transform duration-300 ${

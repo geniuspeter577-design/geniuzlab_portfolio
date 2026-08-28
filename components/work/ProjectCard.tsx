@@ -18,17 +18,18 @@ export function ProjectCard({ project, size = "default", priority = false }: Pro
     <Link href={`/work/${project.slug}`} className="group block">
       <div
         className={cn(
-          "relative overflow-hidden bg-surface",
-          size === "large" ? "aspect-[4/5] md:aspect-[16/11]" : "aspect-[4/5]"
+          "relative bg-surface transition-all duration-500 ease-[var(--ease-cinema)]",
+          "border border-line/50 hover:border-brass/50"
         )}
       >
         <Image
           src={project.coverImage.src}
           alt={project.coverImage.alt}
-          fill
+          width={project.coverImage.width}
+          height={project.coverImage.height}
           priority={priority}
           sizes={size === "large" ? "(min-width: 768px) 60vw, 100vw" : "(min-width: 768px) 33vw, 100vw"}
-          className="object-cover transition-transform duration-700 ease-[var(--ease-cinema)] group-hover:scale-[1.03]"
+          className="block h-auto w-full object-contain"
         />
 
         {project.isPlaceholder && (
@@ -37,24 +38,24 @@ export function ProjectCard({ project, size = "default", priority = false }: Pro
           </span>
         )}
 
-        <span className="absolute bottom-3 right-3 flex h-9 w-9 -translate-y-1 items-center justify-center rounded-full bg-paper text-ink opacity-0 transition-all duration-300 ease-[var(--ease-cinema)] group-hover:translate-y-0 group-hover:opacity-100">
-          <span aria-hidden className="text-sm">
+        <span className="absolute bottom-4 right-4 flex h-10 w-10 -translate-y-2 items-center justify-center rounded-full bg-brass text-cinema opacity-0 transition-all duration-300 ease-[var(--ease-cinema)] group-hover:translate-y-0 group-hover:opacity-100 shadow-lg">
+          <span aria-hidden className="text-sm font-bold">
             ↗
           </span>
         </span>
       </div>
 
-      <div className="mt-4 flex items-start justify-between gap-4 border-t border-line pt-3">
-        <div>
-          <h3 className="font-display text-xl leading-snug text-ink group-hover:text-brass">
+      <div className="mt-5 flex items-start justify-between gap-4 border-t border-line/50 pt-4">
+        <div className="flex-1 min-w-0">
+          <h3 className="font-display text-lg sm:text-xl leading-snug text-ink group-hover:text-brass transition-colors">
             {project.title}
           </h3>
           {project.client && (
-            <p className="mt-0.5 text-sm text-ink-muted">{project.client}</p>
+            <p className="mt-1 text-sm text-ink-muted">{project.client}</p>
           )}
         </div>
-        <div className="eyebrow shrink-0 text-right text-ink-muted">
-          <p>{primaryCategory?.label}</p>
+        <div className="eyebrow shrink-0 text-right text-ink-muted text-xs">
+          <p className="font-semibold text-brass/70">{primaryCategory?.label}</p>
           <p>{project.year}</p>
         </div>
       </div>

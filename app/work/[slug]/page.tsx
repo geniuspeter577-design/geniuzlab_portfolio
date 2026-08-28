@@ -57,13 +57,14 @@ export default async function ProjectPage(props: PageProps<"/work/[slug]">) {
           <div className="mt-16 flex flex-col gap-8">
             {project.gallery.map((image, index) => (
               <Reveal key={`${image.src}-${index}`}>
-                <div className="relative aspect-[16/10] w-full overflow-hidden bg-surface">
+                <div className="w-full bg-surface">
                   <Image
                     src={image.src}
                     alt={image.alt}
-                    fill
+                    width={image.width}
+                    height={image.height}
                     sizes="100vw"
-                    className="object-cover"
+                    className="block h-auto w-full object-contain"
                   />
                 </div>
               </Reveal>

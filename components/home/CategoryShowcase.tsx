@@ -21,29 +21,29 @@ export function CategoryShowcase() {
   const [activeSlug, setActiveSlug] = useState(categories[0].slug);
 
   return (
-    <section className="section-padding border-t border-line">
+    <section className="section-padding border-t-2 border-brass/40">
       <div className="container-editorial">
         <Reveal>
           <p className="eyebrow text-brass">The Index</p>
-          <h2 className="mt-3 font-display text-display">Seven ways into the work</h2>
+          <h2 className="mt-4 font-display text-display">Seven ways into the work</h2>
         </Reveal>
 
-        <div className="mt-12 grid grid-cols-1 gap-8 lg:grid-cols-12">
-          <ul className="lg:col-span-7" onMouseLeave={() => setActiveSlug(categories[0].slug)}>
+        <div className="mt-14 grid grid-cols-1 gap-10 lg:grid-cols-12">
+          <ul className="lg:col-span-7 space-y-0" onMouseLeave={() => setActiveSlug(categories[0].slug)}>
             {categories.map((category, index) => (
-              <li key={category.slug} className="border-t border-line last:border-b">
+              <li key={category.slug} className="border-t border-line/50 last:border-b hover:border-t-brass/50 transition-colors">
                 <Link
                   href={`/category/${category.slug}`}
                   onMouseEnter={() => setActiveSlug(category.slug)}
-                  className="group flex items-baseline justify-between gap-6 py-5 transition-colors hover:pl-3"
+                  className="group flex items-baseline justify-between gap-6 py-6 transition-all"
                 >
                   <span className="flex items-baseline gap-5">
-                    <span className="eyebrow shrink-0 text-ink-muted">0{index + 1}</span>
-                    <span className="min-w-0 break-words font-display text-index leading-[1.05] group-hover:text-brass">
+                    <span className="eyebrow shrink-0 text-ink-muted font-semibold">0{index + 1}</span>
+                    <span className="min-w-0 break-words font-display text-index leading-[1.05] group-hover:text-brass transition-colors">
                       {category.label}
                     </span>
                   </span>
-                  <span className="eyebrow hidden shrink-0 text-ink-muted opacity-0 transition-opacity group-hover:opacity-100 sm:block">
+                  <span className="eyebrow hidden shrink-0 text-ink-muted/70 opacity-0 transition-all group-hover:opacity-100 sm:block font-semibold text-brass/60">
                     View →
                   </span>
                 </Link>
@@ -51,20 +51,22 @@ export function CategoryShowcase() {
             ))}
           </ul>
 
-          <div className="hidden lg:col-span-5 lg:block">
-            <div className="sticky top-28 aspect-[4/5] w-full overflow-hidden bg-surface">
-              {categories.map((category) => (
-                <Image
-                  key={category.slug}
-                  src={PLACEHOLDER_IMAGE}
-                  alt={`${category.label} — placeholder cover image`}
-                  fill
-                  sizes="40vw"
-                  className={`object-cover transition-opacity duration-500 ease-[var(--ease-cinema)] ${
-                    activeSlug === category.slug ? "opacity-100" : "opacity-0"
-                  }`}
-                />
-              ))}
+          <div className="hidden lg:col-span-5 lg:flex lg:flex-col lg:justify-center">
+            <div className="relative sticky top-28">
+              <div className="aspect-[4/5] w-full overflow-hidden bg-surface border border-line/50 rounded-sm">
+                {categories.map((category) => (
+                  <Image
+                    key={category.slug}
+                    src={PLACEHOLDER_IMAGE}
+                    alt={`${category.label} — placeholder cover image`}
+                    fill
+                    sizes="40vw"
+                    className={`object-cover transition-opacity duration-500 ease-[var(--ease-cinema)] ${
+                      activeSlug === category.slug ? "opacity-100" : "opacity-0"
+                    }`}
+                  />
+                ))}
+              </div>
             </div>
           </div>
         </div>

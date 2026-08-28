@@ -11,14 +11,14 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <>
-      <div className="container-editorial pt-16 pb-10">
+      <div className="container-editorial pt-12 pb-8 sm:pt-16 sm:pb-10">
         <p className="eyebrow text-brass">About</p>
-        <h1 className="mt-3 max-w-3xl font-display text-display">{siteConfig.founder}</h1>
-        <p className="eyebrow mt-3 text-ink-muted">{siteConfig.founderTitle}</p>
+        <h1 className="mt-4 max-w-3xl font-display text-display">{siteConfig.founder}</h1>
+        <p className="eyebrow mt-4 text-ink-muted">{siteConfig.founderTitle}</p>
       </div>
 
       <div className="container-editorial section-padding pt-0">
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
+        <div className="grid grid-cols-1 gap-8 sm:gap-12 lg:grid-cols-12">
           <div className="lg:col-span-5">
             <div className="relative aspect-[4/5] w-full overflow-hidden bg-surface">
               <Image
@@ -31,8 +31,8 @@ export default function AboutPage() {
             </div>
           </div>
 
-          <div className="lg:col-span-6 lg:col-start-7">
-            <p className="eyebrow inline-block border border-brass/40 px-3 py-1.5 text-brass">
+          <div className="lg:col-span-6 lg:col-start-7 flex flex-col justify-center">
+            <p className="eyebrow inline-block border border-brass/40 px-3 py-1.5 text-brass w-fit">
               Placeholder copy — replace with your real bio
             </p>
             <p className="mt-6 text-lead leading-relaxed">

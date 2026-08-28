@@ -7,7 +7,7 @@ export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="cinema-grain relative overflow-hidden bg-cinema text-cinema-ink">
+    <footer className="cinema-grain relative overflow-hidden border-t-2 border-brass/40 bg-cinema text-cinema-ink">
       <div aria-hidden className="glow-orb -left-24 -top-24 hidden h-72 w-72 opacity-60 lg:block" />
 
       <div className="container-editorial section-padding">
@@ -18,7 +18,7 @@ export function Footer() {
               alt="GENIUZLAB"
               width={2726}
               height={844}
-              className="h-8 w-auto"
+              className="h-7 w-auto sm:h-8"
             />
             <p className="mt-8 font-display text-3xl leading-tight">
               Let&apos;s build something worth looking twice at.

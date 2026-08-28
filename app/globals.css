@@ -48,10 +48,12 @@
      whole site reads as one deliberate treatment rather than a per-section
      effect. Built from true black so it still sits one shade under
      --color-paper, with two soft emerald blooms standing in for the
-     ambient glow the brand's web app uses behind its mark. */
-  --gradient-cinema: radial-gradient(120% 85% at 88% -12%, rgba(126, 217, 87, 0.16), transparent 60%),
-    radial-gradient(75% 60% at -8% 112%, rgba(95, 194, 62, 0.14), transparent 55%),
-    linear-gradient(165deg, #000000 0%, #050505 55%, #081f0d 100%);
+     ambient glow the brand's web app uses behind its mark. 
+     Enhanced with more pronounced emerald accents for premium feel. */
+  --gradient-cinema: radial-gradient(140% 100% at 85% -5%, rgba(126, 217, 87, 0.18), transparent 55%),
+    radial-gradient(90% 70% at -5% 115%, rgba(95, 194, 62, 0.15), transparent 50%),
+    radial-gradient(100% 100% at 50% 50%, transparent 40%, rgba(0, 0, 0, 0.3)),
+    linear-gradient(165deg, #000000 0%, #050505 50%, #081f0d 100%);
   --gradient-brand-button: linear-gradient(135deg, var(--color-brass) 0%, var(--color-brass-dim) 100%);
 }
 
@@ -227,6 +229,13 @@ body {
     transform var(--duration-reveal) var(--ease-cinema);
 }
 
+@media (max-width: 767px) {
+  [data-reveal="hidden"] {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -243,4 +252,31 @@ body {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* --------------------------------------------------------------------------
+   Premium visual accents — emerald borders, sophisticated shadows, and
+   refined hover treatments for elevated visual experience.
+   -------------------------------------------------------------------------- */
+
+.accent-border-top {
+  border-top: 2px solid var(--color-brass);
+}
+
+.accent-glow {
+  position: relative;
+  box-shadow: 0 0 32px -8px rgba(126, 217, 87, 0.25), inset 0 0 32px -16px rgba(126, 217, 87, 0.08);
+}
+
+.premium-shadow {
+  box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.3), 0 0px 0px 1px rgba(126, 217, 87, 0.15);
+}
+
+.premium-hover {
+  transition: all 300ms var(--ease-cinema);
+}
+
+.premium-hover:hover {
+  box-shadow: 0 8px 32px -4px rgba(126, 217, 87, 0.2), 0 0px 0px 1px rgba(126, 217, 87, 0.25);
+  transform: translateY(-2px);
 }
