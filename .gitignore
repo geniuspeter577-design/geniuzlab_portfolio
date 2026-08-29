@@ -2,7 +2,8 @@
 node_modules/
 
 # Next.js build output
-.next/
+*.next
+*.next/
 out/
 
 # Production output
@@ -22,3 +23,4 @@ pnpm-debug.log*
 # Editor and OS files
 .DS_Store
 .vscode/
+.vercel
