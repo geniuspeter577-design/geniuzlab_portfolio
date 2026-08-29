@@ -10,6 +10,7 @@
   "/api/admin/categories/route": "/api/admin/categories",
   "/api/admin/projects/[id]/route": "/api/admin/projects/[id]",
   "/api/admin/projects/route": "/api/admin/projects",
+  "/api/admin/upload-image/route": "/api/admin/upload-image",
   "/api/auth/[...nextauth]/route": "/api/auth/[...nextauth]",
   "/category/[category]/page": "/category/[category]",
   "/contact/page": "/contact",

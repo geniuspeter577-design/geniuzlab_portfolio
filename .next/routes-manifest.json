@@ -125,6 +125,12 @@
       "namedRegex": "^/api/admin/projects(?:/)?$"
     },
     {
+      "page": "/api/admin/upload-image",
+      "regex": "^/api/admin/upload\\-image(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/admin/upload\\-image(?:/)?$"
+    },
+    {
       "page": "/contact",
       "regex": "^/contact(?:/)?$",
       "routeKeys": {},
