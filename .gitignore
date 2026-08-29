@@ -10,7 +10,6 @@ out/
 build/
 
 # Local environment files
-.env*
 !.env.example
 
 # Logs
