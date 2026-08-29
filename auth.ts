@@ -40,38 +40,29 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           return null;
         }
 
+        if (!env.ADMIN_PASSWORD_HASH) {
+          return null;
+        }
+
+        const isAdminPasswordValid = await bcrypt.compare(
+          password,
+          env.ADMIN_PASSWORD_HASH,
+        );
+
+        if (!isAdminPasswordValid) {
+          return null;
+        }
+
         const existingUser = await prisma.user.findUnique({
           where: {
             email,
           },
         });
 
-        if (existingUser) {
-          const isPasswordValid = await bcrypt.compare(password, existingUser.passwordHash);
-          if (!isPasswordValid) {
-            return null;
-          }
-
-          return {
-            id: existingUser.id,
-            email: existingUser.email,
-            name: existingUser.email,
-          };
-        }
-
-        if (!env.ADMIN_PASSWORD_HASH) {
-          return null;
-        }
-
-        const isDefaultAdminValid = await bcrypt.compare(password, env.ADMIN_PASSWORD_HASH);
-        if (!isDefaultAdminValid) {
-          return null;
-        }
-
         return {
-          id: "admin",
+          id: existingUser?.id ?? "admin",
           email,
-          name: "GENIUZLAB Admin",
+          name: existingUser?.email ?? "GENIUZLAB Admin",
         };
       },
     }),
