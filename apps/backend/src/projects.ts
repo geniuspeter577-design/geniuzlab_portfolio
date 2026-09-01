@@ -151,9 +151,9 @@ export const projects: Project[] = [
 /** Returns all projects, sorted by explicit `order` then by year (newest first). */
 export function getAllProjects(): Project[] {
   return [...projects].sort((a, b) => {
-    if (a.order != null && b.order != null) return a.order - b.order;
-    if (a.order != null) return -1;
-    if (b.order != null) return 1;
+    if (a.order !== null && b.order !== null) return a.order - b.order;
+    if (a.order !== null) return -1;
+    if (b.order !== null) return 1;
     return b.year - a.year;
   });
 }

@@ -2,56 +2,36 @@
 
 ## System Architecture Overview
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                     Browser / Client                             │
-│              (Desktop, Tablet, Mobile)                          │
-└──────────────────────────┬──────────────────────────────────────┘
-                           │
-                    HTTP/HTTPS
-                           │
-         ┌─────────────────┴──────────────────┐
-         │                                    │
-         ▼                                    ▼
-   ┌───────────────┐              ┌─────────────────┐
-   │    Frontend   │              │    Next.js API  │
-   │   (Next.js)   │◄────────────►│   Routes & Auth │
-   │               │              │                 │
-   │ • React 19    │              │ • NextAuth.js   │
-   │ • Tailwind    │              │ • Image Upload  │
-   │ • NextAuth    │              │ • Proxy to BE   │
-   └───────┬───────┘              └────────┬────────┘
-           │                               │
-           │                               │
-           └───────────────┬───────────────┘
-                           │
-                    HTTP/REST/JSON
-                           │
-         ┌─────────────────┴──────────────────┐
-         │                                    │
-         ▼                                    ▼
-   ┌────────────────────┐           ┌────────────────┐
-   │  Backend API       │           │  Vercel Blob   │
-   │  (Express.js)      │◄─────────►│ (Image Storage)│
-   │                    │           │                │
-   │ • Authentication   │           └────────────────┘
-   │ • Project CRUD     │
-   │ • Category Mgmt    │
-   │ • JWT Validation   │
-   └────────┬───────────┘
-            │
-            │ SQL
-            │
-            ▼
-      ┌──────────────┐
-      │ PostgreSQL   │
-      │ Database     │
-      │              │
-      │ • Projects   │
-      │ • Categories │
-      │ • Users      │
-      │ • Images     │
-      └──────────────┘
+```mermaid
+graph TB
+    Client["🌐 Browser / Client<br/>(Desktop, Tablet, Mobile)"]
+    
+    subgraph Frontend["Frontend (apps/web)"]
+        NextApp["Next.js + React 19<br/>• Pages<br/>• Components<br/>• Tailwind CSS"]
+        NextAPI["Next.js API Routes<br/>• Authentication<br/>• Image Upload<br/>• API Proxy"]
+    end
+    
+    subgraph Backend["Backend (apps/backend)"]
+        API["Express.js API<br/>• Projects CRUD<br/>• Categories<br/>• User Auth<br/>• JWT Validation"]
+    end
+    
+    Database["🗄️ PostgreSQL<br/>• Projects<br/>• Categories<br/>• Users<br/>• Images<br/>• Relationships"]
+    
+    Storage["☁️ Vercel Blob<br/>Image Storage"]
+    
+    Client -->|HTTP/HTTPS| NextApp
+    NextApp <-->|Client Routes| NextAPI
+    NextAPI -->|REST API| API
+    API <-->|SQL| Database
+    API <-->|Upload/Download| Storage
+    NextApp -->|Image URLs| Storage
+    
+    style Client fill:#4f46e5,color:#fff
+    style NextApp fill:#6366f1,color:#fff
+    style NextAPI fill:#818cf8,color:#fff
+    style API fill:#8b5cf6,color:#fff
+    style Database fill:#ec4899,color:#fff
+    style Storage fill:#f59e0b,color:#fff
 ```
 
 ---
@@ -147,15 +127,42 @@ apps/
 3. **Credentials flow** - Email + password (no external providers needed)
 4. **Token storage** - HTTP-only cookies (secure, XSS-proof)
 
-**Flow:**
-```
-1. User logs in at /admin/login
-2. NextAuth validates credentials via API
-3. Backend returns JWT token
-4. NextAuth stores token in HTTP-only cookie
-5. Token automatically sent with subsequent API calls
-6. Backend validates token and serves data
-7. User logged out: token deleted from cookie
+**Authentication Flow:**
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Browser
+    participant Next.js as Next.js Frontend
+    participant NextAuth
+    participant Backend as Express API
+    participant Database
+    
+    User->>Browser: Visit /admin/login
+    Browser->>Next.js: GET /admin/login
+    Next.js->>Browser: Display login form
+    
+    User->>Browser: Enter credentials & submit
+    Browser->>Next.js: POST /api/auth/callback/credentials
+    Next.js->>NextAuth: Validate credentials
+    NextAuth->>Backend: POST /auth/login with credentials
+    Backend->>Database: Query user by email
+    Backend->>Backend: Verify password
+    Backend->>NextAuth: Return JWT token
+    NextAuth->>NextAuth: Store in HTTP-only cookie
+    NextAuth->>Browser: Redirect to /admin/dashboard
+    
+    Browser->>Next.js: GET /admin/dashboard
+    Next.js->>NextAuth: Check session
+    NextAuth->>Browser: Render dashboard
+    
+    User->>Browser: Navigate to projects page
+    Browser->>Next.js: GET /admin/projects
+    Next.js->>Backend: GET /api/admin/projects<br/>(with JWT cookie)
+    Backend->>Backend: Verify JWT token
+    Backend->>Database: Query projects
+    Backend->>Next.js: Return projects
+    Next.js->>Browser: Display projects
 ```
 
 ---
@@ -164,53 +171,60 @@ apps/
 
 ### Public Portfolio Browsing
 
-```
-1. User visits geniuzlab.com
-   ↓
-2. Next.js server renders homepage (SSR or SSG)
-   ├─ Fetches projects from backend API
-   ├─ Renders React components
-   └─ Returns HTML to browser
-   ↓
-3. Browser displays portfolio
-   ↓
-4. User clicks on project
-   ↓
-5. Next.js fetches project details (ISR or SSR)
-   ├─ API call to backend: GET /api/projects/:slug
-   ├─ Backend queries PostgreSQL
-   ├─ Returns project data with images
-   └─ Renders project case study page
+```mermaid
+graph TD
+    A["👤 User visits geniuzlab.com"] --> B["📱 Browser requests homepage"]
+    B --> C["🔄 Next.js renders page<br/>SSR or SSG"]
+    C --> D["📡 Next.js fetches<br/>projects from Backend"]
+    D --> E["🗄️ Backend queries<br/>PostgreSQL"]
+    E --> F["📊 Backend returns<br/>project data"]
+    F --> G["🎨 Next.js renders<br/>React components"]
+    G --> H["🌐 Browser displays<br/>portfolio"]
+    
+    H --> I["👆 User clicks on project"]
+    I --> J["📡 Next.js fetches<br/>project details"]
+    J --> K["🗄️ Backend queries by slug"]
+    K --> L["📸 Returns project<br/>with images"]
+    L --> M["📄 Next.js renders<br/>case study page"]
+    M --> N["✨ Browser displays<br/>case study"]
+    
+    style A fill:#4f46e5,color:#fff
+    style H fill:#10b981,color:#fff
+    style N fill:#10b981,color:#fff
 ```
 
 ### Admin Publishing a Project
 
-```
-1. Admin navigates to /admin/projects
-   ↓
-2. NextAuth verifies user is authenticated
-   ├─ Checks JWT token in cookie
-   ├─ If invalid, redirects to /admin/login
-   └─ If valid, loads admin dashboard
-   ↓
-3. Admin clicks "Create Project"
-   ↓
-4. Admin fills form and uploads images
-   ├─ Images sent to Vercel Blob API
-   ├─ Blob returns URLs
-   └─ URLs stored in form data
-   ↓
-5. Admin submits form
-   ↓
-6. Next.js API route handles submission
-   ├─ Verifies JWT token
-   ├─ Validates data with Zod schema
-   ├─ Forwards request to backend API
-   └─ Backend API saves to PostgreSQL
-   ↓
-7. Project appears in admin dashboard
-   ↓
-8. Project appears on public portfolio (if published)
+```mermaid
+graph TD
+    A["👨‍💼 Admin navigates<br/>to /admin/projects"] --> B["🔐 NextAuth checks<br/>JWT token"]
+    B --> C{Token valid?}
+    C -->|No| D["🚫 Redirect to login"]
+    C -->|Yes| E["📊 Load admin<br/>dashboard"]
+    
+    E --> F["➕ Admin clicks<br/>Create Project"]
+    F --> G["📝 Admin fills form<br/>and selects images"]
+    G --> H["☁️ Upload images<br/>to Vercel Blob"]
+    H --> I["✅ Blob returns URLs"]
+    
+    I --> J["🖱️ Admin submits form"]
+    J --> K["📤 Next.js API route<br/>receives request"]
+    K --> L["🔐 Verify JWT token"]
+    L --> M["✔️ Validate with<br/>Zod schema"]
+    M --> N["📡 Forward to<br/>Backend API"]
+    
+    N --> O["🔐 Backend verifies<br/>JWT token"]
+    O --> P["💾 Save to<br/>PostgreSQL"]
+    P --> Q["✅ Project saved"]
+    
+    Q --> R["📊 Project appears<br/>in dashboard"]
+    R --> S{Published?}
+    S -->|Yes| T["🌐 Project on<br/>public portfolio"]
+    S -->|No| U["🔒 Draft mode"]
+    
+    style A fill:#4f46e5,color:#fff
+    style Q fill:#10b981,color:#fff
+    style T fill:#10b981,color:#fff
 ```
 
 ---
@@ -344,55 +358,73 @@ router.get('/admin/projects', verifyToken, (req, res) => {
 
 ### Entity Relationship Diagram
 
-```
-User (Admins)
-  id (PK)
-  email (unique)
-  passwordHash
-  createdAt, updatedAt
+```mermaid
+erDiagram
+    USER ||--o{ PROJECT : creates
+    PROJECT ||--o{ PROJECT-CATEGORY : belongs_to
+    CATEGORY ||--o{ PROJECT-CATEGORY : contains
+    PROJECT ||--o{ PROJECT-IMAGE : has
+    PROJECT ||--o{ PROJECT-TAG : has
+    TAG ||--o{ PROJECT-TAG : contains
 
-Project
-  id (PK)
-  slug (unique)
-  title
-  client (nullable)
-  year
-  role (nullable)
-  summary
-  description
-  featured (boolean)
-  published (boolean)
-  orderIndex
-  createdAt, updatedAt
+    USER {
+        string id PK
+        string email UK
+        string passwordHash
+        datetime createdAt
+        datetime updatedAt
+    }
 
-Category
-  id (PK)
-  slug (unique)
-  label
-  description
+    PROJECT {
+        string id PK
+        string slug UK
+        string title
+        string client
+        int year
+        string role
+        string summary
+        text description
+        boolean featured
+        boolean published
+        int orderIndex
+        datetime createdAt
+        datetime updatedAt
+    }
 
-ProjectCategory (Junction Table)
-  projectId (PK, FK)
-  categoryId (PK, FK)
+    CATEGORY {
+        string id PK
+        string slug UK
+        string label
+        text description
+    }
 
-ProjectImage
-  id (PK)
-  projectId (FK)
-  type (enum: COVER, GALLERY)
-  url
-  altText
-  width, height
-  orderIndex
-  createdAt, updatedAt
+    PROJECT-CATEGORY {
+        string projectId PK_FK
+        string categoryId PK_FK
+    }
 
-Tag
-  id (PK)
-  name (unique)
-  createdAt, updatedAt
+    PROJECT-IMAGE {
+        string id PK
+        string projectId FK
+        string type
+        string url
+        string altText
+        int width
+        int height
+        int orderIndex
+        datetime createdAt
+    }
 
-ProjectTag (Junction Table)
-  projectId (PK, FK)
-  tagId (PK, FK)
+    TAG {
+        string id PK
+        string name UK
+        datetime createdAt
+    }
+
+    PROJECT-TAG {
+        string projectId PK_FK
+        string tagId PK_FK
+    }
 ```
 
 **Key Design Decisions:**
@@ -401,46 +433,6 @@ ProjectTag (Junction Table)
 - **Tags** - Optional, for future filtering
 - **Published flag** - Draft/published status for projects
 - **Featured flag** - Homepage featured projects selection
-
----
-
-## Deployment Architecture
-
-### Production Setup
-
-```
-┌──────────────────────────────────────────────────────┐
-│                   User's Browser                       │
-└────────────┬─────────────────────────────────────────┘
-             │
-             │ HTTPS
-             │
-    ┌────────┴────────┐
-    │                 │
-    ▼                 ▼
-┌─────────────┐  ┌──────────────┐
-│   Vercel    │  │    Vercel    │
-│  (Frontend) │  │   (Backend)  │
-│ Next.js App │  │  Express API │
-└────────┬────┘  └──────┬───────┘
-         │               │
-         │ REST/JSON     │
-         └───┬───────────┘
-             │
-             ▼
-      ┌────────────────┐
-      │   Supabase /   │
-      │   PostgreSQL   │
-      │   (Managed DB) │
-      └────────────────┘
-```
-
-**Why This Setup?**
-- ✅ Frontend & backend independent scaling
-- ✅ Managed database (automatic backups, scaling)
-- ✅ Global CDN for static assets
-- ✅ Automatic HTTPS
-- ✅ Simple deployments
 
 ---
 

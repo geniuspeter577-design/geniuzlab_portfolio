@@ -29,9 +29,10 @@ app.get('/health', (req, res) => {
 // - GET /api/admin/categories
 
 // Error handling middleware
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+app.use((err: Error, req: express.Request, res: express.Response, _next: express.NextFunction) => {
   console.error('Error:', err);
-  res.status(err.status || 500).json({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  res.status((err as any).status || 500).json({
     error: err.message || 'Internal Server Error',
   });
 });
@@ -43,6 +44,6 @@ app.use((req, res) => {
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`🚀 Backend API running on http://localhost:${PORT}`);
-  console.log(`   Health check: http://localhost:${PORT}/health`);
+  console.warn(`🚀 Backend API running on http://localhost:${PORT}`);
+  console.warn(`   Health check: http://localhost:${PORT}/health`);
 });

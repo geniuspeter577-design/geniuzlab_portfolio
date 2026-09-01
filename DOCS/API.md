@@ -1,5 +1,50 @@
 # GeniuzLab Portfolio - API Documentation
 
+## API Overview
+
+```mermaid
+graph TB
+    Client["📱 Client<br/>(Frontend)"]
+    
+    subgraph Public["🌐 Public Endpoints<br/>(No Auth Required)"]
+        GetProjects["GET /projects<br/>List published projects"]
+        GetProject["GET /projects/:slug<br/>Get project details"]
+        GetCategories["GET /categories<br/>List categories"]
+    end
+    
+    subgraph Admin["🔐 Admin Endpoints<br/>(JWT Required)"]
+        AdminList["GET /admin/projects<br/>List all projects"]
+        AdminCreate["POST /admin/projects<br/>Create project"]
+        AdminUpdate["PUT /admin/projects/:id<br/>Update project"]
+        AdminDelete["DELETE /admin/projects/:id<br/>Delete project"]
+        Upload["POST /admin/upload-image<br/>Upload image"]
+    end
+    
+    subgraph Auth["🔑 Authentication"]
+        Login["POST /auth/login<br/>Authenticate user"]
+        Logout["POST /auth/logout<br/>End session"]
+    end
+    
+    Database["🗄️ PostgreSQL<br/>Projects, Categories"]
+    Storage["☁️ Vercel Blob<br/>Image storage"]
+    
+    Client -->|No Auth| Public
+    Client -->|JWT Token| Admin
+    Client -->|Credentials| Auth
+    Public --> Database
+    Admin --> Database
+    Admin --> Storage
+    Auth --> Database
+    
+    style Public fill:#10b981,color:#fff
+    style Admin fill:#ef4444,color:#fff
+    style Auth fill:#f59e0b,color:#fff
+    style Database fill:#3b82f6,color:#fff
+    style Storage fill:#8b5cf6,color:#fff
+```
+
+---
+
 ## Base URL
 
 ### Development

@@ -1,5 +1,72 @@
 # GeniuzLab Portfolio - Deployment & Operations Guide
 
+## Deployment Architecture
+
+```mermaid
+graph TB
+    Git["📦 Git Repository<br/>Source Code"]
+    
+    subgraph Vercel["Vercel Platform"]
+        Frontend["🌐 Frontend<br/>Next.js App<br/>Automatic Deploy"]
+        Backend["⚙️ Backend<br/>Express Functions<br/>Automatic Deploy"]
+    end
+    
+    subgraph Data["Data Layer"]
+        Database["🗄️ PostgreSQL<br/>Supabase / AWS RDS"]
+        Blob["☁️ Vercel Blob<br/>Image Storage"]
+    end
+    
+    Monitor["📊 Monitoring<br/>Sentry / Datadog"]
+    CDN["🌍 CDN<br/>Static Assets"]
+    
+    Git -->|Push| Frontend
+    Git -->|Push| Backend
+    Frontend -->|SQL Queries| Database
+    Frontend -->|Image URLs| Blob
+    Backend -->|SQL Queries| Database
+    Backend -->|Upload/Download| Blob
+    Frontend --> CDN
+    Backend --> Monitor
+    Frontend --> Monitor
+    
+    style Frontend fill:#6366f1,color:#fff
+    style Backend fill:#8b5cf6,color:#fff
+    style Database fill:#ec4899,color:#fff
+    style Blob fill:#f59e0b,color:#fff
+    style Monitor fill:#ef4444,color:#fff
+```
+
+## Deployment Workflow
+
+```mermaid
+graph TD
+    A["👤 Developer<br/>Push to Main"] --> B["🔄 GitHub<br/>Webhook Triggered"]
+    B --> C{"✅ Tests Pass?"}
+    
+    C -->|No| D["❌ Build Failed<br/>Notification Sent"]
+    D --> E["🔧 Fix Issues<br/>Commit & Push"]
+    E --> B
+    
+    C -->|Yes| F["🏗️ Build App"]
+    F --> G["🧪 Run Tests"]
+    G --> H["🚀 Deploy Frontend"]
+    H --> I["🚀 Deploy Backend"]
+    I --> J["🗄️ Run Migrations"]
+    J --> K["✅ Production Live"]
+    
+    K --> L["📊 Monitor Health"]
+    L --> M{"⚠️ Errors?"}
+    M -->|Yes| N["🚨 Alert Team<br/>Sentry"]
+    M -->|No| O["✨ Deployment Success"]
+    
+    style K fill:#10b981,color:#fff
+    style O fill:#10b981,color:#fff
+    style D fill:#ef4444,color:#fff
+    style N fill:#ef4444,color:#fff
+```
+
+---
+
 ## 📋 Table of Contents
 
 1. [Pre-Deployment Checklist](#pre-deployment-checklist)

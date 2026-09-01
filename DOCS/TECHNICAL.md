@@ -60,34 +60,29 @@ geniuzlab_portfolio (monorepo root)
 
 ### Communication
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                      Browser (Public)                    │
-└──────────────────────┬──────────────────────────────────┘
-                       │ HTTP/REST
-                       ▼
-        ┌──────────────────────────────────┐
-        │   Frontend (apps/web)            │
-        │  - Next.js 16 + React 19         │
-        │  - Tailwind CSS                  │
-        │  - Client-side JWT auth          │
-        └──────────────────┬───────────────┘
-                           │ HTTP/JSON
-                           ▼
-        ┌──────────────────────────────────┐
-        │   Backend API (apps/backend)     │
-        │  - Express.js                    │
-        │  - Prisma ORM                    │
-        │  - PostgreSQL                    │
-        │  - JWT authentication            │
-        └──────────────────┬───────────────┘
-                           │
-                           ▼
-        ┌──────────────────────────────────┐
-        │      PostgreSQL Database         │
-        │  - Projects, Categories, Users   │
-        │  - Tags, Images, Relationships   │
-        └──────────────────────────────────┘
+```mermaid
+graph TB
+    Browser["👤 Browser / Public User"]
+    
+    subgraph Frontend["Frontend (apps/web)"]
+        NextApp["Next.js 16 + React 19<br/>Tailwind CSS<br/>Client-side JWT Auth"]
+    end
+    
+    subgraph Backend["Backend API (apps/backend)"]
+        Express["Express.js Server<br/>Prisma ORM<br/>JWT Validation<br/>REST Endpoints"]
+    end
+    
+    subgraph Database["Data"]
+        PostgreSQL["🗄️ PostgreSQL<br/>Projects, Categories<br/>Users, Images<br/>Relationships"]
+    end
+    
+    Browser -->|HTTP/REST| NextApp
+    NextApp -->|JSON API Calls<br/>with JWT Token| Express
+    Express -->|SQL Queries<br/>via Prisma| PostgreSQL
+    
+    style Frontend fill:#3b82f6,color:#fff
+    style Backend fill:#8b5cf6,color:#fff
+    style Database fill:#ec4899,color:#fff
 ```
 
 ---

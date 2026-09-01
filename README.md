@@ -17,18 +17,37 @@ A professional portfolio and CMS for **GENIUZLAB**, a design studio by Otsaje Ge
 
 ## 📦 Monorepo Structure
 
-```
-geniuzlab_portfolio/
-├── apps/
-│   ├── web/              # Next.js Frontend (React 19 + Tailwind CSS)
-│   ├── backend/          # Express.js API (Prisma ORM + PostgreSQL)
-│   └── mobile/           # Future mobile application
-├── packages/
-│   └── shared/           # Shared types, constants, utilities
-├── prisma/               # Database schema and migrations
-├── DOCS/                 # Technical documentation
-├── HANDOVER_DOCS/        # Setup and deployment guides
-└── package.json          # Monorepo workspace configuration
+```mermaid
+graph TB
+    subgraph root["GeniuzLab Portfolio<br/>(Monorepo)"]
+        subgraph apps["apps/"]
+            web["🌐 web<br/>Next.js Frontend<br/>React 19 + Tailwind"]
+            backend["⚙️ backend<br/>Express API<br/>Prisma + PostgreSQL"]
+            mobile["📱 mobile (future)<br/>React Native / Flutter"]
+        end
+        
+        subgraph packages["packages/"]
+            shared["🔗 shared<br/>Types, Constants<br/>Utilities"]
+        end
+        
+        subgraph data["Database"]
+            prisma["prisma/<br/>Schema & Migrations"]
+        end
+        
+        subgraph docs["Documentation"]
+            technical["DOCS/<br/>Technical & Testing"]
+            handover["HANDOVER_DOCS/<br/>Setup & Deployment"]
+        end
+    end
+    
+    style root fill:#1e293b,color:#fff,stroke:#4f46e5,stroke-width:3px
+    style web fill:#3b82f6,color:#fff
+    style backend fill:#8b5cf6,color:#fff
+    style mobile fill:#ec4899,color:#fff
+    style shared fill:#10b981,color:#fff
+    style prisma fill:#f59e0b,color:#fff
+    style technical fill:#06b6d4,color:#fff
+    style handover fill:#06b6d4,color:#fff
 ```
 
 ### Why Monorepo?
@@ -38,6 +57,49 @@ geniuzlab_portfolio/
 ✅ **Easier Refactoring** - Changes propagate to all consumers  
 ✅ **Single Repo** - Easier to manage and deploy  
 ✅ **Scalable** - Simple to add new apps (mobile, admin dashboard, API clients)
+
+---
+
+## 🏗️ System Architecture
+
+```mermaid
+graph TB
+    Browser["👤 Browser<br/>User / Admin"]
+    
+    subgraph Frontend["Frontend Layer"]
+        Public["🌐 Public Portfolio<br/>SSR/SSG Pages"]
+        Admin["🔐 Admin CMS<br/>Protected UI"]
+    end
+    
+    subgraph Middleware["API Middleware"]
+        NextAPI["Next.js API Routes<br/>Auth & Upload"]
+        Auth["🔐 NextAuth.js<br/>Session Management"]
+    end
+    
+    subgraph Backend["Backend API"]
+        Express["⚙️ Express Server<br/>REST Endpoints"]
+        Validation["✔️ Zod Validation<br/>Type Safety"]
+    end
+    
+    subgraph Data["Data Layer"]
+        Database["🗄️ PostgreSQL<br/>Prisma ORM"]
+        Storage["☁️ Vercel Blob<br/>Image Storage"]
+    end
+    
+    Browser -->|HTTP/HTTPS| Public
+    Browser -->|Authenticated| Admin
+    Public & Admin -->|API Calls| NextAPI
+    NextAPI --> Auth
+    Auth -->|JWT Verification| Express
+    Express --> Validation
+    Validation -->|SQL Queries| Database
+    Express -->|Upload/Download| Storage
+    
+    style Frontend fill:#6366f1,color:#fff
+    style Backend fill:#8b5cf6,color:#fff
+    style Data fill:#ec4899,color:#fff
+    style Auth fill:#f59e0b,color:#fff
+```
 
 ---
 
@@ -83,6 +145,7 @@ For detailed setup instructions, see [HANDOVER_DOCS/SETUP.md](HANDOVER_DOCS/SETU
 - **[HANDOVER_DOCS/DEPLOYMENT.md](HANDOVER_DOCS/DEPLOYMENT.md)** - Production deployment guide
 - **[DOCS/TECHNICAL.md](DOCS/TECHNICAL.md)** - Technical architecture and design details
 - **[DOCS/API.md](DOCS/API.md)** - Backend API endpoints documentation
+- **[DOCS/TESTING.md](DOCS/TESTING.md)** - Comprehensive testing guide (Jest, Vitest, Playwright, MSW)
 
 ### App-Specific
 - **[apps/web/README.md](apps/web/README.md)** - Frontend setup and development
@@ -156,6 +219,62 @@ packages/shared/src/
 ├── constants/         # Site configuration
 └── utils/             # Helper functions
 ```
+
+---
+
+## 🧪 Testing
+
+This project implements comprehensive testing across multiple layers:
+
+### Testing Frameworks
+
+- **Jest** - Backend unit & integration tests
+- **Vitest** - Frontend component & unit tests
+- **React Testing Library** - React component testing
+- **Playwright** - End-to-end testing
+- **MSW** - API mocking for tests
+- **ESLint** - Code quality linting
+
+### Quick Test & Lint Commands
+
+```bash
+# Run all tests
+npm run test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Generate coverage reports
+npm run test:coverage
+
+# Lint code
+npm run lint
+
+# Run E2E tests
+npm run test:e2e
+
+# Run E2E tests with UI
+npm run test:e2e:ui
+```
+
+### Test Files
+
+- **Backend:** `apps/backend/__tests__/`
+- **Frontend:** `apps/web/__tests__/`
+- **E2E:** `e2e/`
+
+### Writing Tests
+
+- Backend: [Unit & Integration Testing Guide](DOCS/TESTING.md#backend-testing-jest--supertest)
+- Frontend: [Component Testing Guide](DOCS/TESTING.md#frontend-testing-vitest--react-testing-library)
+- E2E: [End-to-End Testing Guide](DOCS/TESTING.md#e2e-testing-playwright)
+
+### Code Quality
+
+- Linting: [ESLint Guide](DOCS/TESTING.md#code-linting-eslint)
+- Run linter: `npm run lint`
+
+**Full testing documentation:** [DOCS/TESTING.md](DOCS/TESTING.md)
 
 ---
 

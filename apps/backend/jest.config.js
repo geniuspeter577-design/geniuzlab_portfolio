@@ -9,9 +9,18 @@ export default {
     '!src/**/*.d.ts',
     '!src/index.ts',
     '!src/**/*.types.ts',
+    '!src/**/index.ts',
   ],
   coverageDirectory: 'coverage',
-  coverageReporters: ['text', 'lcov', 'html'],
+  coverageReporters: ['text', 'lcov', 'html', 'text-summary', 'json'],
+  coverageThreshold: {
+    global: {
+      branches: 50,
+      functions: 50,
+      lines: 50,
+      statements: 50,
+    },
+  },
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
   },
@@ -25,4 +34,11 @@ export default {
       },
     },
   },
+  // Enhanced test configuration
+  maxWorkers: '50%',
+  bail: false,
+  verbose: true,
+  clearMocks: true,
+  resetMocks: true,
+  restoreMocks: true,
 };
