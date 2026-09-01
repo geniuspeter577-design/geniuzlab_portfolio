@@ -1,37 +1,30 @@
 {
   "name": "geniuzlab_portfolio",
-  "version": "0.1.0",
+  "version": "1.0.0",
+  "description": "GeniuzLab Portfolio - Monorepo with Web, Backend, and Shared packages",
   "private": true,
+  "workspaces": [
+    "apps/web",
+    "apps/backend",
+    "packages/shared"
+  ],
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint",
-    "postinstall": "prisma generate"
-  },
-  "dependencies": {
-    "@prisma/client": "^6.13.0",
-    "@vercel/blob": "^2.8.0",
-    "bcryptjs": "^3.0.3",
-    "clsx": "^2.1.1",
-    "mongodb": "^7.6.0",
-    "next": "16.3.3",
-    "next-auth": "^5.0.0-beta.32",
-    "prisma": "^6.13.0",
-    "react": "19.2.8",
-    "react-dom": "19.2.8",
-    "tailwind-merge": "^3.6.0",
-    "zod": "^4.5.1"
+    "dev:web": "cd apps/web && npm run dev",
+    "dev:backend": "cd apps/backend && npm run dev",
+    "dev": "concurrently \"npm run dev:web\" \"npm run dev:backend\"",
+    "build": "npm --workspaces run build",
+    "start": "npm --workspaces run start",
+    "lint": "npm --workspaces run lint",
+    "test": "npm --workspaces run test",
+    "test:watch": "npm --workspaces run test:watch",
+    "test:coverage": "npm --workspaces run test:coverage",
+    "test:e2e": "cd apps/web && npx playwright test",
+    "test:e2e:ui": "cd apps/web && npx playwright test --ui",
+    "db:migrate": "cd apps/backend && npm run db:migrate",
+    "db:push": "cd apps/backend && npm run db:push",
+    "db:seed": "cd apps/backend && npm run db:seed"
   },
   "devDependencies": {
-    "@tailwindcss/oxide-linux-x64-gnu": "^4.3.3",
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "16.3.3",
-    "tailwindcss": "^4",
-    "typescript": "^5"
+    "concurrently": "^8.2.2"
   }
 }
