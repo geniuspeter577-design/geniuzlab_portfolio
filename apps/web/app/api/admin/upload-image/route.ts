@@ -12,16 +12,21 @@ export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
     const file = formData.get("file") as File;
+    // Provider parameter for future use (frontend currently always uses Vercel Blob)
+    // _provider = (formData.get("provider") as string) || "auto"; // "auto", "cloudinary", or "vercel-blob"
 
     if (!file) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
-    if (!file.type.startsWith("image/")) {
-      return NextResponse.json({ error: "File must be an image" }, { status: 400 });
+    if (!file.type.startsWith("image/") && !file.type.startsWith("video/")) {
+      return NextResponse.json(
+        { error: "File must be an image or video" },
+        { status: 400 }
+      );
     }
 
-    const maxSizeInBytes = 50 * 1024 * 1024; // 50MB
+    const maxSizeInBytes = 50 * 1024 * 1024; // 50MB limit for this endpoint
     if (file.size > maxSizeInBytes) {
       return NextResponse.json(
         { error: "File size must be less than 50MB" },
@@ -34,6 +39,7 @@ export async function POST(request: NextRequest) {
     const randomId = Math.random().toString(36).substring(2, 8);
     const filename = `portfolio-${timestamp}-${randomId}-${file.name}`;
 
+    // Default to Vercel Blob (frontend doesn't have Cloudinary API credentials)
     if (!process.env.BLOB_READ_WRITE_TOKEN) {
       return NextResponse.json(
         { error: "Image storage not configured" },
@@ -41,7 +47,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const blob = await put(filename, buffer, {
+    const blob = await put(filename, new Uint8Array(buffer), {
       access: "public",
       token: process.env.BLOB_READ_WRITE_TOKEN,
     });
@@ -49,6 +55,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       url: blob.url,
       filename: blob.pathname,
+      provider: "vercel-blob",
     });
   } catch (error) {
     console.error("Image upload error:", error);

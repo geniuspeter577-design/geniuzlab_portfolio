@@ -26,5 +26,9 @@
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "cloudinary": "^2.11.0",
+    "next-cloudinary": "^6.18.8"
   }
 }

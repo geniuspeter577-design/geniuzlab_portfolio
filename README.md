@@ -336,7 +336,18 @@ Uses **Vercel Blob** for image uploads:
 | **Database** | PostgreSQL | 14+ |
 | **ORM** | Prisma | 6 |
 | **Auth** | NextAuth.js | 5 (beta) |
-| **Image Storage** | Vercel Blob | 2 |
+| **Image/Video Storage** | Cloudinary + Vercel Blob | 2 |
+| **Testing** | Jest, Vitest, Playwright | Latest |
+| **Linting** | ESLint | 9 |
+
+### Image & Video Storage (Hybrid)
+
+Choose one or use both:
+
+- **Cloudinary** - Advanced transformations, video support, analytics
+- **Vercel Blob** - Simple, serverless, integrated with Vercel
+
+See [DOCS/CLOUDINARY.md](DOCS/CLOUDINARY.md) for setup instructions.
 
 ---
 
@@ -356,11 +367,16 @@ ADMIN_EMAIL=admin@example.com
 ADMIN_PASSWORD_HASH=bcryptjs-generated-hash
 ```
 
-### Optional
+### Optional - Image Storage
 
 ```env
-# Image storage
+# Vercel Blob
 BLOB_READ_WRITE_TOKEN=vercel-blob-token
+
+# Cloudinary (modern CDN with transformations)
+CLOUDINARY_CLOUD_NAME=your-cloud-name
+CLOUDINARY_API_KEY=your-api-key
+CLOUDINARY_API_SECRET=your-api-secret
 
 # API URLs (development)
 NEXT_PUBLIC_API_URL=http://localhost:3001

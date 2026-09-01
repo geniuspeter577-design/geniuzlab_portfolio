@@ -1,9 +1,21 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import { initCloudinary } from './lib/cloudinary';
 
 // Load environment variables
 dotenv.config();
+
+// Initialize Cloudinary if configured
+try {
+  if (process.env.CLOUDINARY_CLOUD_NAME) {
+    initCloudinary();
+    console.warn('✅ Cloudinary initialized');
+  }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+} catch (_error) {
+  console.warn('⚠️  Cloudinary not configured, falling back to Vercel Blob');
+}
 
 const app = express();
 const PORT = process.env.PORT || 3001;

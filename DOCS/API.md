@@ -454,7 +454,9 @@ curl -X DELETE http://localhost:3001/api/admin/projects/project-uuid \
 
 ### POST /admin/upload-image
 
-Upload an image to Vercel Blob.
+Upload an image to the configured storage provider (Vercel Blob or Cloudinary).
+
+**Note:** Frontend currently uses Vercel Blob. For Cloudinary uploads, use the backend `/api/upload` endpoint or configure Cloudinary Upload Widget on the frontend. See [DOCS/CLOUDINARY.md](CLOUDINARY.md) for details.
 
 **Headers:**
 ```
@@ -463,29 +465,50 @@ Content-Type: multipart/form-data
 ```
 
 **Form Data:**
-- `file` (required) - Image file (JPEG, PNG, WebP)
+- `file` (required) - Image file (JPEG, PNG, WebP, GIF)
+- `provider` (optional) - "vercel-blob" or "cloudinary" (default: configured provider)
 - `type` (optional) - "COVER" or "GALLERY" (default: "GALLERY")
 
-**Response:**
+**Response (Vercel Blob):**
 ```json
 {
   "url": "https://blob.vercelusercontent.com/...",
   "filename": "image-1704033000000.jpg",
-  "size": 245632
+  "provider": "vercel-blob"
+}
+```
+
+**Response (Cloudinary):**
+```json
+{
+  "url": "https://res.cloudinary.com/.../image.jpg",
+  "filename": "portfolio/image",
+  "provider": "cloudinary",
+  "publicId": "portfolio/image",
+  "resourceType": "image"
 }
 ```
 
 **Status Codes:**
 - `200` - Upload successful
 - `400` - No file provided or invalid file type
-- `413` - File too large (max 50MB)
+- `413` - File too large (max 50MB for Vercel Blob, 2GB for Cloudinary)
 - `401` - Unauthorized
+- `503` - Storage not configured
 
 **Example:**
 ```bash
+# Using Vercel Blob (default)
 curl -X POST http://localhost:3001/api/admin/upload-image \
   -H "Authorization: Bearer <token>" \
   -F "file=@path/to/image.jpg" \
+  -F "type=COVER"
+
+# Using Cloudinary (if configured)
+curl -X POST http://localhost:3001/api/admin/upload-image \
+  -H "Authorization: Bearer <token>" \
+  -F "file=@path/to/image.jpg" \
+  -F "provider=cloudinary" \
   -F "type=COVER"
 ```
 
