@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const blob = await put(filename, new Uint8Array(buffer), {
+    const blob = await put(filename, Buffer.from(buffer), {
       access: "public",
       token: process.env.BLOB_READ_WRITE_TOKEN,
     });
