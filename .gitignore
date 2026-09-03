@@ -37,7 +37,6 @@ Logs/
 coverage/
 
 # Prisma
-prisma/migrations/
 .prisma/
 
 # Logs
