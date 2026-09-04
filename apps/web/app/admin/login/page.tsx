@@ -36,16 +36,16 @@ function AdminLoginForm() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#050505] px-6 py-16 text-white">
-      <div className="w-full max-w-md rounded-2xl border border-white/10 bg-[#131313] p-8 shadow-[0_0_0_1px_rgba(126,217,87,0.12)]">
+    <div className="flex min-h-screen items-center justify-center bg-paper px-6 py-16 text-ink">
+      <div className="w-full max-w-md rounded-2xl border border-line bg-surface p-8 shadow-[0_0_0_1px_rgba(126,217,87,0.12)]">
         <div className="mb-8">
-          <p className="eyebrow text-[#7ed957]">Private access</p>
+          <p className="eyebrow text-brass">Private access</p>
           <h1 className="mt-3 font-display text-3xl">Admin login</h1>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label htmlFor="email" className="mb-2 block text-sm text-white/80">
+            <label htmlFor="email" className="mb-2 block text-sm text-ink-muted">
               Email
             </label>
             <input
@@ -53,13 +53,13 @@ function AdminLoginForm() {
               type="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              className="w-full rounded-md border border-white/10 bg-black px-4 py-3 text-white outline-none transition focus:border-[#7ed957]"
+              className="w-full rounded-md border border-line bg-paper px-4 py-3 text-ink outline-none transition focus:border-brass"
               required
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="mb-2 block text-sm text-white/80">
+            <label htmlFor="password" className="mb-2 block text-sm text-ink-muted">
               Password
             </label>
             <input
@@ -67,7 +67,7 @@ function AdminLoginForm() {
               type="password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
-              className="w-full rounded-md border border-white/10 bg-black px-4 py-3 text-white outline-none transition focus:border-[#7ed957]"
+              className="w-full rounded-md border border-line bg-paper px-4 py-3 text-ink outline-none transition focus:border-brass"
               required
             />
           </div>
@@ -91,7 +91,7 @@ function AdminLoginForm() {
 
 export default function AdminLoginPage() {
   return (
-    <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-[#050505] text-white">Loading...</div>}>
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-paper text-ink">Loading...</div>}>
       <AdminLoginForm />
     </Suspense>
   );

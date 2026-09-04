@@ -36,20 +36,20 @@ export function Hero() {
         </Reveal>
 
         <Reveal delay={80} className="hero-reveal">
-          <p className="pill eyebrow mt-8 text-brass-dim">
+          <p className="pill eyebrow mt-6 text-brass-dim">
             {siteConfig.founder} — {siteConfig.founderTitle}
           </p>
         </Reveal>
 
         <Reveal delay={150} className="hero-reveal">
-          <h1 className="mt-6 max-w-5xl font-display text-hero leading-[0.95] text-cinema-ink">
+          <h1 className="mt-4 max-w-5xl font-display text-hero leading-[0.95] text-cinema-ink">
             {siteConfig.experienceName}
           </h1>
         </Reveal>
 
         <Reveal delay={220} className="hero-reveal">
-          <div className="mt-10 max-w-2xl border-l-2 border-brass pl-6">
-            <p className="text-lg leading-relaxed text-cinema-muted">
+          <div className="mt-6 max-w-2xl border-l-2 border-brass pl-4">
+            <p className="text-base leading-relaxed text-cinema-muted sm:text-lg">
               {siteConfig.tagline} A design studio working across branding,
               church &amp; Christian design, social media, print, and motion —
               built to make real work easy to explore.
@@ -58,7 +58,7 @@ export function Hero() {
         </Reveal>
 
         <Reveal delay={300} className="hero-reveal">
-          <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-6">
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
             <Button href="/work" variant="brand">
               View the work
             </Button>

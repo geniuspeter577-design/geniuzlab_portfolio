@@ -25,6 +25,12 @@ const navItems = [
 export function Navigation() {
   const pathname = usePathname();
 
+  // Admin routes render their own matching pill nav (app/admin/layout.tsx) —
+  // skip the public one here so the two never stack on top of each other.
+  if (pathname?.startsWith("/admin")) {
+    return null;
+  }
+
   return (
     <header className="sticky top-3 z-50 flex justify-center px-3 sm:top-4">
       <nav
@@ -52,8 +58,8 @@ export function Navigation() {
               aria-current={isActive ? "page" : undefined}
               className={`flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-medium transition-all duration-300 sm:px-3.5 ${
                 isActive
-                  ? "bg-brass text-cinema shadow-[0_2px_12px_-2px_rgba(126,217,87,0.5)]"
-                  : "text-cinema-muted hover:bg-white/10 hover:text-cinema-ink"
+                  ? "-translate-y-0.5 bg-brass text-cinema shadow-[0_2px_12px_-2px_rgba(126,217,87,0.5)]"
+                  : "translate-y-0 text-cinema-muted hover:bg-white/10 hover:text-cinema-ink"
               }`}
             >
               <Icon size={16} strokeWidth={2} />

@@ -55,4 +55,10 @@ lerna-debug.log*
 
 # Temporary files
 *.tmp
-*.temp
+*.temp.next/
+dist/
+node_modules/
+*.tsbuildinfo
+.env.local
+.env.e2e
+.env.test

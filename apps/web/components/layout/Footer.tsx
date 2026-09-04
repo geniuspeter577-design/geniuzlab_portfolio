@@ -1,10 +1,20 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { mainNav, siteConfig, socialLinks, whatsappHref } from "@/lib/constants";
 import { categories } from "@/lib/categories";
 
 export function Footer() {
   const year = new Date().getFullYear();
+  const pathname = usePathname();
+
+  // Admin (CMS) pages are a separate tool, not part of the public portfolio
+  // site — they shouldn't carry the public marketing footer.
+  if (pathname?.startsWith("/admin")) {
+    return null;
+  }
 
   return (
     <footer className="cinema-grain relative overflow-hidden border-t-2 border-brass/40 bg-cinema text-cinema-ink">

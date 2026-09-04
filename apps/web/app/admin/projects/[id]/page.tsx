@@ -232,7 +232,7 @@ export default function EditProjectPage() {
   };
 
   if (loading) {
-    return <div className="container-editorial section-padding text-white/70">Loading project...</div>;
+    return <div className="container-editorial section-padding text-ink-muted">Loading project...</div>;
   }
 
   if (!form?.id) {
@@ -242,38 +242,38 @@ export default function EditProjectPage() {
   return (
     <div className="container-editorial section-padding">
       <div className="mb-8">
-        <p className="eyebrow text-[#7ed957]">Portfolio</p>
+        <p className="eyebrow text-brass">Portfolio</p>
         <h1 className="mt-3 font-display text-display">Edit project</h1>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6 rounded-2xl border border-white/10 bg-[#131313] p-6 sm:p-8">
+      <form onSubmit={handleSubmit} className="space-y-6 rounded-2xl border border-line bg-surface p-6 sm:p-8">
         {error && <p className="text-sm text-red-400">{error}</p>}
         {uploadError && <p className="text-sm text-red-400">Upload error: {uploadError}</p>}
-        {uploadingImage && <p className="text-sm text-[#7ed957]">Uploading... {uploadProgress}%</p>}
+        {uploadingImage && <p className="text-sm text-brass">Uploading... {uploadProgress}%</p>}
 
         <div className="grid gap-6 md:grid-cols-2">
-          <label className="space-y-2 text-sm text-white/80">
+          <label className="space-y-2 text-sm text-ink-muted">
             <span>Project title</span>
             <input
               value={form.title ?? ""}
               onChange={(event) => handleChange("title", event.target.value)}
-              className="w-full rounded-md border border-white/10 bg-black px-4 py-3 text-white outline-none focus:border-[#7ed957]"
+              className="w-full rounded-md border border-line bg-paper px-4 py-3 text-ink outline-none focus:border-brass"
               required
             />
           </label>
 
-          <label className="space-y-2 text-sm text-white/80">
+          <label className="space-y-2 text-sm text-ink-muted">
             <span>Client</span>
             <input
               value={form.client ?? ""}
               onChange={(event) => handleChange("client", event.target.value)}
-              className="w-full rounded-md border border-white/10 bg-black px-4 py-3 text-white outline-none focus:border-[#7ed957]"
+              className="w-full rounded-md border border-line bg-paper px-4 py-3 text-ink outline-none focus:border-brass"
             />
           </label>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">
-          <label className="space-y-2 text-sm text-white/80">
+          <label className="space-y-2 text-sm text-ink-muted">
             <span>Category</span>
             <select
               multiple
@@ -282,7 +282,7 @@ export default function EditProjectPage() {
                 const selected = Array.from(event.target.selectedOptions, (option) => option.value);
                 handleChange("categorySlugs", selected);
               }}
-              className="min-h-36 w-full rounded-md border border-white/10 bg-black px-4 py-3 text-white outline-none focus:border-[#7ed957]"
+              className="min-h-36 w-full rounded-md border border-line bg-paper px-4 py-3 text-ink outline-none focus:border-brass"
             >
               {categories.map((category) => (
                 <option key={category.slug} value={category.slug}>
@@ -293,74 +293,74 @@ export default function EditProjectPage() {
           </label>
 
           <div className="grid gap-6 sm:grid-cols-2">
-            <label className="space-y-2 text-sm text-white/80">
+            <label className="space-y-2 text-sm text-ink-muted">
               <span>Year</span>
               <input
                 type="number"
                 value={form.year ?? new Date().getFullYear()}
                 onChange={(event) => handleChange("year", Number(event.target.value))}
-                className="w-full rounded-md border border-white/10 bg-black px-4 py-3 text-white outline-none focus:border-[#7ed957]"
+                className="w-full rounded-md border border-line bg-paper px-4 py-3 text-ink outline-none focus:border-brass"
               />
             </label>
 
-            <label className="space-y-2 text-sm text-white/80">
+            <label className="space-y-2 text-sm text-ink-muted">
               <span>Display order</span>
               <input
                 type="number"
                 value={form.orderIndex ?? 0}
                 onChange={(event) => handleChange("orderIndex", Number(event.target.value))}
-                className="w-full rounded-md border border-white/10 bg-black px-4 py-3 text-white outline-none focus:border-[#7ed957]"
+                className="w-full rounded-md border border-line bg-paper px-4 py-3 text-ink outline-none focus:border-brass"
               />
             </label>
           </div>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">
-          <label className="space-y-2 text-sm text-white/80">
+          <label className="space-y-2 text-sm text-ink-muted">
             <span>Role</span>
             <input
               value={form.role ?? ""}
               onChange={(event) => handleChange("role", event.target.value)}
-              className="w-full rounded-md border border-white/10 bg-black px-4 py-3 text-white outline-none focus:border-[#7ed957]"
+              className="w-full rounded-md border border-line bg-paper px-4 py-3 text-ink outline-none focus:border-brass"
             />
           </label>
 
-          <label className="space-y-2 text-sm text-white/80">
+          <label className="space-y-2 text-sm text-ink-muted">
             <span>Tags (comma-separated)</span>
             <input
               value={(form.tags ?? []).join(", ")}
               onChange={(event) => handleChange("tags", event.target.value.split(",").map((tag) => tag.trim()).filter(Boolean))}
-              className="w-full rounded-md border border-white/10 bg-black px-4 py-3 text-white outline-none focus:border-[#7ed957]"
+              className="w-full rounded-md border border-line bg-paper px-4 py-3 text-ink outline-none focus:border-brass"
             />
           </label>
         </div>
 
-        <label className="block space-y-2 text-sm text-white/80">
+        <label className="block space-y-2 text-sm text-ink-muted">
           <span>Summary</span>
           <textarea
             value={form.summary ?? ""}
             onChange={(event) => handleChange("summary", event.target.value)}
             rows={3}
-            className="w-full rounded-md border border-white/10 bg-black px-4 py-3 text-white outline-none focus:border-[#7ed957]"
+            className="w-full rounded-md border border-line bg-paper px-4 py-3 text-ink outline-none focus:border-brass"
             required
           />
         </label>
 
-        <label className="block space-y-2 text-sm text-white/80">
+        <label className="block space-y-2 text-sm text-ink-muted">
           <span>Description</span>
           <textarea
             value={form.description ?? ""}
             onChange={(event) => handleChange("description", event.target.value)}
             rows={6}
-            className="w-full rounded-md border border-white/10 bg-black px-4 py-3 text-white outline-none focus:border-[#7ed957]"
+            className="w-full rounded-md border border-line bg-paper px-4 py-3 text-ink outline-none focus:border-brass"
           />
         </label>
 
         {/* Cover Image Section */}
-        <div className="space-y-4 rounded-lg border border-white/10 bg-black/50 p-4">
+        <div className="space-y-4 rounded-lg border border-line bg-surface p-4">
           <div>
-            <label className="text-sm font-medium text-white/80">Cover Image</label>
-            <p className="mt-1 text-xs text-white/50">
+            <label className="text-sm font-medium text-ink-muted">Cover Image</label>
+            <p className="mt-1 text-xs text-ink-muted">
               {form.coverImage?.url ? "✓ Uploaded" : "No image selected"}
             </p>
           </div>
@@ -380,7 +380,7 @@ export default function EditProjectPage() {
           )}
 
           <label className="block">
-            <span className="cursor-pointer rounded-md border border-white/10 px-4 py-3 text-xs uppercase tracking-[0.18em] text-white transition hover:border-[#7ed957] hover:text-[#7ed957]">
+            <span className="cursor-pointer rounded-md border border-line px-4 py-3 text-xs uppercase tracking-[0.18em] text-ink transition hover:border-brass hover:text-brass">
               {form.coverImage?.url ? "Change image" : "Upload cover image"}
             </span>
             <input
@@ -393,7 +393,7 @@ export default function EditProjectPage() {
           </label>
 
           {form.coverImage?.url && (
-            <label className="space-y-2 text-sm text-white/80">
+            <label className="space-y-2 text-sm text-ink-muted">
               <span>Alt text</span>
               <input
                 value={form.coverImage.altText ?? ""}
@@ -403,7 +403,7 @@ export default function EditProjectPage() {
                     coverImage: current?.coverImage ? { ...current.coverImage, altText: event.target.value } : null,
                   }))
                 }
-                className="w-full rounded-md border border-white/10 bg-black px-4 py-3 text-white outline-none focus:border-[#7ed957]"
+                className="w-full rounded-md border border-line bg-paper px-4 py-3 text-ink outline-none focus:border-brass"
                 placeholder="Describe the image"
               />
             </label>
@@ -411,10 +411,10 @@ export default function EditProjectPage() {
         </div>
 
         {/* Gallery Images Section */}
-        <div className="space-y-4 rounded-lg border border-white/10 bg-black/50 p-4">
+        <div className="space-y-4 rounded-lg border border-line bg-surface p-4">
           <div>
-            <label className="text-sm font-medium text-white/80">Gallery Images</label>
-            <p className="mt-1 text-xs text-white/50">
+            <label className="text-sm font-medium text-ink-muted">Gallery Images</label>
+            <p className="mt-1 text-xs text-ink-muted">
               {(form.galleryImages?.length ?? 0)} image{(form.galleryImages?.length ?? 0) !== 1 ? "s" : ""} added
             </p>
           </div>
@@ -440,7 +440,7 @@ export default function EditProjectPage() {
           )}
 
           <label className="block">
-            <span className="cursor-pointer rounded-md border border-white/10 px-4 py-3 text-xs uppercase tracking-[0.18em] text-white transition hover:border-[#7ed957] hover:text-[#7ed957]">
+            <span className="cursor-pointer rounded-md border border-line px-4 py-3 text-xs uppercase tracking-[0.18em] text-ink transition hover:border-brass hover:text-brass">
               Add gallery image
             </span>
             <input
@@ -454,7 +454,7 @@ export default function EditProjectPage() {
           </label>
         </div>
 
-        <div className="flex flex-wrap gap-4 text-sm text-white/80">
+        <div className="flex flex-wrap gap-4 text-sm text-ink-muted">
           <label className="flex items-center gap-2">
             <input
               type="checkbox"
@@ -481,7 +481,7 @@ export default function EditProjectPage() {
                 <button
                   type="button"
                   onClick={() => setDeleteConfirm(false)}
-                  className="rounded-full border border-white/10 px-4 py-2 text-xs uppercase tracking-[0.18em] text-white transition hover:border-[#7ed957] hover:text-[#7ed957]"
+                  className="rounded-full border border-line px-4 py-2 text-xs uppercase tracking-[0.18em] text-ink transition hover:border-brass hover:text-brass"
                 >
                   Cancel
                 </button>
@@ -489,7 +489,7 @@ export default function EditProjectPage() {
                   type="button"
                   onClick={handleDelete}
                   disabled={deleting}
-                  className="rounded-full border border-red-600 bg-red-600/10 px-4 py-2 text-xs uppercase tracking-[0.18em] text-red-500 transition hover:bg-red-600/20 disabled:opacity-70"
+                  className="rounded-full border border-red-600 bg-red-600/10 px-4 py-2 text-xs uppercase tracking-[0.18em] text-red-600 transition hover:bg-red-600/20 disabled:opacity-70"
                 >
                   {deleting ? "Deleting..." : "Confirm delete"}
                 </button>
@@ -498,7 +498,7 @@ export default function EditProjectPage() {
               <button
                 type="button"
                 onClick={() => setDeleteConfirm(true)}
-                className="rounded-full border border-red-600/30 px-4 py-2 text-xs uppercase tracking-[0.18em] text-red-500/70 transition hover:border-red-600 hover:text-red-500"
+                className="rounded-full border border-red-600/30 px-4 py-2 text-xs uppercase tracking-[0.18em] text-red-600/70 transition hover:border-red-600 hover:text-red-600"
               >
                 Delete
               </button>
@@ -509,7 +509,7 @@ export default function EditProjectPage() {
             <button
               type="button"
               onClick={() => router.back()}
-              className="rounded-full border border-white/10 px-5 py-3 text-xs uppercase tracking-[0.18em] text-white transition hover:border-[#7ed957] hover:text-[#7ed957]"
+              className="rounded-full border border-line px-5 py-3 text-xs uppercase tracking-[0.18em] text-ink transition hover:border-brass hover:text-brass"
             >
               Cancel
             </button>

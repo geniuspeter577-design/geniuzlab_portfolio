@@ -28,14 +28,14 @@ export function CategoryShowcase() {
           <h2 className="mt-4 font-display text-display">Seven ways into the work</h2>
         </Reveal>
 
-        <div className="mt-14 grid grid-cols-1 gap-10 lg:grid-cols-12">
+        <div className="mt-12 grid grid-cols-1 gap-8 lg:grid-cols-12">
           <ul className="lg:col-span-7 space-y-0" onMouseLeave={() => setActiveSlug(categories[0].slug)}>
             {categories.map((category, index) => (
               <li key={category.slug} className="border-t border-line/50 last:border-b hover:border-t-brass/50 transition-colors">
                 <Link
                   href={`/category/${category.slug}`}
                   onMouseEnter={() => setActiveSlug(category.slug)}
-                  className="group flex items-baseline justify-between gap-6 py-6 transition-all"
+                  className="group flex items-baseline justify-between gap-6 py-5 transition-all"
                 >
                   <span className="flex items-baseline gap-5">
                     <span className="eyebrow shrink-0 text-ink-muted font-semibold">0{index + 1}</span>
@@ -53,7 +53,7 @@ export function CategoryShowcase() {
 
           <div className="hidden lg:col-span-5 lg:flex lg:flex-col lg:justify-center">
             <div className="relative sticky top-28">
-              <div className="aspect-[4/5] w-full overflow-hidden bg-surface border border-line/50 rounded-sm">
+              <div className="aspect-[4/5] w-full overflow-hidden rounded-2xl bg-surface border border-line/50">
                 {categories.map((category) => (
                   <Image
                     key={category.slug}
@@ -61,9 +61,7 @@ export function CategoryShowcase() {
                     alt={`${category.label} — placeholder cover image`}
                     fill
                     sizes="40vw"
-                    className={`object-cover transition-opacity duration-500 ease-[var(--ease-cinema)] ${
-                      activeSlug === category.slug ? "opacity-100" : "opacity-0"
-                    }`}
+                    className={`object-cover transition-opacity duration-500 ease-[var(--ease-cinema)] ${activeSlug === category.slug ? "opacity-100" : "opacity-0"}`}
                   />
                 ))}
               </div>

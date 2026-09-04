@@ -37,8 +37,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 aria-current={isActive ? "page" : undefined}
                 className={`flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-medium transition-all duration-300 sm:px-3.5 ${
                   isActive
-                    ? "bg-brass text-cinema shadow-[0_2px_12px_-2px_rgba(126,217,87,0.5)]"
-                    : "text-cinema-muted hover:bg-white/10 hover:text-cinema-ink"
+                    ? "-translate-y-0.5 bg-brass text-cinema shadow-[0_2px_12px_-2px_rgba(126,217,87,0.5)]"
+                    : "translate-y-0 text-cinema-muted hover:bg-white/10 hover:text-cinema-ink"
                 }`}
               >
                 <Icon size={16} strokeWidth={2} />

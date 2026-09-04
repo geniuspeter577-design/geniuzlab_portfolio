@@ -18,19 +18,22 @@ export function ProjectCard({ project, size = "default", priority = false }: Pro
     <Link href={`/work/${project.slug}`} className="group block">
       <div
         className={cn(
-          "relative bg-surface transition-all duration-500 ease-[var(--ease-cinema)]",
+          "relative overflow-hidden rounded-2xl bg-surface transition-all duration-500 ease-[var(--ease-cinema)]",
           "border border-line/50 hover:border-brass/50"
         )}
       >
-        <Image
-          src={project.coverImage.src}
-          alt={project.coverImage.alt}
-          width={project.coverImage.width}
-          height={project.coverImage.height}
-          priority={priority}
-          sizes={size === "large" ? "(min-width: 768px) 60vw, 100vw" : "(min-width: 768px) 33vw, 100vw"}
-          className="block h-auto w-full object-contain"
-        />
+        <div className="relative w-full aspect-[4/3] sm:aspect-[16/9]">
+          <Image
+            src={project.coverImage.src}
+            alt={project.coverImage.alt}
+            width={project.coverImage.width}
+            height={project.coverImage.height}
+            priority={priority}
+            sizes={size === "large" ? "(min-width: 768px) 60vw, 100vw" : "(min-width: 768px) 33vw, 100vw"}
+            className="absolute inset-0 h-full w-full object-cover"
+            fill
+          />
+        </div>
 
         {project.isPlaceholder && (
           <span className="eyebrow absolute left-3 top-3 bg-cinema/90 px-2 py-1 text-cinema-ink">

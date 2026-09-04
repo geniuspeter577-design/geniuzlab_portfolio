@@ -49,16 +49,19 @@ export function CaseStudyHeader({ project }: CaseStudyHeaderProps) {
       </div>
 
       <div className="container-editorial mt-10">
-        <div className="w-full bg-surface">
-          <Image
-            src={project.coverImage.src}
-            alt={project.coverImage.alt}
-            width={project.coverImage.width}
-            height={project.coverImage.height}
-            priority
-            sizes="100vw"
-            className="block h-auto w-full object-contain"
-          />
+        <div className="w-full overflow-hidden rounded-2xl bg-surface">
+          <div className="relative w-full aspect-[16/9]">
+            <Image
+              src={project.coverImage.src}
+              alt={project.coverImage.alt}
+              width={project.coverImage.width}
+              height={project.coverImage.height}
+              priority
+              sizes="100vw"
+              className="absolute inset-0 h-full w-full object-cover"
+              fill
+            />
+          </div>
         </div>
       </div>
     </header>

@@ -9,9 +9,9 @@ export default async function AdminProjectsPage() {
 
   return (
     <div className="container-editorial section-padding">
-      <div className="flex flex-col gap-4 border-b border-white/10 pb-8 sm:flex-row sm:items-end sm:justify-between">
+      <div className="flex flex-col gap-4 border-b border-line pb-8 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="eyebrow text-[#7ed957]">Portfolio</p>
+          <p className="eyebrow text-brass">Portfolio</p>
           <h1 className="mt-3 font-display text-display">Projects</h1>
         </div>
 
@@ -25,12 +25,12 @@ export default async function AdminProjectsPage() {
 
       <div className="mt-8 space-y-4">
         {projects.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-white/10 bg-[#131313] p-8 text-white/70">
+          <div className="rounded-2xl border border-dashed border-line bg-surface p-8 text-ink-muted">
             No projects yet.
           </div>
         ) : (
           projects.map((project) => (
-            <div key={project.id} className="flex flex-col gap-4 rounded-2xl border border-white/10 bg-[#131313] p-5 sm:flex-row sm:items-center sm:justify-between">
+            <div key={project.id} className="flex flex-col gap-4 rounded-2xl border border-line bg-surface p-5 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex flex-col gap-4 sm:flex-row sm:gap-6">
                 {project.coverImage && (
                   <div className="relative h-24 w-32 flex-shrink-0 overflow-hidden rounded-lg bg-white/10 sm:h-20 sm:w-28">
@@ -46,20 +46,20 @@ export default async function AdminProjectsPage() {
                   <div className="flex flex-wrap items-center gap-2">
                     <h2 className="font-display text-xl">{project.title}</h2>
                     {!project.published ? (
-                      <span className="rounded-full border border-white/10 px-2 py-1 text-[10px] uppercase tracking-[0.14em] text-white/60">
+                      <span className="rounded-full border border-line px-2 py-1 text-[10px] uppercase tracking-[0.14em] text-ink-muted">
                         Draft
                       </span>
                     ) : null}
                     {project.featured ? (
-                      <span className="rounded-full border border-[#7ed957]/40 bg-[#7ed957]/10 px-2 py-1 text-[10px] uppercase tracking-[0.14em] text-[#7ed957]">
+                      <span className="rounded-full border border-brass/40 bg-brass/10 px-2 py-1 text-[10px] uppercase tracking-[0.14em] text-brass">
                         Featured
                       </span>
                     ) : null}
                   </div>
-                  <p className="text-sm text-white/70">{project.summary}</p>
-                  <div className="flex flex-wrap gap-2 text-[10px] uppercase tracking-[0.14em] text-white/50">
+                  <p className="text-sm text-ink-muted">{project.summary}</p>
+                  <div className="flex flex-wrap gap-2 text-[10px] uppercase tracking-[0.14em] text-ink-muted">
                     {project.categories.map((category) => (
-                      <span key={category.slug} className="rounded-full border border-white/10 px-2 py-1">
+                      <span key={category.slug} className="rounded-full border border-line px-2 py-1">
                         {category.label}
                       </span>
                     ))}
@@ -70,7 +70,7 @@ export default async function AdminProjectsPage() {
               <div className="flex items-center gap-3">
                 <Link
                   href={`/admin/projects/${project.id}`}
-                  className="rounded-full border border-white/10 px-4 py-2 text-xs uppercase tracking-[0.18em] text-white transition hover:border-[#7ed957] hover:text-[#7ed957]"
+                  className="rounded-full border border-line px-4 py-2 text-xs uppercase tracking-[0.18em] text-ink transition hover:border-brass hover:text-brass"
                 >
                   Edit
                 </Link>
