@@ -55,6 +55,27 @@
     radial-gradient(100% 100% at 50% 50%, transparent 40%, rgba(0, 0, 0, 0.3)),
     linear-gradient(165deg, #000000 0%, #050505 50%, #081f0d 100%);
   --gradient-brand-button: linear-gradient(135deg, var(--color-brass) 0%, var(--color-brass-dim) 100%);
+
+  color-scheme: dark;
+}
+
+/* --------------------------------------------------------------------------
+   Light theme override. Applied via [data-theme="light"] on <html>, set
+   before first paint by the inline script in app/layout.tsx (reads
+   localStorage, falls back to the visitor's OS preference) so there is no
+   flash of the wrong theme. Only the "paper"/"surface"/"ink" tokens flip —
+   --color-cinema (Nav, Footer, Hero) stays a deliberate dark bookend in
+   both themes, since the brand mark only reads correctly on dark and the
+   dark chrome is part of the brand's cinematic identity either way.
+   -------------------------------------------------------------------------- */
+:root[data-theme="light"] {
+  --color-paper: #fafaf8;
+  --color-surface: #f0f0ec;
+  --color-ink: #0a0a0a;
+  --color-ink-muted: #5c5c58;
+  --color-line: rgba(10, 10, 10, 0.1);
+
+  color-scheme: light;
 }
 
 @theme inline {
@@ -102,6 +123,7 @@ body {
   background: var(--color-paper);
   color: var(--color-ink);
   font-family: var(--font-sans);
+  transition: background-color 300ms var(--ease-cinema), color 300ms var(--ease-cinema);
 }
 
 ::selection {

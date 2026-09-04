@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Outfit } from "next/font/google";
 import { Navigation } from "@/components/layout/Navigation";
 import { Footer } from "@/components/layout/Footer";
+import { ThemeProvider, themeInitScript } from "@/components/ui/ThemeProvider";
 import { siteConfig } from "@/lib/constants";
 import "./globals.css";
 
@@ -41,12 +42,23 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
+      // data-theme is set by the inline script below before first paint —
+      // suppressHydrationWarning tells React not to complain that the
+      // server-rendered attribute (absent) doesn't match the client value
+      // the script just set.
+      suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} ${creatoDisplayFallback.variable} h-full antialiased`}
     >
+      <head>
+        {/* eslint-disable-next-line @next/next/no-sync-scripts */}
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
       <body className="flex min-h-full flex-col bg-paper text-ink">
-        <Navigation />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <ThemeProvider>
+          <Navigation />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </ThemeProvider>
       </body>
     </html>
   );
