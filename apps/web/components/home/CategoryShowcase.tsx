@@ -1,74 +1,53 @@
-"use client";
-
-import { useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { categories } from "@/lib/categories";
-import { Reveal } from "@/components/ui/Reveal";
-
-const PLACEHOLDER_IMAGE = "/images/placeholder.svg";
 
 /**
- * "The Index" — the site's signature element.
- *
- * Styled as a magazine contents page rather than a card grid: a running,
- * genuinely meaningful numbered list (these ARE the seven sections of the
- * site, in order) with a large serif category name and, on desktop, a
- * cover image that swaps in as each row is hovered. This is the one place
- * the design takes a visible risk — everything around it stays quiet.
+ * Ported 1:1 from the mockup's SERVICES.map(...) card list on the home
+ * page: a heading line, then a stack of .card elements — each a
+ * .card-title plus a .card-photo icon slot (photo/image glyph). No .frame
+ * wrapper — see Hero.tsx note.
  */
 export function CategoryShowcase() {
-  const [activeSlug, setActiveSlug] = useState(categories[0].slug);
-
   return (
-    <section className="section-padding border-t-2 border-brass/40">
-      <div className="container-editorial">
-        <Reveal>
-          <p className="eyebrow text-brass">The Index</p>
-          <h2 className="mt-4 font-display text-display">Seven ways into the work</h2>
-        </Reveal>
-
-        <div className="mt-12 grid grid-cols-1 gap-8 lg:grid-cols-12">
-          <ul className="lg:col-span-7 space-y-0" onMouseLeave={() => setActiveSlug(categories[0].slug)}>
-            {categories.map((category, index) => (
-              <li key={category.slug} className="border-t border-line/50 last:border-b hover:border-t-brass/50 transition-colors">
-                <Link
-                  href={`/category/${category.slug}`}
-                  onMouseEnter={() => setActiveSlug(category.slug)}
-                  className="group flex items-baseline justify-between gap-6 py-5 transition-all"
-                >
-                  <span className="flex items-baseline gap-5">
-                    <span className="eyebrow shrink-0 text-ink-muted font-semibold">0{index + 1}</span>
-                    <span className="min-w-0 break-words font-display text-index leading-[1.05] group-hover:text-brass transition-colors">
-                      {category.label}
-                    </span>
-                  </span>
-                  <span className="eyebrow hidden shrink-0 text-ink-muted/70 opacity-0 transition-all group-hover:opacity-100 sm:block font-semibold text-brass/60">
-                    View →
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-
-          <div className="hidden lg:col-span-5 lg:flex lg:flex-col lg:justify-center">
-            <div className="relative sticky top-28">
-              <div className="aspect-[4/5] w-full overflow-hidden rounded-2xl bg-surface border border-line/50">
-                {categories.map((category) => (
-                  <Image
-                    key={category.slug}
-                    src={PLACEHOLDER_IMAGE}
-                    alt={`${category.label} — placeholder cover image`}
-                    fill
-                    sizes="40vw"
-                    className={`object-cover transition-opacity duration-500 ease-[var(--ease-cinema)] ${activeSlug === category.slug ? "opacity-100" : "opacity-0"}`}
-                  />
-                ))}
-              </div>
+    <section style={{ marginTop: 28 }}>
+      <h2
+        style={{
+          fontSize: 15,
+          fontWeight: 800,
+          color: "var(--chip-text)",
+          margin: "0 0 4px",
+        }}
+      >
+        Seven ways into the work
+      </h2>
+      <div className="services">
+        {categories.map((category) => (
+          <Link key={category.slug} href={`/category/${category.slug}`} className="card">
+            <div className="card-title">{category.label}</div>
+            <div className="card-photo">
+              <PhotoIcon />
             </div>
-          </div>
-        </div>
+          </Link>
+        ))}
       </div>
     </section>
+  );
+}
+
+/** Same "photo" glyph path used throughout the mockup's card-photo slots. */
+function PhotoIcon() {
+  return (
+    <svg viewBox="0 0 24 24">
+      <rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" strokeWidth="2" fill="none" />
+      <circle cx="9" cy="10" r="1.5" fill="currentColor" />
+      <path
+        d="m4 17 5-5 4 4 3-3 4 4"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
+    </svg>
   );
 }

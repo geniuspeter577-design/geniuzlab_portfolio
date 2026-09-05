@@ -26,8 +26,6 @@ export function ProjectCard({ project, size = "default", priority = false }: Pro
           <Image
             src={project.coverImage.src}
             alt={project.coverImage.alt}
-            width={project.coverImage.width}
-            height={project.coverImage.height}
             priority={priority}
             sizes={size === "large" ? "(min-width: 768px) 60vw, 100vw" : "(min-width: 768px) 33vw, 100vw"}
             className="absolute inset-0 h-full w-full object-cover"

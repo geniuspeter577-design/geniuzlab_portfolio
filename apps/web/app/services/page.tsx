@@ -9,45 +9,51 @@ export const metadata: Metadata = {
   description: `What ${siteConfig.name} offers, by category.`,
 };
 
+/** Ported 1:1 from the mockup's pageServices(). No .frame wrapper — see
+ * Hero.tsx note. */
 export default function ServicesPage() {
   return (
     <>
-      <div className="container-editorial pt-12 pb-8 sm:pt-16 sm:pb-10">
-        <p className="eyebrow text-brass">Services</p>
-        <h1 className="mt-4 max-w-2xl font-display text-display">What I offer</h1>
-        <p className="mt-6 max-w-xl text-lead text-ink-muted">
+      <section>
+        <h1 className="page-heading">GeniuzLab Gallery</h1>
+        <p className="page-sub">
           Design work across seven areas. Each links through to the relevant
           portfolio category.
         </p>
-      </div>
 
-      <div className="container-editorial section-padding pt-0">
-        <ul className="space-y-0">
-          {categories.map((category, index) => (
-            <li key={category.slug} className="border-t border-line/50 last:border-b hover:border-t-brass/50 transition-colors">
-              <Link
-                href={`/category/${category.slug}`}
-                className="group flex flex-col gap-3 py-8 sm:flex-row sm:items-baseline sm:justify-between hover:pl-2 transition-all"
-              >
-                <span className="flex items-baseline gap-5">
-                  <span className="eyebrow text-ink-muted font-semibold">0{index + 1}</span>
-                  <span className="font-display text-display leading-none group-hover:text-brass transition-colors">
-                    {category.label}
-                  </span>
-                </span>
-                <span className="max-w-md text-sm text-ink-muted group-hover:text-ink-muted/80 transition-colors sm:text-right">
-                  {category.description}
-                </span>
-              </Link>
-            </li>
+        <div className="services">
+          {categories.map((category) => (
+            <Link key={category.slug} href={`/category/${category.slug}`} className="card">
+              <div>
+                <div className="card-title">{category.label}</div>
+                <div className="card-sub">{category.description}</div>
+              </div>
+              <div className="card-photo">
+                <PhotoIcon />
+              </div>
+            </Link>
           ))}
-        </ul>
-      </div>
+        </div>
+      </section>
 
-      <CTASection
-        eyebrow="Rates & availability"
-        heading="Tell me about your project and I'll get back to you."
-      />
+      <CTASection heading="Tell me about your project and I'll get back to you." />
     </>
+  );
+}
+
+function PhotoIcon() {
+  return (
+    <svg viewBox="0 0 24 24">
+      <rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" strokeWidth="2" fill="none" />
+      <circle cx="9" cy="10" r="1.5" fill="currentColor" />
+      <path
+        d="m4 17 5-5 4 4 3-3 4 4"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
+    </svg>
   );
 }

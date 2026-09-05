@@ -25,10 +25,10 @@ export const themeInitScript = `
     var stored = localStorage.getItem("${STORAGE_KEY}");
     var theme = stored === "light" || stored === "dark"
       ? stored
-      : (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+      : (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
     document.documentElement.setAttribute("data-theme", theme);
   } catch (e) {
-    document.documentElement.setAttribute("data-theme", "dark");
+    document.documentElement.setAttribute("data-theme", "light");
   }
 })();
 `;
@@ -37,7 +37,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   // Initial value doesn't matter much — the inline script already set the
   // real value on <html> before React hydrates. This just keeps React's
   // state in sync so the toggle button reflects the right icon.
-  const [theme, setTheme] = useState<Theme>("dark");
+  const [theme, setTheme] = useState<Theme>("light");
 
   useEffect(() => {
     const current = document.documentElement.getAttribute("data-theme");

@@ -1,63 +1,69 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { mainNav, siteConfig, socialLinks, whatsappHref } from "@/lib/constants";
 import { categories } from "@/lib/categories";
 
+/**
+ * NOTE: the mockup has no footer at all — its SPA ends with a single
+ * `<p class="note">`. There's nothing to port 1:1 here, so this keeps your
+ * existing footer's structure/content but restyles it with the mockup's
+ * light background, --surface cards, and green accent instead of the old
+ * dark "cinema" block, so it doesn't clash with the rest of the site.
+ */
 export function Footer() {
   const year = new Date().getFullYear();
   const pathname = usePathname();
 
-  // Admin (CMS) pages are a separate tool, not part of the public portfolio
-  // site — they shouldn't carry the public marketing footer.
   if (pathname?.startsWith("/admin")) {
     return null;
   }
 
   return (
-    <footer className="cinema-grain relative overflow-hidden border-t-2 border-brass/40 bg-cinema text-cinema-ink">
-      <div aria-hidden className="glow-orb -left-24 -top-24 hidden h-72 w-72 opacity-60 lg:block" />
-
-      <div className="container-editorial section-padding">
-        <div className="grid grid-cols-1 gap-12 border-b border-cinema-line pb-16 md:grid-cols-12">
-          <div className="md:col-span-5">
-            <Image
-              src="/images/brand/geniuzlab-logo-full.png"
-              alt="GENIUZLAB"
-              width={2726}
-              height={844}
-              className="h-7 w-auto sm:h-8"
-            />
-            <p className="mt-8 font-display text-3xl leading-tight">
+    <footer style={{ borderTop: "1px solid var(--nav-border)", background: "var(--bg)" }}>
+      <div className="frame">
+        <div
+          style={{
+            display: "grid",
+            gap: 32,
+            paddingBottom: 32,
+            borderBottom: "1px solid var(--nav-border)",
+          }}
+        >
+          <div>
+            <p className="page-sub" style={{ margin: "0 0 12px", fontWeight: 800, color: "var(--heading)" }}>
               Let&apos;s build something worth looking twice at.
             </p>
-            <a
-              href={`mailto:${siteConfig.email}`}
-              className="eyebrow mt-6 inline-block border-b border-brass-dim pb-1 text-brass-dim hover:text-cinema-ink"
-            >
+            <a href={`mailto:${siteConfig.email}`} className="chip" style={{ display: "inline-block" }}>
               {siteConfig.email}
             </a>
-            <div className="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm text-cinema-muted">
-              <a href={`tel:${siteConfig.phones[0]}`} className="hover:text-cinema-ink">
-                {siteConfig.phones[0]}
-              </a>
-              <a href={`tel:${siteConfig.phones[1]}`} className="hover:text-cinema-ink">
-                {siteConfig.phones[1]}
-              </a>
-              <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="hover:text-cinema-ink">
+            <div
+              style={{
+                marginTop: 12,
+                display: "flex",
+                flexWrap: "wrap",
+                gap: 16,
+                fontSize: 13,
+                color: "var(--text-muted)",
+              }}
+            >
+              <a href={`tel:${siteConfig.phones[0]}`}>{siteConfig.phones[0]}</a>
+              <a href={`tel:${siteConfig.phones[1]}`}>{siteConfig.phones[1]}</a>
+              <a href={whatsappHref} target="_blank" rel="noopener noreferrer">
                 WhatsApp
               </a>
             </div>
           </div>
 
-          <nav aria-label="Footer" className="md:col-span-3 md:col-start-7">
-            <p className="eyebrow text-cinema-muted">Menu</p>
-            <ul className="mt-4 flex flex-col gap-3">
+          <nav aria-label="Footer">
+            <p style={{ fontSize: 12, color: "var(--text-muted)", fontWeight: 700, margin: "0 0 10px" }}>
+              Menu
+            </p>
+            <ul style={{ display: "flex", flexWrap: "wrap", gap: 14, listStyle: "none", padding: 0, margin: 0 }}>
               {mainNav.map((item) => (
                 <li key={item.href}>
-                  <Link href={item.href} className="text-sm hover:text-brass-dim">
+                  <Link href={item.href} style={{ fontSize: 14 }}>
                     {item.label}
                   </Link>
                 </li>
@@ -65,15 +71,23 @@ export function Footer() {
             </ul>
           </nav>
 
-          <nav aria-label="Categories" className="md:col-span-4">
-            <p className="eyebrow text-cinema-muted">Categories</p>
-            <ul className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <nav aria-label="Categories">
+            <p style={{ fontSize: 12, color: "var(--text-muted)", fontWeight: 700, margin: "0 0 10px" }}>
+              Categories
+            </p>
+            <ul
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: 10,
+                listStyle: "none",
+                padding: 0,
+                margin: 0,
+              }}
+            >
               {categories.map((category) => (
                 <li key={category.slug}>
-                  <Link
-                    href={`/category/${category.slug}`}
-                    className="text-sm text-cinema-muted hover:text-cinema-ink"
-                  >
+                  <Link href={`/category/${category.slug}`} style={{ fontSize: 14, color: "var(--text-muted)" }}>
                     {category.label}
                   </Link>
                 </li>
@@ -82,20 +96,25 @@ export function Footer() {
           </nav>
         </div>
 
-        <div className="flex flex-col gap-4 pt-8 text-xs text-cinema-muted sm:flex-row sm:items-center sm:justify-between">
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 12,
+            justifyContent: "space-between",
+            paddingTop: 20,
+            fontSize: 12,
+            color: "var(--text-muted)",
+          }}
+        >
           <p>
             © {year} {siteConfig.name}. {siteConfig.founder}.
           </p>
           {socialLinks.length > 0 && (
-            <ul className="flex gap-6">
+            <ul style={{ display: "flex", gap: 16, listStyle: "none", padding: 0, margin: 0 }}>
               {socialLinks.map((link) => (
                 <li key={link.href}>
-                  <a
-                    href={link.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:text-cinema-ink"
-                  >
+                  <a href={link.href} target="_blank" rel="noopener noreferrer">
                     {link.label}
                   </a>
                 </li>

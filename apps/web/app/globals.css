@@ -1,81 +1,92 @@
 @import "tailwindcss";
 
 /* ==========================================================================
-   GENIUZLAB EXPERIENCE — DESIGN SYSTEM
-   Tailwind v4 CSS-first theme. All brand tokens live here; components
-   consume them via Tailwind utilities (bg-paper, text-ink, font-display…)
-   rather than hardcoded hex values. This is the single place the brand
-   palette and typography are defined — swap values here to re-theme the
-   whole site.
+   GENIUZLAB — EXACT PORT OF THE APPROVED MOCKUP (geniuzlab-full-site.html)
+   Every variable name/value and class below is copied 1:1 from the
+   mockup's <style> block. Light is the default theme (no attribute on
+   <html>); [data-theme="dark"] overrides it — same as the mockup's script,
+   and matching how ThemeProvider already sets data-theme explicitly.
    ========================================================================== */
 
 :root {
-  /* --- Editorial palette — now matched to the GeniuzLab web app's dark
-     theme tokens (static/css/style.css :root), so both properties share one
-     brand look. "Paper" keeps its name for backward compatibility with the
-     utilities below, but now resolves to the app's near-black surface
-     instead of white. --------------------------------------------------- */
-  --color-paper: #050505;       /* base page background — matches --gl-bg */
-  --color-surface: #131313;     /* raised surfaces: cards, subtle panels — matches --gl-surface */
-  --color-ink: #ffffff;         /* primary text on paper — matches --gl-text */
-  --color-ink-muted: #8a8a8a;   /* secondary text on paper — matches --gl-text-muted */
-  --color-line: rgba(255, 255, 255, 0.12); /* hairline rules on paper */
+  --bg: #f7f9f5;
+  --bg-dot: rgba(11, 18, 16, 0.07);
+  --text: #10140d;
+  --text-muted: #5d6a56;
+  --nav-bg: #ffffff;
+  --nav-border: rgba(11, 18, 16, 0.08);
+  --nav-shadow: rgba(11, 18, 16, 0.08);
+  --nav-icon: #22301a;
+  --circle-bg: #ffffff;
+  --circle-ring: #8bc34a;
+  --circle-icon: #689f38;
+  --card-grad: linear-gradient(120deg, #aed581 0%, #8bc34a 55%, #689f38 100%);
+  --card-text: #1c2a12;
+  --card-photo-bg: rgba(255, 255, 255, 0.4);
+  --card-photo-icon: rgba(28, 42, 18, 0.55);
+  --heading: #10140d;
+  --surface: #ffffff;
+  --chip-bg: rgba(139, 195, 74, 0.14);
+  --chip-text: #4c7a24;
+  --toggle-bg: #ffffff;
+  --toggle-icon: #22301a;
+  --logo-opacity: 0.05;
 
-  /* --- Cinema (bookend) palette — used for Hero / Footer sections. Left as
-     true black so it still reads one shade deeper than --color-paper, the
-     same elevation relationship the web app keeps between --gl-bg and its
-     darkest surfaces. */
-  --color-cinema: #000000;      /* brand black */
-  --color-cinema-ink: #ffffff;  /* brand white — matches --gl-text */
-  --color-cinema-muted: rgba(255, 255, 255, 0.62);
-  --color-cinema-line: rgba(255, 255, 255, 0.14); /* matches --gl-border-strong */
+  /* --- Back-compat aliases: existing components reference these Tailwind
+     tokens (bg-paper, text-ink, etc. via the @theme block below). Point
+     them at the mockup vars above so nothing needs renaming file-by-file. */
+  --color-paper: var(--bg);
+  --color-surface: var(--surface);
+  --color-ink: var(--text);
+  --color-ink-muted: var(--text-muted);
+  --color-line: var(--nav-border);
 
-  /* --- Signature accent — GENIUZLAB emerald ------------------------------ */
-  /* Official brand colour #7ED957, matches --gl-accent in the web app.
-     `--color-brass-dim` is the same deeper shade used there as
-     --gl-accent-2, for hover/secondary states. */
-  --color-brass: #7ed957;
-  --color-brass-dim: #5fc23e;
-  --color-brass-deep: #1c4a25; /* low-light emerald, used only in gradients/glows */
+  --color-cinema: #10140d;
+  --color-cinema-ink: #f1f7ea;
+  --color-cinema-muted: rgba(241, 247, 234, 0.62);
+  --color-cinema-line: rgba(241, 247, 234, 0.14);
 
-  /* --- Motion ------------------------------------------------------------ */
+  --color-brass: #8bc34a;
+  --color-brass-dim: #689f38;
+  --color-brass-deep: #33691e;
+
   --ease-cinema: cubic-bezier(0.16, 1, 0.3, 1);
   --duration-reveal: 700ms;
 
-  /* --- Signature gradient — black → emerald --------------------------------
-     One brand gradient, reused everywhere a "cinema" surface appears (Hero,
-     Footer, CTASection, work detail CTA) via .cinema-grain below, so the
-     whole site reads as one deliberate treatment rather than a per-section
-     effect. Built from true black so it still sits one shade under
-     --color-paper, with two soft emerald blooms standing in for the
-     ambient glow the brand's web app uses behind its mark. 
-     Enhanced with more pronounced emerald accents for premium feel. */
-  --gradient-cinema: radial-gradient(140% 100% at 85% -5%, rgba(126, 217, 87, 0.18), transparent 55%),
-    radial-gradient(90% 70% at -5% 115%, rgba(95, 194, 62, 0.15), transparent 50%),
-    radial-gradient(100% 100% at 50% 50%, transparent 40%, rgba(0, 0, 0, 0.3)),
-    linear-gradient(165deg, #000000 0%, #050505 50%, #081f0d 100%);
-  --gradient-brand-button: linear-gradient(135deg, var(--color-brass) 0%, var(--color-brass-dim) 100%);
-
-  color-scheme: dark;
+  color-scheme: light;
 }
 
-/* --------------------------------------------------------------------------
-   Light theme override. Applied via [data-theme="light"] on <html>, set
-   before first paint by the inline script in app/layout.tsx (reads
-   localStorage, falls back to the visitor's OS preference) so there is no
-   flash of the wrong theme. Only the "paper"/"surface"/"ink" tokens flip —
-   --color-cinema (Nav, Footer, Hero) stays a deliberate dark bookend in
-   both themes, since the brand mark only reads correctly on dark and the
-   dark chrome is part of the brand's cinematic identity either way.
-   -------------------------------------------------------------------------- */
-:root[data-theme="light"] {
-  --color-paper: #fafaf8;
-  --color-surface: #f0f0ec;
-  --color-ink: #0a0a0a;
-  --color-ink-muted: #5c5c58;
-  --color-line: rgba(10, 10, 10, 0.1);
+[data-theme="dark"] {
+  --bg: #07090a;
+  --bg-dot: rgba(255, 255, 255, 0.06);
+  --text: #f1f7ea;
+  --text-muted: #93a389;
+  --nav-bg: #12140f;
+  --nav-border: rgba(255, 255, 255, 0.08);
+  --nav-shadow: rgba(0, 0, 0, 0.5);
+  --nav-icon: #d9edc4;
+  --circle-bg: #0e120a;
+  --circle-ring: #8bc34a;
+  --circle-icon: #9ccc65;
+  --card-grad: linear-gradient(120deg, #558b2f 0%, #33691e 55%, #10240a 100%);
+  --card-text: #f1f7ea;
+  --card-photo-bg: rgba(255, 255, 255, 0.08);
+  --card-photo-icon: rgba(241, 247, 234, 0.55);
+  --heading: #f1f7ea;
+  --surface: #12140f;
+  --chip-bg: rgba(139, 195, 74, 0.16);
+  --chip-text: #a9e078;
+  --toggle-bg: #12140f;
+  --toggle-icon: #d9edc4;
+  --logo-opacity: 0.09;
 
-  color-scheme: light;
+  --color-paper: var(--bg);
+  --color-surface: var(--surface);
+  --color-ink: var(--text);
+  --color-ink-muted: var(--text-muted);
+  --color-line: var(--nav-border);
+
+  color-scheme: dark;
 }
 
 @theme inline {
@@ -93,18 +104,10 @@
   --color-brass: var(--color-brass);
   --color-brass-dim: var(--color-brass-dim);
 
-  /* Creato Display is the brand's display typeface (headings, hero,
-     project titles). No licensed Creato Display font files were found in
-     this project, so `--font-creato-display` currently resolves to Outfit
-     (next/font/google) — a geometric sans with the same rounded,
-     confident character. Drop real Creato Display .woff2 files into
-     /public/fonts and repoint `--font-creato-display` in app/layout.tsx to
-     swap it in; no other file needs to change. */
   --font-display: var(--font-creato-display);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 
-  /* Fluid editorial type scale — deliberately large, used with restraint. */
   --text-hero: clamp(2.75rem, 1.9rem + 4.5vw, 6.25rem);
   --text-display: clamp(2rem, 1.55rem + 2vw, 3.25rem);
   --text-index: clamp(1.85rem, 1.1rem + 3.8vw, 4.75rem);
@@ -112,7 +115,8 @@
 }
 
 * {
-  border-color: var(--color-line);
+  box-sizing: border-box;
+  border-color: var(--nav-border);
 }
 
 html {
@@ -120,25 +124,32 @@ html {
 }
 
 body {
-  background: var(--color-paper);
-  color: var(--color-ink);
-  font-family: var(--font-sans);
-  transition: background-color 300ms var(--ease-cinema), color 300ms var(--ease-cinema);
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", var(--font-sans), Roboto, sans-serif;
+  transition: background 0.3s ease, color 0.3s ease;
+  background-image: radial-gradient(var(--bg-dot) 1px, transparent 1px);
+  background-size: 16px 16px;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
 }
 
 ::selection {
-  background: var(--color-brass);
-  color: var(--color-cinema-ink);
+  background: var(--circle-ring);
+  color: var(--card-text);
 }
 
-/* Visible keyboard focus everywhere — not just default outline removal. */
 :focus-visible {
-  outline: 2px solid var(--color-brass);
+  outline: 2px solid var(--circle-ring);
   outline-offset: 3px;
 }
 
 /* --------------------------------------------------------------------------
-   Layout utilities
+   Layout utilities (legacy — still used by components not yet ported to
+   .frame; safe to keep alongside the mockup classes below).
    -------------------------------------------------------------------------- */
 
 .container-editorial {
@@ -158,84 +169,10 @@ body {
   text-transform: uppercase;
 }
 
-/* --------------------------------------------------------------------------
-   Display typography — Creato Display (see @theme --font-display above).
-   Centralised weight + tracking so every headline across the site (Hero,
-   section headings, project titles, CTA) reads consistently editorial
-   without each component having to repeat font-weight/tracking utilities.
-   -------------------------------------------------------------------------- */
-
 .font-display {
   font-weight: 600;
   letter-spacing: -0.01em;
 }
-
-/* --------------------------------------------------------------------------
-   Cinema grain — a very subtle film-grain texture for dark ("cinema")
-   sections (Hero, Footer). Pure CSS/SVG, no image request, no dependency.
-   -------------------------------------------------------------------------- */
-
-.cinema-grain {
-  position: relative;
-  isolation: isolate;
-  /* Layers on top of the flat bg-cinema utility already applied in markup —
-     the solid colour stays as a fallback/backdrop, this paints the brand
-     gradient above it. */
-  background-image: var(--gradient-cinema);
-}
-
-.cinema-grain::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  opacity: 0.05;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-}
-
-.cinema-grain > * {
-  position: relative;
-  z-index: 1;
-}
-
-/* --------------------------------------------------------------------------
-   Glow orbs — decorative ambient blooms for cinema sections (Hero, CTA).
-   Static (no motion) so they never fight prefers-reduced-motion; purely a
-   soft light source in the corner of the frame, echoing the brand's own
-   glow-dot treatment behind its wordmark.
-   -------------------------------------------------------------------------- */
-
-.glow-orb {
-  position: absolute;
-  z-index: 0;
-  pointer-events: none;
-  border-radius: 9999px;
-  background: radial-gradient(circle, rgba(126, 217, 87, 0.5), transparent 70%);
-  filter: blur(48px);
-}
-
-/* --------------------------------------------------------------------------
-   Brand pill — the badge/eyebrow treatment used for the founder credit line
-   in Hero. One bordered, rounded chip; not reused as a generic UI-kit part.
-   -------------------------------------------------------------------------- */
-
-.pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  border-radius: 9999px;
-  border: 1px solid var(--color-cinema-line);
-  background: rgba(255, 255, 255, 0.03);
-  padding: 0.5rem 1rem;
-}
-
-/* --------------------------------------------------------------------------
-   Scroll reveal — small, dependency-free entrance animation.
-   Paired with the <Reveal> client component (components/ui/Reveal.tsx),
-   which toggles `data-reveal="visible"` via IntersectionObserver.
-   -------------------------------------------------------------------------- */
 
 [data-reveal="hidden"] {
   opacity: 0;
@@ -276,29 +213,354 @@ body {
   }
 }
 
-/* --------------------------------------------------------------------------
-   Premium visual accents — emerald borders, sophisticated shadows, and
-   refined hover treatments for elevated visual experience.
-   -------------------------------------------------------------------------- */
+/* ==========================================================================
+   MOCKUP CLASSES — copied verbatim (selectors + values) from
+   geniuzlab-full-site.html so markup can use these classes directly and
+   render pixel-identically.
+   ========================================================================== */
 
-.accent-border-top {
-  border-top: 2px solid var(--color-brass);
+.logo-watermark {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: min(140vw, 1100px);
+  transform: translate(-50%, -50%) rotate(-6deg);
+  opacity: var(--logo-opacity);
+  pointer-events: none;
+  z-index: 0;
+  transition: opacity 0.3s ease;
+}
+.logo-watermark img {
+  width: 100%;
+  display: block;
+}
+.logo-watermark.for-dark {
+  display: none;
+}
+[data-theme="dark"] .logo-watermark.for-light {
+  display: none;
+}
+[data-theme="dark"] .logo-watermark.for-dark {
+  display: block;
 }
 
-.accent-glow {
+.frame {
+  max-width: 460px;
+  margin: 0 auto;
   position: relative;
-  box-shadow: 0 0 32px -8px rgba(126, 217, 87, 0.25), inset 0 0 32px -16px rgba(126, 217, 87, 0.08);
+  z-index: 1;
+  padding: 28px 16px 60px;
+}
+@media (min-width: 900px) {
+  .frame {
+    max-width: 880px;
+  }
 }
 
-.premium-shadow {
-  box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.3), 0 0px 0px 1px rgba(126, 217, 87, 0.15);
+.theme-toggle {
+  position: absolute;
+  top: -4px;
+  right: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  background: var(--toggle-bg);
+  border: 1px solid var(--nav-border);
+  box-shadow: 0 4px 14px var(--nav-shadow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--toggle-icon);
+}
+.theme-toggle svg {
+  width: 18px;
+  height: 18px;
 }
 
-.premium-hover {
-  transition: all 300ms var(--ease-cinema);
+.nav-wrap {
+  position: relative;
+  margin: 0 auto 40px;
+  padding-top: 46px;
+  max-width: 420px;
+}
+.pill {
+  position: relative;
+  display: flex;
+  background: var(--nav-bg);
+  border: 1px solid var(--nav-border);
+  border-radius: 999px;
+  box-shadow: 0 10px 30px var(--nav-shadow);
+  padding: 14px 6px;
+}
+.pill-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--nav-icon);
+  opacity: 0.85;
+}
+.pill-item svg {
+  width: 22px;
+  height: 22px;
+}
+.pill-item.is-active-slot {
+  opacity: 0;
+  pointer-events: none;
 }
 
-.premium-hover:hover {
-  box-shadow: 0 8px 32px -4px rgba(126, 217, 87, 0.2), 0 0px 0px 1px rgba(126, 217, 87, 0.25);
-  transform: translateY(-2px);
+.lift-circle {
+  position: absolute;
+  top: 0;
+  width: 56px;
+  height: 56px;
+  border-radius: 999px;
+  background: var(--circle-bg);
+  border: 1px solid var(--circle-ring);
+  box-shadow: 0 6px 18px var(--nav-shadow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--circle-icon);
+  transform: translateX(-50%);
+  transition: left 0.35s cubic-bezier(0.32, 1.4, 0.5, 1);
+}
+.lift-circle svg {
+  width: 24px;
+  height: 24px;
+}
+.lift-label {
+  position: absolute;
+  top: 58px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--nav-icon);
+  transform: translateX(-50%);
+  white-space: nowrap;
+  transition: left 0.35s cubic-bezier(0.32, 1.4, 0.5, 1);
+}
+
+.page-heading {
+  font-size: 34px;
+  line-height: 1.1;
+  font-weight: 800;
+  color: var(--heading);
+  margin: 0 0 22px;
+}
+.page-sub {
+  color: var(--text-muted);
+  font-size: 15px;
+  margin: -14px 0 22px;
+  max-width: 46ch;
+}
+.assumption {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  background: var(--chip-bg);
+  border-radius: 12px;
+  padding: 10px 14px;
+  margin-bottom: 18px;
+}
+
+.services {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+@media (min-width: 900px) {
+  .services.grid2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.card {
+  background: var(--card-grad);
+  border-radius: 26px;
+  padding: 22px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  min-height: 88px;
+  overflow: hidden;
+  position: relative;
+}
+.card-title {
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--card-text);
+  max-width: 60%;
+}
+.card-sub {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--card-text);
+  opacity: 0.75;
+  margin-top: 4px;
+}
+.card-photo {
+  flex-shrink: 0;
+  width: 76px;
+  height: 76px;
+  border-radius: 18px;
+  background: var(--card-photo-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--card-photo-icon);
+}
+.card-photo svg {
+  width: 30px;
+  height: 30px;
+}
+
+.portfolio-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.tile {
+  aspect-ratio: 1;
+  border-radius: 20px;
+  background: var(--card-grad);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--card-text);
+  padding: 10px;
+  text-align: center;
+}
+.tile svg {
+  width: 26px;
+  height: 26px;
+}
+.tile span {
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.stat {
+  background: var(--surface);
+  border: 1px solid var(--nav-border);
+  border-radius: 18px;
+  padding: 16px 10px;
+  text-align: center;
+}
+.stat b {
+  display: block;
+  font-size: 22px;
+  color: var(--chip-text);
+}
+.stat span {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.chip-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+.chip {
+  background: var(--chip-bg);
+  color: var(--chip-text);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 8px 14px;
+  border-radius: 999px;
+}
+
+.cta {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 14px 26px;
+  border-radius: 999px;
+  background: var(--circle-ring);
+  color: #0d1406;
+  font-weight: 800;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+}
+.cta-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.cta-ghost {
+  display: inline-block;
+  padding: 13px 24px;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text);
+  font-weight: 700;
+  font-size: 14px;
+  border: 1px solid var(--nav-border);
+  cursor: pointer;
+}
+
+.review-card {
+  background: var(--surface);
+  border: 1px solid var(--nav-border);
+  border-radius: 20px;
+  padding: 18px;
+  margin-bottom: 14px;
+}
+.review-card p {
+  margin: 0 0 10px;
+  color: var(--text);
+  font-size: 14.5px;
+}
+.review-card .who {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+.contact-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--nav-border);
+  border-radius: 16px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+}
+.contact-row svg {
+  width: 20px;
+  height: 20px;
+  color: var(--chip-text);
+  flex-shrink: 0;
+}
+.contact-row div b {
+  display: block;
+  font-size: 14px;
+}
+.contact-row div span {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.note {
+  margin-top: 32px;
+  font-size: 13px;
+  color: var(--text-muted);
+  text-align: center;
 }

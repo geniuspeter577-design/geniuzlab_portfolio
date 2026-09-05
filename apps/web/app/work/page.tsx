@@ -8,21 +8,28 @@ export const metadata: Metadata = {
   description: "The full body of work — graphic design, branding, church design, social, motion, and client projects.",
 };
 
+/**
+ * Heading restyled to match the mockup's page-heading ("All Work"). The
+ * mockup's pageWork() body is just a .portfolio-grid of placeholder
+ * .tile cards (one per category) — it has no real project data at all.
+ * Your CategoryFilter and ProjectGrid components render real projects,
+ * which is worth more than the mockup's placeholders, so they're left
+ * untouched here rather than replaced with placeholder tiles. Send me
+ * those two files (and lib/projects) if you want their card styling
+ * (rounded corners, gradient fill) brought in line with .tile/.card too.
+ */
 export default function WorkPage() {
   const projects = getAllProjects();
 
   return (
     <>
-      <div className="container-editorial pt-12 pb-8 sm:pt-16 sm:pb-10">
-        <p className="eyebrow text-brass">Portfolio</p>
-        <h1 className="mt-4 max-w-2xl font-display text-display">All work</h1>
-      </div>
+      <section>
+        <h1 className="page-heading">All Work</h1>
+      </section>
 
       <CategoryFilter />
 
-      <div className="container-editorial section-padding">
-        <ProjectGrid projects={projects} />
-      </div>
+      <ProjectGrid projects={projects} />
     </>
   );
 }

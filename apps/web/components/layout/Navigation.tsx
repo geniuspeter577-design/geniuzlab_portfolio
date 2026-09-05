@@ -3,75 +3,87 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, User, Lightbulb, FolderOpen, Headset } from "lucide-react";
-import { siteConfig } from "@/lib/constants";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 
+/**
+ * Same six-icon set the mockup uses (home / user / bulb / folder / support),
+ * in the same order — minus "Reviews", which isn't a route on the real
+ * site (flagged separately). If you add a Reviews page later, insert it
+ * between Work and Contact to match the mockup's order exactly.
+ */
 const navItems = [
   { label: "Home", href: "/", icon: Home },
   { label: "About", href: "/about", icon: User },
-  { label: "Services", href: "/services", icon: Lightbulb },
-  { label: "Work", href: "/work", icon: FolderOpen },
+  { label: "Work", href: "/work", icon: Lightbulb },
+  { label: "Services", href: "/services", icon: FolderOpen },
   { label: "Contact", href: "/contact", icon: Headset },
 ] as const;
 
 /**
- * Floating pill navigation. Icon-only for inactive items, icon + label for
- * the active route — the same compact, always-visible treatment at every
- * breakpoint (no separate hamburger/mobile overlay), matching the brand's
- * reference design. Stays in the dark "cinema" chrome deliberately: the
- * wordmark/icons only read correctly on dark, and it bookends every page
- * regardless of the light/dark content theme.
+ * Floating pill nav, ported 1:1 from the mockup's markup/JS:
+ *   .nav-wrap > .pill (row of icon buttons, active slot invisible)
+ *             > .lift-circle (bordered circle that slides to the active
+ *               index's centre-percentage and shows that item's icon)
+ *             > .lift-label (the active item's label, same position)
+ * The mockup computes `left: (index + 0.5) * (100 / itemCount) + '%'` and
+ * animates it — reproduced here via the active route's index.
  */
 export function Navigation() {
   const pathname = usePathname();
 
-  // Admin routes render their own matching pill nav (app/admin/layout.tsx) —
-  // skip the public one here so the two never stack on top of each other.
   if (pathname?.startsWith("/admin")) {
     return null;
   }
 
+  const activeIndex = Math.max(
+    0,
+    navItems.findIndex((item) =>
+      item.href === "/" ? pathname === "/" : pathname?.startsWith(item.href)
+    )
+  );
+  const activeItem = navItems[activeIndex];
+  const ActiveIcon = activeItem.icon;
+  const pct = (activeIndex + 0.5) * (100 / navItems.length);
+
   return (
-    <header className="sticky top-3 z-50 flex justify-center px-3 sm:top-4">
-      <nav
-        aria-label="Primary"
-        className="flex max-w-full items-center gap-1 rounded-full border border-cinema-line bg-cinema/90 px-2 py-2 text-cinema-ink shadow-[0_8px_32px_-8px_rgba(0,0,0,0.5),0_0_0_1px_rgba(126,217,87,0.08)] backdrop-blur-xl sm:gap-1.5"
-      >
-        <Link
-          href="/"
-          aria-label={`${siteConfig.name} — home`}
-          className="mr-1 hidden shrink-0 items-center pl-2 pr-1 sm:flex"
-        >
-          <span className="font-display text-sm font-semibold tracking-tight text-brass">
-            {siteConfig.name.slice(0, 1)}
-          </span>
-        </Link>
+    <div className="nav-wrap">
+      {/* Mirrors the mockup's <button class="theme-toggle">, positioned
+          top:-4px/right:0 relative to this element (nav-wrap is
+          position:relative, same as the mockup's .frame ancestor). */}
+      <div className="theme-toggle">
+        <ThemeToggle />
+      </div>
 
-        {navItems.map((item) => {
-          const isActive = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+      <nav aria-label="Primary" className="pill">
+        {navItems.map((item, i) => {
+          const isActive = i === activeIndex;
           const Icon = item.icon;
-
           return (
             <Link
               key={item.href}
               href={item.href}
               aria-current={isActive ? "page" : undefined}
-              className={`flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-medium transition-all duration-300 sm:px-3.5 ${
-                isActive
-                  ? "-translate-y-0.5 bg-brass text-cinema shadow-[0_2px_12px_-2px_rgba(126,217,87,0.5)]"
-                  : "translate-y-0 text-cinema-muted hover:bg-white/10 hover:text-cinema-ink"
-              }`}
+              aria-label={item.label}
+              className={`pill-item${isActive ? " is-active-slot" : ""}`}
             >
-              <Icon size={16} strokeWidth={2} />
-              <span className={isActive ? "inline" : "hidden sm:inline"}>{item.label}</span>
+              <Icon />
             </Link>
           );
         })}
-
-        <div className="ml-1 border-l border-cinema-line pl-1.5">
-          <ThemeToggle />
-        </div>
       </nav>
-    </header>
+
+      <Link
+        href={activeItem.href}
+        className="lift-circle"
+        style={{ left: `${pct}%` }}
+        aria-hidden="true"
+        tabIndex={-1}
+      >
+        <ActiveIcon />
+      </Link>
+      <span className="lift-label" style={{ left: `${pct}%` }}>
+        {activeItem.label}
+      </span>
+    </div>
   );
 }

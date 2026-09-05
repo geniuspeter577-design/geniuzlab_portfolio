@@ -1,3 +1,5 @@
+import Script from "next/script";
+import Image from "next/image";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Outfit } from "next/font/google";
 import { Navigation } from "@/components/layout/Navigation";
@@ -51,12 +53,35 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <head>
         {/* eslint-disable-next-line @next/next/no-sync-scripts */}
-        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        <Script id="theme-init" strategy="beforeInteractive" dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
       <body className="flex min-h-full flex-col bg-paper text-ink">
         <ThemeProvider>
-          <Navigation />
-          <main className="flex-1">{children}</main>
+          {/* Ported 1:1 from the mockup's <div class="logo-watermark">
+              pair: a big, low-opacity, rotated wordmark fixed behind the
+              content. The mockup embeds its own placeholder art here — we
+              use the site's real logo files instead, since that's the
+              actual brand mark, not the mockup's generic drawing. */}
+          <div className="logo-watermark for-light">
+            <Image src="/images/brand/geniuzlab-logo-full.png" alt="" width={2726} height={844} />
+          </div>
+          <div className="logo-watermark for-dark">
+            <Image src="/images/brand/geniuzlab-logo-full.png" alt="" width={2726} height={844} />
+          </div>
+
+          {/* Ported 1:1 from the mockup's single <div class="frame">,
+              which is the ONE narrow (460px / 880px) centred column that
+              wraps the nav and every page's content. Individual page
+              components no longer wrap themselves in .frame — they render
+              directly inside this one, matching the mockup's structure
+              exactly instead of nesting frames inside frames. */}
+          <div className="frame" style={{ flex: 1 }}>
+            <Navigation />
+            <main>{children}</main>
+          </div>
+
+          {/* The mockup has no footer at all — kept outside .frame since
+              it's a full-width addition, not part of the mockup to copy. */}
           <Footer />
         </ThemeProvider>
       </body>
