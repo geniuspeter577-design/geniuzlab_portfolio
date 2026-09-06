@@ -320,7 +320,7 @@ export default function NewProjectPage() {
           )}
 
           <label className="block">
-            <span className="cursor-pointer rounded-md border border-line px-4 py-3 text-xs uppercase tracking-[0.18em] text-ink transition hover:border-brass hover:text-brass">
+            <span className="block cursor-pointer rounded-md border border-line px-4 py-3 text-center text-xs uppercase tracking-[0.18em] text-ink transition hover:border-brass hover:text-brass">
               {form.coverImageUrl ? "Change image" : "Upload cover image"}
             </span>
             <input
@@ -375,7 +375,7 @@ export default function NewProjectPage() {
           )}
 
           <label className="block">
-            <span className="cursor-pointer rounded-md border border-line px-4 py-3 text-xs uppercase tracking-[0.18em] text-ink transition hover:border-brass hover:text-brass">
+            <span className="block cursor-pointer rounded-md border border-line px-4 py-3 text-center text-xs uppercase tracking-[0.18em] text-ink transition hover:border-brass hover:text-brass">
               Add gallery image
             </span>
             <input

@@ -54,8 +54,6 @@ export function CaseStudyHeader({ project }: CaseStudyHeaderProps) {
             <Image
               src={project.coverImage.src}
               alt={project.coverImage.alt}
-              width={project.coverImage.width}
-              height={project.coverImage.height}
               priority
               sizes="100vw"
               className="absolute inset-0 h-full w-full object-cover"

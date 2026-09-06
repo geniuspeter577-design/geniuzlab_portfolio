@@ -46,8 +46,8 @@ export function ProjectCard({ project, size = "default", priority = false }: Pro
         </span>
       </div>
 
-      <div className="mt-5 flex items-start justify-between gap-4 border-t border-line/50 pt-4">
-        <div className="flex-1 min-w-0">
+      <div className="mt-5 flex flex-col gap-2 border-t border-line/50 pt-4 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+        <div className="min-w-0">
           <h3 className="font-display text-lg sm:text-xl leading-snug text-ink group-hover:text-brass transition-colors">
             {project.title}
           </h3>
@@ -55,7 +55,7 @@ export function ProjectCard({ project, size = "default", priority = false }: Pro
             <p className="mt-1 text-sm text-ink-muted">{project.client}</p>
           )}
         </div>
-        <div className="eyebrow shrink-0 text-right text-ink-muted text-xs">
+        <div className="eyebrow shrink-0 text-ink-muted text-xs sm:text-right">
           <p className="font-semibold text-brass/70">{primaryCategory?.label}</p>
           <p>{project.year}</p>
         </div>
