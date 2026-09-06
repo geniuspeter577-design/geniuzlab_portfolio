@@ -18,8 +18,10 @@ export const metadata: Metadata = {
  * those two files (and lib/projects) if you want their card styling
  * (rounded corners, gradient fill) brought in line with .tile/.card too.
  */
-export default function WorkPage() {
-  const projects = getAllProjects();
+export const revalidate = 60;
+
+export default async function WorkPage() {
+  const projects = await getAllProjects();
 
   return (
     <>

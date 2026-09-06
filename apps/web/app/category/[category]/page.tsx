@@ -5,6 +5,8 @@ import { getProjectsByCategory } from "@/lib/projects";
 import { CategoryFilter } from "@/components/work/CategoryFilter";
 import { ProjectGrid } from "@/components/work/ProjectGrid";
 
+export const revalidate = 60;
+
 export function generateStaticParams() {
   return getAllCategories().map((category) => ({ category: category.slug }));
 }
@@ -29,7 +31,7 @@ export default async function CategoryPage(props: PageProps<"/category/[category
 
   if (!category) notFound();
 
-  const projects = getProjectsByCategory(category.slug);
+  const projects = await getProjectsByCategory(category.slug);
 
   return (
     <>

@@ -6,15 +6,18 @@ import { getAllProjects, getAdjacentProject, getProjectBySlug } from "@/lib/proj
 import { CaseStudyHeader } from "@/components/work/CaseStudyHeader";
 import { Reveal } from "@/components/ui/Reveal";
 
-export function generateStaticParams() {
-  return getAllProjects().map((project) => ({ slug: project.slug }));
+export const revalidate = 60;
+
+export async function generateStaticParams() {
+  const projects = await getAllProjects();
+  return projects.map((project) => ({ slug: project.slug }));
 }
 
 export async function generateMetadata(
   props: PageProps<"/work/[slug]">
 ): Promise<Metadata> {
   const { slug } = await props.params;
-  const project = getProjectBySlug(slug);
+  const project = await getProjectBySlug(slug);
 
   if (!project) return {};
 
@@ -26,11 +29,11 @@ export async function generateMetadata(
 
 export default async function ProjectPage(props: PageProps<"/work/[slug]">) {
   const { slug } = await props.params;
-  const project = getProjectBySlug(slug);
+  const project = await getProjectBySlug(slug);
 
   if (!project) notFound();
 
-  const next = getAdjacentProject(slug);
+  const next = await getAdjacentProject(slug);
 
   return (
     <>
