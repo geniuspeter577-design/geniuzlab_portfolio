@@ -9,45 +9,32 @@ export const metadata: Metadata = {
 };
 
 /**
- * Ported 1:1 from the mockup's pageProfile(): page-heading, a profile
- * photo, a 2x2 .stats grid, then the two page-sub bio paragraphs. Stats
- * are now filled in with your real numbers (600+ clients, 3000+ designs).
- * Still missing from you: the two bio paragraphs are the real ones you
- * sent — no placeholder text left on this page.
+ * Ported 1:1 from the updated mockup's pageProfile(): a .profile-header
+ * row (rounded-square photo on the left, name + one-line blurb on the
+ * right) replaces the old standalone heading + circular photo. The full
+ * bio paragraphs now come first, with the 2x2 .stats grid moved below
+ * them — matching the mockup's new order (bio, then stats, then CTA).
  */
 export default function AboutPage() {
   return (
     <>
       <section className="frame" style={{ paddingBottom: 0 }}>
-        <h1 className="page-heading">{siteConfig.founder}</h1>
-
-        <div className="profile-photo-wrap">
+        <div className="profile-header">
           <Image
             src="/images/otsaje-genius-peter.jpg"
             alt={siteConfig.founder}
-            width={128}
-            height={128}
+            width={96}
+            height={96}
             className="profile-photo"
             priority
           />
-        </div>
-
-        <div className="stats">
-          <div className="stat">
-            <b>6+</b>
-            <span>Years of Experience</span>
-          </div>
-          <div className="stat">
-            <b>600+</b>
-            <span>Clients Worldwide</span>
-          </div>
-          <div className="stat">
-            <b>3000+</b>
-            <span>Designs Delivered</span>
-          </div>
-          <div className="stat">
-            <b>98%</b>
-            <span>Client Satisfaction</span>
+          <div>
+            <p className="profile-name">{siteConfig.founder}</p>
+            <p className="profile-blurb">
+              Creative designer, developer, and entrepreneur from Nigeria,
+              blending design and technology to build meaningful digital
+              experiences.
+            </p>
           </div>
         </div>
 
@@ -68,6 +55,25 @@ export default function AboutPage() {
           visual communication, functionality, and delivering work that
           serves a real purpose rather than just looking good.
         </p>
+
+        <div className="stats">
+          <div className="stat">
+            <b>6+</b>
+            <span>Years of Experience</span>
+          </div>
+          <div className="stat">
+            <b>600+</b>
+            <span>Clients Worldwide</span>
+          </div>
+          <div className="stat">
+            <b>3000+</b>
+            <span>Designs Delivered</span>
+          </div>
+          <div className="stat">
+            <b>98%</b>
+            <span>Client Satisfaction</span>
+          </div>
+        </div>
       </section>
 
       <CTASection heading="Ready to start a project?" />
