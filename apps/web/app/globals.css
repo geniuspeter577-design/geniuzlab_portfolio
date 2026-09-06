@@ -185,11 +185,7 @@ body {
    render pixel-identically.
    ========================================================================== */
 
-/* Only one logo image is needed now that there's a single (dark) theme —
-   the mockup's for-light/for-dark split and its data-theme-driven
-   show/hide are gone. Whatever markup renders the watermark image should
-   drop the "for-light" version and the "for-light"/"for-dark" classes
-   entirely; this bare .logo-watermark rule is all that's left to style it. */
+/* Single dark theme — one watermark image, no light/dark split. */
 .logo-watermark {
   position: fixed;
   top: 50%;

@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { LayoutDashboard, FolderKanban, Plus, LogOut } from "lucide-react";
-import { ThemeToggle } from "@/components/ui/ThemeToggle";
 
 const adminNavItems = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
@@ -48,7 +47,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           })}
 
           <div className="ml-1 flex items-center gap-1 border-l border-cinema-line pl-1.5">
-            <ThemeToggle />
             <button
               onClick={() => signOut({ redirectTo: "/admin/login" })}
               aria-label="Log out"

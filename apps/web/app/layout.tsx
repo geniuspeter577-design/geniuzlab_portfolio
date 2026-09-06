@@ -62,10 +62,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               content. The mockup embeds its own placeholder art here — we
               use the site's real logo files instead, since that's the
               actual brand mark, not the mockup's generic drawing. */}
-          <div className="logo-watermark for-light">
-            <Image src="/images/brand/geniuzlab-logo-full.png" alt="" width={2726} height={844} />
-          </div>
-          <div className="logo-watermark for-dark">
+          <div className="logo-watermark">
             <Image src="/images/brand/geniuzlab-logo-full.png" alt="" width={2726} height={844} />
           </div>
 
