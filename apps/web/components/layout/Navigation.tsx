@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, User, Lightbulb, FolderOpen, Headset } from "lucide-react";
-import { ThemeToggle } from "@/components/ui/ThemeToggle";
 
 /**
  * Same six-icon set the mockup uses (home / user / bulb / folder / support),
@@ -47,13 +46,6 @@ export function Navigation() {
 
   return (
     <div className="nav-wrap">
-      {/* Mirrors the mockup's <button class="theme-toggle">, positioned
-          top:-4px/right:0 relative to this element (nav-wrap is
-          position:relative, same as the mockup's .frame ancestor). */}
-      <div className="theme-toggle">
-        <ThemeToggle />
-      </div>
-
       <nav aria-label="Primary" className="pill">
         {navItems.map((item, i) => {
           const isActive = i === activeIndex;

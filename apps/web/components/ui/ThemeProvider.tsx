@@ -1,64 +1,43 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, type ReactNode } from "react";
 
-type Theme = "light" | "dark";
+/**
+ * Light theme has been removed entirely per the approved mockup — the site
+ * is dark-only now, so there's no theme to toggle or persist. This file is
+ * kept (same exports) only so anything still importing ThemeProvider /
+ * useTheme / themeInitScript — e.g. layout.tsx wrapping <html> or injecting
+ * a pre-paint script — doesn't need to change. All of it now just forces
+ * "dark" and does nothing else.
+ */
+type Theme = "dark";
 
 interface ThemeContextValue {
   theme: Theme;
-  toggleTheme: () => void;
 }
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
-const STORAGE_KEY = "geniuzlab-theme";
-
 /**
- * Inline script injected into <head> (see app/layout.tsx) so the correct
- * theme is set on <html data-theme="..."> before first paint — avoids a
- * flash of the wrong theme on load. Kept here as a single source of truth
- * for the string, rather than duplicated inline in layout.tsx.
+ * Formerly the pre-paint inline script that picked light vs. dark from
+ * localStorage/prefers-color-scheme. With only one theme left there's
+ * nothing to decide before paint, so this just sets the attribute for any
+ * leftover [data-theme="dark"] selectors and CSS reads directly off :root,
+ * so even this attribute is optional. Kept as a no-op string so a
+ * layout.tsx that injects it via dangerouslySetInnerHTML keeps working.
  */
 export const themeInitScript = `
 (function () {
-  try {
-    var stored = localStorage.getItem("${STORAGE_KEY}");
-    var theme = stored === "light" || stored === "dark"
-      ? stored
-      : (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
-    document.documentElement.setAttribute("data-theme", theme);
-  } catch (e) {
-    document.documentElement.setAttribute("data-theme", "light");
-  }
+  document.documentElement.setAttribute("data-theme", "dark");
 })();
 `;
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  // Initial value doesn't matter much — the inline script already set the
-  // real value on <html> before React hydrates. This just keeps React's
-  // state in sync so the toggle button reflects the right icon.
-  const [theme, setTheme] = useState<Theme>("light");
-
   useEffect(() => {
-    const current = document.documentElement.getAttribute("data-theme");
-    if (current === "light" || current === "dark") {
-      setTheme(current);
-    }
+    document.documentElement.setAttribute("data-theme", "dark");
   }, []);
 
-  const toggleTheme = () => {
-    const next: Theme = theme === "dark" ? "light" : "dark";
-    setTheme(next);
-    document.documentElement.setAttribute("data-theme", next);
-    try {
-      localStorage.setItem(STORAGE_KEY, next);
-    } catch {
-      // localStorage unavailable (private browsing, etc.) — theme just
-      // won't persist across visits, which is an acceptable fallback.
-    }
-  };
-
-  return <ThemeContext.Provider value={{ theme, toggleTheme }}>{children}</ThemeContext.Provider>;
+  return <ThemeContext.Provider value={{ theme: "dark" }}>{children}</ThemeContext.Provider>;
 }
 
 export function useTheme() {

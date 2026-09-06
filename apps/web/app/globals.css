@@ -3,34 +3,33 @@
 /* ==========================================================================
    GENIUZLAB — EXACT PORT OF THE APPROVED MOCKUP (geniuzlab-full-site.html)
    Every variable name/value and class below is copied 1:1 from the
-   mockup's <style> block. Light is the default theme (no attribute on
-   <html>); [data-theme="dark"] overrides it — same as the mockup's script,
-   and matching how ThemeProvider already sets data-theme explicitly.
+   mockup's <style> block. Light theme has been removed entirely per the
+   approved mockup — the values below are the mockup's former
+   [data-theme="dark"] block, now the only theme, applied unconditionally
+   on :root. No data-theme attribute is read or set anywhere anymore.
    ========================================================================== */
 
 :root {
-  --bg: #f7f9f5;
-  --bg-dot: rgba(11, 18, 16, 0.07);
-  --text: #10140d;
-  --text-muted: #5d6a56;
-  --nav-bg: #ffffff;
-  --nav-border: rgba(11, 18, 16, 0.08);
-  --nav-shadow: rgba(11, 18, 16, 0.08);
-  --nav-icon: #22301a;
-  --circle-bg: #ffffff;
+  --bg: #07090a;
+  --bg-dot: rgba(255, 255, 255, 0.06);
+  --text: #f1f7ea;
+  --text-muted: #93a389;
+  --nav-bg: #12140f;
+  --nav-border: rgba(255, 255, 255, 0.08);
+  --nav-shadow: rgba(0, 0, 0, 0.5);
+  --nav-icon: #d9edc4;
+  --circle-bg: #0e120a;
   --circle-ring: #8bc34a;
-  --circle-icon: #689f38;
-  --card-grad: linear-gradient(120deg, #aed581 0%, #8bc34a 55%, #689f38 100%);
-  --card-text: #1c2a12;
-  --card-photo-bg: rgba(255, 255, 255, 0.4);
-  --card-photo-icon: rgba(28, 42, 18, 0.55);
-  --heading: #10140d;
-  --surface: #ffffff;
-  --chip-bg: rgba(139, 195, 74, 0.14);
-  --chip-text: #4c7a24;
-  --toggle-bg: #ffffff;
-  --toggle-icon: #22301a;
-  --logo-opacity: 0.05;
+  --circle-icon: #9ccc65;
+  --card-grad: linear-gradient(120deg, #558b2f 0%, #33691e 55%, #10240a 100%);
+  --card-text: #f1f7ea;
+  --card-photo-bg: rgba(255, 255, 255, 0.08);
+  --card-photo-icon: rgba(241, 247, 234, 0.55);
+  --heading: #f1f7ea;
+  --surface: #12140f;
+  --chip-bg: rgba(139, 195, 74, 0.16);
+  --chip-text: #a9e078;
+  --logo-opacity: 0.09;
 
   /* --- Back-compat aliases: existing components reference these Tailwind
      tokens (bg-paper, text-ink, etc. via the @theme block below). Point
@@ -52,39 +51,6 @@
 
   --ease-cinema: cubic-bezier(0.16, 1, 0.3, 1);
   --duration-reveal: 700ms;
-
-  color-scheme: light;
-}
-
-[data-theme="dark"] {
-  --bg: #07090a;
-  --bg-dot: rgba(255, 255, 255, 0.06);
-  --text: #f1f7ea;
-  --text-muted: #93a389;
-  --nav-bg: #12140f;
-  --nav-border: rgba(255, 255, 255, 0.08);
-  --nav-shadow: rgba(0, 0, 0, 0.5);
-  --nav-icon: #d9edc4;
-  --circle-bg: #0e120a;
-  --circle-ring: #8bc34a;
-  --circle-icon: #9ccc65;
-  --card-grad: linear-gradient(120deg, #558b2f 0%, #33691e 55%, #10240a 100%);
-  --card-text: #f1f7ea;
-  --card-photo-bg: rgba(255, 255, 255, 0.08);
-  --card-photo-icon: rgba(241, 247, 234, 0.55);
-  --heading: #f1f7ea;
-  --surface: #12140f;
-  --chip-bg: rgba(139, 195, 74, 0.16);
-  --chip-text: #a9e078;
-  --toggle-bg: #12140f;
-  --toggle-icon: #d9edc4;
-  --logo-opacity: 0.09;
-
-  --color-paper: var(--bg);
-  --color-surface: var(--surface);
-  --color-ink: var(--text);
-  --color-ink-muted: var(--text-muted);
-  --color-line: var(--nav-border);
 
   color-scheme: dark;
 }
@@ -219,6 +185,11 @@ body {
    render pixel-identically.
    ========================================================================== */
 
+/* Only one logo image is needed now that there's a single (dark) theme —
+   the mockup's for-light/for-dark split and its data-theme-driven
+   show/hide are gone. Whatever markup renders the watermark image should
+   drop the "for-light" version and the "for-light"/"for-dark" classes
+   entirely; this bare .logo-watermark rule is all that's left to style it. */
 .logo-watermark {
   position: fixed;
   top: 50%;
@@ -234,15 +205,6 @@ body {
   width: 100%;
   display: block;
 }
-.logo-watermark.for-dark {
-  display: none;
-}
-[data-theme="dark"] .logo-watermark.for-light {
-  display: none;
-}
-[data-theme="dark"] .logo-watermark.for-dark {
-  display: block;
-}
 
 .frame {
   max-width: 460px;
@@ -255,27 +217,6 @@ body {
   .frame {
     max-width: 880px;
   }
-}
-
-.theme-toggle {
-  position: absolute;
-  top: -4px;
-  right: 0;
-  width: 40px;
-  height: 40px;
-  border-radius: 999px;
-  background: var(--toggle-bg);
-  border: 1px solid var(--nav-border);
-  box-shadow: 0 4px 14px var(--nav-shadow);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: var(--toggle-icon);
-}
-.theme-toggle svg {
-  width: 18px;
-  height: 18px;
 }
 
 .nav-wrap {
@@ -370,7 +311,7 @@ body {
 .services {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
 }
 @media (min-width: 900px) {
   .services.grid2 {
@@ -381,34 +322,35 @@ body {
 
 .card {
   background: var(--card-grad);
-  border-radius: 26px;
-  padding: 22px 20px;
+  border-radius: 20px;
+  padding: 14px 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 14px;
-  min-height: 88px;
+  gap: 10px;
+  min-height: 64px;
   overflow: hidden;
   position: relative;
 }
 .card-title {
-  font-size: 19px;
+  font-size: 15px;
   font-weight: 800;
   color: var(--card-text);
-  max-width: 60%;
+  max-width: 62%;
+  line-height: 1.25;
 }
 .card-sub {
-  font-size: 12.5px;
+  font-size: 11px;
   font-weight: 500;
   color: var(--card-text);
   opacity: 0.75;
-  margin-top: 4px;
+  margin-top: 3px;
 }
 .card-photo {
   flex-shrink: 0;
-  width: 76px;
-  height: 76px;
-  border-radius: 18px;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
   background: var(--card-photo-bg);
   display: flex;
   align-items: center;
@@ -416,58 +358,109 @@ body {
   color: var(--card-photo-icon);
 }
 .card-photo svg {
-  width: 30px;
-  height: 30px;
+  width: 22px;
+  height: 22px;
 }
 
 .portfolio-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 14px;
+  gap: 10px;
 }
 .tile {
   aspect-ratio: 1;
-  border-radius: 20px;
+  border-radius: 16px;
   background: var(--card-grad);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
   color: var(--card-text);
-  padding: 10px;
+  padding: 8px;
   text-align: center;
 }
 .tile svg {
-  width: 26px;
-  height: 26px;
+  width: 22px;
+  height: 22px;
 }
 .tile span {
-  font-size: 12.5px;
+  font-size: 11px;
   font-weight: 700;
 }
 
 .stats {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-  margin-bottom: 24px;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 .stat {
   background: var(--surface);
   border: 1px solid var(--nav-border);
-  border-radius: 18px;
-  padding: 16px 10px;
+  border-radius: 14px;
+  padding: 12px 8px;
   text-align: center;
 }
 .stat b {
   display: block;
-  font-size: 22px;
+  font-size: 18px;
   color: var(--chip-text);
 }
 .stat span {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-muted);
+}
+
+.profile-photo-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+.profile-photo {
+  width: 128px;
+  height: 128px;
+  border-radius: 999px;
+  object-fit: cover;
+  border: 3px solid var(--circle-ring);
+  box-shadow: 0 8px 22px var(--nav-shadow);
+}
+
+@media (max-width: 380px) {
+  .card {
+    padding: 12px 12px;
+    min-height: 56px;
+    border-radius: 18px;
+  }
+  .card-title {
+    font-size: 13.5px;
+  }
+  .card-photo {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+  }
+  .card-photo svg {
+    width: 19px;
+    height: 19px;
+  }
+  .stat {
+    padding: 10px 6px;
+    border-radius: 12px;
+  }
+  .stat b {
+    font-size: 16px;
+  }
+  .stat span {
+    font-size: 10px;
+  }
+  .profile-photo {
+    width: 104px;
+    height: 104px;
+  }
+  .page-heading {
+    font-size: 26px;
+  }
 }
 
 .chip-row {
