@@ -163,5 +163,5 @@ export const getFileSizeLimit = (provider: ImageProvider): number => {
   if (provider === 'cloudinary') {
     return 2 * 1024 * 1024 * 1024; // 2GB
   }
-  return 50 * 1024 * 1024; // 50MB for Vercel Blob
+  return 30 * 1024 * 1024; // 50MB for Vercel Blob
 };
