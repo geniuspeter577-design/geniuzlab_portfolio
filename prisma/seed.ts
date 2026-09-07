@@ -1,3 +1,11 @@
+import * as path from "path";
+import { config } from "dotenv";
+import { fileURLToPath } from "url";
+import { PrismaClient } from "@prisma/client";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 /**
  * Database seed script.
  * Creates (or updates) the single admin user from env vars.
@@ -8,7 +16,8 @@
  *
  * Run with: npm run db:seed
  */
-import { PrismaClient } from "@prisma/client";
+
+config({ path: path.resolve(__dirname, ".env") });
 
 const prisma = new PrismaClient();
 
