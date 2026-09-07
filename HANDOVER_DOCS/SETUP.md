@@ -5,7 +5,7 @@
 ### Prerequisites
 - Node.js 18+ 
 - npm or yarn
-- PostgreSQL 14+ (local or Docker)
+- MongoDB (Atlas free tier or local)
 - Git
 
 ### Step 1: Clone & Install
@@ -22,22 +22,25 @@ npm install
 ### Step 2: Database Setup
 
 ```bash
-# Create a local PostgreSQL database
-createdb geniuzlab_dev
+# Set up MongoDB Atlas or local MongoDB
+# Get connection string from MongoDB Atlas dashboard or use local: mongodb://localhost:27017
 
-# Set environment variables
-cp .env.example .env.local
+# Copy example env and configure per-app:
+cp .env.example apps/web/.env.local
+cp .env.example apps/backend/.env.local
 
-# Edit .env.local and set DATABASE_URL:
-# DATABASE_URL=postgresql://postgres:postgres@localhost:5432/geniuzlab_dev
+# Edit each .env.local with your values:
+# - DATABASE_URL: your MongoDB connection string
+# - AUTH_SECRET: generate with openssl rand -hex 32
+# - ADMIN_EMAIL / ADMIN_PASSWORD_HASH: your admin credentials
 
 # Generate Prisma client
 npx prisma generate
 
-# Run migrations
+# Push schema to database
 npm run db:push
 
-# (Optional) Seed database with sample data
+# (Optional) Seed database with admin user
 npm run db:seed
 ```
 
@@ -45,15 +48,19 @@ npm run db:seed
 
 ```bash
 # Generate a secure 32-character AUTH_SECRET
-node -e "console.log(require('crypto').randomBytes(16).toString('hex'))"
+openssl rand -hex 32
 
 # Generate admin password hash (replace 'your-password' with desired password)
 node -e "const bcrypt=require('bcryptjs'); console.log(bcrypt.hashSync('your-password', 10));"
 
-# Update .env.local with:
+# Update apps/web/.env.local and apps/backend/.env.local with:
 AUTH_SECRET=<your-generated-secret>
+AUTH_URL=http://localhost:3000
 ADMIN_EMAIL=admin@example.com
 ADMIN_PASSWORD_HASH=<your-generated-hash>
+
+# Note: The seed script (npm run db:seed) loads from prisma/.env
+# Copy ADMIN_EMAIL and ADMIN_PASSWORD_HASH to prisma/.env as well
 ```
 
 ### Step 4: Run Development Servers
@@ -128,7 +135,7 @@ geniuzlab_portfolio/
 - **React 19** - UI library
 - **TypeScript** - Type safety
 - **Tailwind CSS 4** - Styling
-- **NextAuth.js** - Authentication
+- **Auth.js v5** - Authentication (NextAuth v5)
 - **Vercel Blob** - Image storage
 
 ### Environment Variables
@@ -136,15 +143,25 @@ geniuzlab_portfolio/
 Create `apps/web/.env.local`:
 
 ```env
-# API Configuration
-NEXT_PUBLIC_API_URL=http://localhost:3001
+# Database
+DATABASE_URL=<same-as-backend>
 
-# NextAuth
-NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET=<from-root-.env.local>
+# Auth.js v5
+AUTH_SECRET=<generate-with-openssl-rand-hex-32>
+AUTH_URL=http://localhost:3000
 
-# Vercel Blob (development)
-BLOB_READ_WRITE_TOKEN=<optional-for-local-dev>
+# Admin CMS
+ADMIN_EMAIL=admin@example.com
+ADMIN_PASSWORD_HASH=<bcrypt-hash>
+
+# Image storage (optional)
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
+BLOB_READ_WRITE_TOKEN=
+
+# Backend API
+BACKEND_URL=http://localhost:3001
 ```
 
 ### Starting the Frontend
@@ -169,9 +186,8 @@ npm start
 
 ### Key Technologies
 - **Express.js** - Web framework
-- **Prisma** - ORM
-- **PostgreSQL** - Database
-- **JWT** - Authentication tokens
+- **Prisma** - ORM (MongoDB)
+- **MongoDB** - Database
 - **bcryptjs** - Password hashing
 
 ### Environment Variables
@@ -182,13 +198,12 @@ Create `apps/backend/.env.local`:
 # Server
 NODE_ENV=development
 PORT=3001
-HOST=localhost
 
-# Database
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/geniuzlab_dev
+# Database (MongoDB)
+DATABASE_URL=mongodb://localhost:27017/geniuzlab_dev
 
 # Authentication
-AUTH_SECRET=<from-root-.env.local>
+AUTH_SECRET=<from-apps/web-.env.local>
 ADMIN_EMAIL=admin@example.com
 ADMIN_PASSWORD_HASH=<bcrypt-hash>
 
@@ -413,16 +428,16 @@ lsof -ti:3000 | xargs kill -9
 ### Database connection error
 
 ```bash
-# Check DATABASE_URL in .env.local
-# Ensure PostgreSQL is running
-# Test connection: psql $DATABASE_URL
+# Check DATABASE_URL in .env.local and prisma/.env
+# Ensure MongoDB is running or check Atlas dashboard
+# Test connection: mongosh $DATABASE_URL
 ```
 
 ### Auth not working
 
 ```bash
-# Ensure NEXTAUTH_SECRET is set
-# Verify ADMIN_EMAIL and ADMIN_PASSWORD_HASH in .env.local
+# Ensure AUTH_SECRET is set (Auth.js v5 uses AUTH_URL, not NEXTAUTH_URL)
+# Verify ADMIN_EMAIL and ADMIN_PASSWORD_HASH in apps/web/.env.local and prisma/.env
 # Clear browser cookies and try again
 ```
 

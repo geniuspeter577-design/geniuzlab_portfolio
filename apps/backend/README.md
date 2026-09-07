@@ -1,15 +1,15 @@
 # GeniuzLab Portfolio - Backend API (Express.js)
 
-Backend API server for the GeniuzLab Portfolio. Built with Express.js, Prisma ORM, and PostgreSQL.
+Backend API server for the GeniuzLab Portfolio. Built with Express.js, Prisma ORM, and MongoDB.
 
 ## Features
 
-- 🔐 **Authentication** - JWT-based API authentication
+- 🔐 **Authentication** - bcrypt password hashing (JWT not used)
 - 📦 **Project Management** - Full CRUD operations for projects
 - 🏷️ **Categories & Tags** - Organize projects by category and tags
 - 🖼️ **Image Management** - Store and manage project images
 - ✅ **Validation** - Zod schema validation for all inputs
-- 🗄️ **Database** - Prisma ORM with PostgreSQL
+- 🗄️ **Database** - Prisma ORM with MongoDB
 - 📝 **Type Safety** - Full TypeScript support
 - 🔍 **Error Handling** - Comprehensive error responses
 
@@ -17,9 +17,9 @@ Backend API server for the GeniuzLab Portfolio. Built with Express.js, Prisma OR
 
 - **Framework**: Express.js 4.18
 - **Language**: TypeScript 5
-- **Database**: PostgreSQL 14+
+- **Database**: MongoDB (Atlas or local)
 - **ORM**: Prisma 6
-- **Authentication**: JWT (jsonwebtoken)
+- **Authentication**: bcryptjs + Auth.js v5 (frontend)
 - **Validation**: Zod
 - **Password Hashing**: bcryptjs
 - **CORS**: cors middleware
@@ -29,7 +29,8 @@ Backend API server for the GeniuzLab Portfolio. Built with Express.js, Prisma OR
 
 - Node.js 18+
 - npm 8+
-- PostgreSQL 14+
+- MongoDB (Atlas free tier or local)
+- Cloudinary API credentials (optional, for image storage)
 - Vercel Blob token (optional, for image storage)
 
 ## Getting Started
@@ -37,17 +38,19 @@ Backend API server for the GeniuzLab Portfolio. Built with Express.js, Prisma OR
 ### 1. Environment Setup
 
 ```bash
-# From project root
-cp .env.example .env.local
+# Create apps/backend/.env.local from example
+cp .env.example apps/backend/.env.local
 
-# Backend environment variables should be set in .env.local:
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/geniuzlab_dev
+# Backend environment variables should be set in apps/backend/.env.local:
+DATABASE_URL=mongodb://localhost:27017/geniuzlab_dev
 AUTH_SECRET=your-32-character-secret
 ADMIN_EMAIL=admin@example.com
 ADMIN_PASSWORD_HASH=bcrypt-hash-of-password
 PORT=3001
 NODE_ENV=development
-BLOB_READ_WRITE_TOKEN=vercel-blob-token
+CLOUDINARY_CLOUD_NAME=your-cloud-name
+CLOUDINARY_API_KEY=your-api-key
+CLOUDINARY_API_SECRET=your-api-secret
 ```
 
 ### 2. Database Setup
@@ -239,16 +242,13 @@ See [../../DOCS/API.md](../../DOCS/API.md) for detailed API documentation.
 NODE_ENV=development
 PORT=3001
 
-# Database
-DATABASE_URL=postgresql://user:password@localhost:5432/geniuzlab_dev
+# Database (MongoDB)
+DATABASE_URL=mongodb://localhost:27017/geniuzlab_dev
 
 # Authentication
 AUTH_SECRET=your-secure-32-character-secret
 ADMIN_EMAIL=admin@example.com
 ADMIN_PASSWORD_HASH=bcrypt-hash-of-password
-
-# CORS
-CORS_ORIGIN=http://localhost:3000
 ```
 
 ### Optional
@@ -521,7 +521,7 @@ Set these variables on your hosting platform:
 ```env
 NODE_ENV=production
 PORT=3001
-DATABASE_URL=<production-postgres-url>
+DATABASE_URL=<production-mongodb-url>
 AUTH_SECRET=<secure-32-char-secret>
 ADMIN_EMAIL=<admin-email>
 ADMIN_PASSWORD_HASH=<bcrypt-hash>

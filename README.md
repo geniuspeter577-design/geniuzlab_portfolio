@@ -22,7 +22,7 @@ graph TB
     subgraph root["GeniuzLab Portfolio<br/>(Monorepo)"]
         subgraph apps["apps/"]
             web["🌐 web<br/>Next.js Frontend<br/>React 19 + Tailwind"]
-            backend["⚙️ backend<br/>Express API<br/>Prisma + PostgreSQL"]
+            backend["⚙️ backend<br/>Express API<br/>Prisma + MongoDB"]
             mobile["📱 mobile (future)<br/>React Native / Flutter"]
         end
         
@@ -82,7 +82,7 @@ graph TB
     end
     
     subgraph Data["Data Layer"]
-        Database["🗄️ PostgreSQL<br/>Prisma ORM"]
+        Database["🗄️ MongoDB<br/>Prisma ORM"]
         Storage["☁️ Vercel Blob<br/>Image Storage"]
     end
     
@@ -108,7 +108,7 @@ graph TB
 ### Prerequisites
 - Node.js 18+
 - npm 8+
-- PostgreSQL 14+
+- MongoDB 6+
 - Git
 
 ### Development Setup (5 minutes)
@@ -124,6 +124,7 @@ cp .env.example .env.local
 # Edit .env.local with your database URL and auth secret
 
 # 3. Setup database
+npx prisma generate
 npm run db:push
 
 # 4. Start development servers
@@ -146,6 +147,7 @@ For detailed setup instructions, see [HANDOVER_DOCS/SETUP.md](HANDOVER_DOCS/SETU
 - **[DOCS/TECHNICAL.md](DOCS/TECHNICAL.md)** - Technical architecture and design details
 - **[DOCS/API.md](DOCS/API.md)** - Backend API endpoints documentation
 - **[DOCS/TESTING.md](DOCS/TESTING.md)** - Comprehensive testing guide (Jest, Vitest, Playwright, MSW)
+- **[DOCS/README-admin.md](DOCS/README-admin.md)** - Admin setup and database seeding guide
 
 ### App-Specific
 - **[apps/web/README.md](apps/web/README.md)** - Frontend setup and development
@@ -191,9 +193,11 @@ apps/web/
 │   └── layout.tsx     # Root layout
 ├── components/        # React components
 ├── lib/               # Utilities, API calls
+│   ├── auth.ts        # NextAuth configuration
+│   └── env.ts         # Environment validation
 ├── hooks/             # Custom hooks
 ├── public/            # Static assets
-├── auth.ts            # NextAuth configuration
+├── auth.ts            # NextAuth configuration (legacy)
 ├── next.config.ts     # Next.js config
 └── package.json
 ```
@@ -299,7 +303,7 @@ node -e "const bcrypt=require('bcryptjs'); console.log(bcrypt.hashSync('your-pas
 
 ## 🗄️ Database
 
-Uses **PostgreSQL** with **Prisma ORM**. Schema includes:
+Uses **MongoDB** with **Prisma ORM**. Schema includes:
 
 - **User** - Admin credentials
 - **Project** - Portfolio projects with metadata
@@ -333,7 +337,7 @@ Uses **Vercel Blob** for image uploads:
 | **UI Library** | React | 19 |
 | **Styling** | Tailwind CSS | 4 |
 | **Backend** | Express.js | 4.18 |
-| **Database** | PostgreSQL | 14+ |
+| **Database** | MongoDB | 6+ |
 | **ORM** | Prisma | 6 |
 | **Auth** | NextAuth.js | 5 (beta) |
 | **Image/Video Storage** | Cloudinary + Vercel Blob | 2 |
@@ -356,11 +360,12 @@ See [DOCS/CLOUDINARY.md](DOCS/CLOUDINARY.md) for setup instructions.
 ### Required
 
 ```env
-# Database
-DATABASE_URL=postgresql://user:password@localhost:5432/geniuzlab
+# Database (MongoDB Atlas or local)
+DATABASE_URL=mongodb+srv://user:password@cluster.mongodb.net/geniuzlab
 
-# Authentication (minimum 32 characters)
+# Authentication (Auth.js v5, minimum 32 characters)
 AUTH_SECRET=your-secure-secret-key-32-chars-min
+AUTH_URL=http://localhost:3000
 
 # Admin credentials
 ADMIN_EMAIL=admin@example.com
@@ -393,7 +398,7 @@ See `.env.example` for all available variables.
 
 - **Frontend**: Deploy `apps/web` to Vercel, Netlify, or any Node.js hosting
 - **Backend**: Deploy `apps/backend` to Heroku, Railway, or any Node.js hosting
-- **Database**: PostgreSQL on Supabase, Railway, or AWS RDS
+- **Database**: MongoDB on Atlas, local, or MLab
 
 See [HANDOVER_DOCS/DEPLOYMENT.md](HANDOVER_DOCS/DEPLOYMENT.md) for detailed deployment instructions.
 
@@ -462,7 +467,7 @@ lsof -ti:3000 | xargs kill -9
 **Database connection error**
 ```bash
 # Verify DATABASE_URL in .env.local
-# Ensure PostgreSQL is running
+# Ensure MongoDB is running
 psql $DATABASE_URL -c "SELECT 1"
 ```
 

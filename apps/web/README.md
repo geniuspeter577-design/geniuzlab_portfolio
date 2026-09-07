@@ -27,7 +27,7 @@ Frontend application for the GeniuzLab Portfolio website. Built with Next.js 16,
 
 - Node.js 18+
 - npm 8+
-- PostgreSQL 14+ (for backend)
+- MongoDB (Atlas or local for backend)
 - Git
 
 ## Getting Started
@@ -35,14 +35,25 @@ Frontend application for the GeniuzLab Portfolio website. Built with Next.js 16,
 ### 1. Environment Setup
 
 ```bash
-# From project root, environment is shared
-cp .env.example .env.local
+# Create apps/web/.env.local from example
+cp .env.example apps/web/.env.local
 
-# Frontend-specific variables (optional, already in .env.local)
-NEXT_PUBLIC_API_URL=http://localhost:3001
-NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET=<from-root-.env.local>
-BLOB_READ_WRITE_TOKEN=<vercel-blob-token>
+# Auth.js v5 (NextAuth v5) variables
+AUTH_URL=http://localhost:3000
+AUTH_SECRET=<generate-with-openssl-rand-hex-32>
+
+# Admin credentials
+ADMIN_EMAIL=admin@example.com
+ADMIN_PASSWORD_HASH=<bcrypt-hash>
+
+# Backend API
+BACKEND_URL=http://localhost:3001
+
+# Image storage (optional)
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
+BLOB_READ_WRITE_TOKEN=
 ```
 
 ### 2. Installation
@@ -275,7 +286,7 @@ Images are uploaded to Vercel Blob:
 1. Admin selects image in `/admin/projects/new` or `/admin/projects/[id]`
 2. Frontend sends image to `/api/admin/upload-image`
 3. Vercel Blob stores image and returns URL
-4. URL stored in project data in PostgreSQL
+4. URL stored in project data in MongoDB
 5. Image displayed via CDN
 
 **Limits:**

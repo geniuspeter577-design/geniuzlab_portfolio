@@ -120,16 +120,25 @@ Create `.env.production` files for each app:
 #### apps/web/.env.production
 
 ```env
-# Frontend Configuration
-NEXT_PUBLIC_API_URL=https://api.geniuzlab.com
-NEXT_PUBLIC_APP_URL=https://geniuzlab.com
+# Database (same MongoDB Atlas as backend)
+DATABASE_URL=mongodb+srv://user:password@prod-cluster.mongodb.net/geniuzlab_prod
 
-# Vercel Blob
-NEXT_PUBLIC_BLOB_STORE_ID=your-store-id
+# Auth.js v5
+AUTH_SECRET=your-secure-32-char-secret-change-this
+AUTH_URL=https://geniuzlab.com
+
+# Admin
+ADMIN_EMAIL=admin@geniuzlab.com
+ADMIN_PASSWORD_HASH=bcrypt-hash-of-admin-password
+
+# Backend API
+BACKEND_URL=https://api.geniuzlab.com
+
+# Image Storage
+CLOUDINARY_CLOUD_NAME=your-cloud-name
+CLOUDINARY_API_KEY=your-api-key
+CLOUDINARY_API_SECRET=your-api-secret
 BLOB_READ_WRITE_TOKEN=your-blob-token
-
-# Analytics (optional)
-NEXT_PUBLIC_GA_ID=your-google-analytics-id
 ```
 
 #### apps/backend/.env.production
@@ -138,23 +147,21 @@ NEXT_PUBLIC_GA_ID=your-google-analytics-id
 # Server
 NODE_ENV=production
 PORT=3001
-HOST=0.0.0.0
 
-# Database
-DATABASE_URL=postgresql://user:password@prod-db-host:5432/geniuzlab_prod
+# Database (MongoDB Atlas)
+DATABASE_URL=mongodb+srv://user:password@prod-cluster.mongodb.net/geniuzlab_prod
 
 # Authentication
 AUTH_SECRET=your-secure-32-char-secret-change-this
-JWT_EXPIRY=7d
 
 # Admin
 ADMIN_EMAIL=admin@geniuzlab.com
 ADMIN_PASSWORD_HASH=bcrypt-hash-of-admin-password
 
-# CORS
-CORS_ORIGIN=https://geniuzlab.com
-
 # Image Storage
+CLOUDINARY_CLOUD_NAME=your-cloud-name
+CLOUDINARY_API_KEY=your-api-key
+CLOUDINARY_API_SECRET=your-api-secret
 BLOB_READ_WRITE_TOKEN=your-blob-token
 
 # Error Tracking
@@ -459,7 +466,19 @@ eb deploy
    ```bash
    npm run db:migrate
    ```
+### Database Seeding
 
+The seed script creates the initial admin user. To run it:
+
+```bash
+# From the monorepo root
+npm run db:seed
+
+# Or from apps/backend
+cd apps/backend && npm run db:seed
+```
+
+**Note:** The seed script loads environment variables from `prisma/.env`, not `.env.local`. Ensure `ADMIN_EMAIL` and `ADMIN_PASSWORD_HASH` are set in `prisma/.env` before running the seed script.
 #### Self-Hosted PostgreSQL
 
 **Install PostgreSQL:**
