@@ -214,8 +214,8 @@ export async function listProjectsForAdmin(): Promise<AdminProjectListItem[]> {
     },
   });
 
-  return projects.map((project) => {
-    const coverImage = project.images.find((image) => image.type === "COVER");
+  return projects.map((project: any) => {
+    const coverImage = project.images.find((image: any) => image.type === "COVER");
 
     return {
       id: project.id,
@@ -229,11 +229,11 @@ export async function listProjectsForAdmin(): Promise<AdminProjectListItem[]> {
       orderIndex: project.orderIndex,
       createdAt: project.createdAt,
       updatedAt: project.updatedAt,
-      categories: project.categories.map(({ category }) => ({
+      categories: project.categories.map(({ category }: { category: any }) => ({
         slug: category.slug,
         label: category.label,
       })),
-      tags: project.tags.map(({ tag }) => tag.name),
+      tags: project.tags.map(({ tag }: { tag: any }) => tag.name),
       coverImage: coverImage
         ? {
             url: coverImage.url,
@@ -264,17 +264,17 @@ export async function getProjectForAdmin(projectId: string) {
 
   return {
     ...project,
-    categorySlugs: project.categories.map(({ category }) => category.slug),
-    tags: project.tags.map(({ tag }) => tag.name),
-    coverImage: project.images.find((image) => image.type === "COVER")
+    categorySlugs: project.categories.map(({ category }: { category: any }) => category.slug),
+    tags: project.tags.map(({ tag }: { tag: any }) => tag.name),
+    coverImage: project.images.find((image: any) => image.type === "COVER")
       ? {
-          url: project.images.find((image) => image.type === "COVER")?.url ?? "",
-          altText: project.images.find((image) => image.type === "COVER")?.altText ?? "",
+          url: project.images.find((image: any) => image.type === "COVER")?.url ?? "",
+          altText: project.images.find((image: any) => image.type === "COVER")?.altText ?? "",
         }
       : null,
     galleryImages: project.images
-      .filter((image) => image.type === "GALLERY")
-      .map((image) => ({
+      .filter((image: any) => image.type === "GALLERY")
+      .map((image: any) => ({
         url: image.url,
         altText: image.altText ?? "",
       })),
@@ -318,7 +318,7 @@ export async function updateProject(projectId: string, input: z.infer<typeof adm
   const title = parsed.title.trim();
   const slugBase = parsed.slug?.trim() || slugify(title) || `project-${projectId}`;
 
-  await prisma.$transaction(async (tx) => {
+  await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     await tx.projectCategory.deleteMany({ where: { projectId } });
     await tx.projectTag.deleteMany({ where: { projectId } });
     await tx.projectImage.deleteMany({ where: { projectId } });
