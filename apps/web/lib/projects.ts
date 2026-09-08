@@ -1,83 +1,41 @@
-import type { CategorySlug, Project, ProjectImage } from "./types";
-import { prisma } from "./prisma";
-import type { Prisma } from "@prisma/client";
+import type { Project } from "./types";
 
-const FALLBACK_IMAGE: ProjectImage = {
-  src: "/images/placeholder.svg",
-  alt: "Project image",
-  width: 1600,
-  height: 2000,
-};
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
 
-const projectInclude = {
-  categories: { include: { category: true } },
-  tags: { include: { tag: true } },
-  images: { orderBy: { orderIndex: "asc" as const } },
-} satisfies Prisma.ProjectInclude;
-
-type DbProject = Prisma.ProjectGetPayload<{ include: typeof projectInclude }>;
-
-function mapImage(
-  image: { url: string; altText: string | null; width: number | null; height: number | null },
-  fallbackAlt: string
-): ProjectImage {
-  return {
-    src: image.url,
-    alt: image.altText || fallbackAlt,
-    width: image.width ?? FALLBACK_IMAGE.width,
-    height: image.height ?? FALLBACK_IMAGE.height,
-  };
-}
-
-function mapProject(project: DbProject): Project {
-  const coverImage = project.images.find((image) => image.type === "COVER");
-  const galleryImages = project.images.filter((image) => image.type === "GALLERY");
-
-  return {
-    slug: project.slug,
-    title: project.title,
-    client: project.client ?? undefined,
-    categories: project.categories.map(({ category }) => category.slug as CategorySlug),
-    year: project.year ?? new Date().getFullYear(),
-    role: project.role ?? undefined,
-    summary: project.summary,
-    description: project.description ?? undefined,
-    coverImage: coverImage ? mapImage(coverImage, project.title) : FALLBACK_IMAGE,
-    gallery: galleryImages.map((image, index) =>
-      mapImage(image, `${project.title} gallery ${index + 1}`)
-    ),
-    tags: project.tags.map(({ tag }) => tag.name),
-    featured: project.featured,
-    order: project.orderIndex,
-    isPlaceholder: false,
-  };
-}
-
-/** Returns all published projects, sorted by explicit order then by year (newest first). */
-export async function getAllProjects(): Promise<Project[]> {
-  const projects = await prisma.project.findMany({
-    where: { published: true },
-    orderBy: [{ orderIndex: "asc" }, { year: "desc" }],
-    include: projectInclude,
+async function backendFetch<T>(path: string): Promise<T> {
+  const response = await fetch(`${BACKEND_URL}${path}`, {
+    next: { revalidate: 60 },
   });
 
-  return projects.map(mapProject);
+  if (!response.ok) {
+    throw new Error(`Backend request failed (${response.status})`);
+  }
+
+  return response.json() as Promise<T>;
+}
+
+export async function getAllProjects(): Promise<Project[]> {
+  const { projects } = await backendFetch<{ projects: Project[] }>("/api/projects");
+  return projects;
 }
 
 export async function getProjectBySlug(slug: string): Promise<Project | undefined> {
-  const project = await prisma.project.findFirst({
-    where: { slug, published: true },
-    include: projectInclude,
+  const response = await fetch(`${BACKEND_URL}/api/projects/${encodeURIComponent(slug)}`, {
+    next: { revalidate: 60 },
   });
 
-  return project ? mapProject(project) : undefined;
+  if (response.status === 404) return undefined;
+  if (!response.ok) throw new Error(`Backend request failed (${response.status})`);
+
+  const { project } = (await response.json()) as { project: Project };
+  return project;
 }
 
 export async function getProjectsByCategory(categorySlug: string): Promise<Project[]> {
-  const all = await getAllProjects();
-  return all.filter((project) =>
-    project.categories.includes(categorySlug as CategorySlug)
+  const { projects } = await backendFetch<{ projects: Project[] }>(
+    `/api/projects?category=${encodeURIComponent(categorySlug)}`
   );
+  return projects;
 }
 
 export async function getFeaturedProjects(): Promise<Project[]> {
@@ -85,10 +43,9 @@ export async function getFeaturedProjects(): Promise<Project[]> {
   return all.filter((project) => project.featured);
 }
 
-/** Adjacent project helper, used for "next project" links on case-study pages. */
 export async function getAdjacentProject(slug: string): Promise<Project | undefined> {
   const all = await getAllProjects();
   const index = all.findIndex((project) => project.slug === slug);
-  if (index === -1) return undefined;
+  if (index === -1 || all.length === 0) return undefined;
   return all[(index + 1) % all.length];
 }

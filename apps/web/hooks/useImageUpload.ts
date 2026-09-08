@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { backendUrl, getAdminToken } from "@/lib/admin-client";
 
 type ImageUploadHook = {
   uploadImage: (file: File) => Promise<{ url: string; filename: string }>;
@@ -66,7 +67,11 @@ export function useImageUpload(): ImageUploadHook {
           reject(new Error("Network error during upload"));
         });
 
-        xhr.open("POST", "/api/admin/upload-image");
+        xhr.open("POST", backendUrl("/api/admin/upload-image"));
+        const token = getAdminToken();
+        if (token) {
+          xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+        }
         xhr.send(formData);
       });
     } catch (err) {

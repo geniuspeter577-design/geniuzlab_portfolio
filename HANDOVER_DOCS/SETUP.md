@@ -1,3 +1,11 @@
+> **⚠️ Partially outdated (as of the auth/backend consolidation).**
+> This document still describes the old Postgres/NextAuth/single-.env.local
+> setup in places. Authoritative, current info: `MIGRATION_NOTES.md` at the
+> repo root, `DOCS/README-admin.md`, `apps/web/.env.example`, and
+> `apps/backend/.env.example`. Treat any mention of PostgreSQL, Supabase,
+> Railway, NextAuth, `prisma/.env`, or a single shared `.env.example` in
+> this file as stale until it's fully rewritten.
+
 # GeniuzLab Portfolio - Development Setup Guide
 
 ## 📋 Quick Start (Local Development)

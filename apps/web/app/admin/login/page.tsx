@@ -1,8 +1,8 @@
 "use client";
 
 import { Suspense, useState } from "react";
-import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { backendUrl, setAdminToken } from "@/lib/admin-client";
 
 function AdminLoginForm() {
   const router = useRouter();
@@ -17,22 +17,30 @@ function AdminLoginForm() {
     setError("");
     setIsSubmitting(true);
 
-    const result = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
+    try {
+      const response = await fetch(backendUrl("/api/auth/login"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-    setIsSubmitting(false);
+      const data = await response.json().catch(() => ({}));
 
-    if (result?.error) {
-      setError("Invalid email or password.");
-      return;
+      if (!response.ok || !data.token) {
+        setError(data.error || "Invalid email or password.");
+        return;
+      }
+
+      setAdminToken(data.token);
+
+      const callbackUrl = searchParams.get("callbackUrl") ?? "/admin";
+      router.push(callbackUrl);
+      router.refresh();
+    } catch {
+      setError("Could not reach the server. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
-
-    const callbackUrl = searchParams.get("callbackUrl") ?? "/admin";
-    router.push(callbackUrl);
-    router.refresh();
   }
 
   return (

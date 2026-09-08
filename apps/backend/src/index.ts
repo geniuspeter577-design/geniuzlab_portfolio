@@ -1,10 +1,10 @@
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import { initCloudinary } from './lib/cloudinary';
-
-// Load environment variables
-dotenv.config();
+import { env } from './lib/env';
+import authRoutes from './routes/auth';
+import adminRoutes from './routes/admin';
+import publicRoutes from './routes/public';
 
 // Initialize Cloudinary if configured
 try {
@@ -18,10 +18,10 @@ try {
 }
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = env.PORT;
 
 // Middleware
-app.use(cors());
+app.use(cors({ origin: env.CORS_ORIGIN, credentials: true }));
 app.use(express.json());
 
 // Health check route
@@ -29,16 +29,10 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// API Routes will be added here
-// - POST /api/auth/login
-// - POST /api/auth/logout
-// - GET /api/admin/projects
-// - POST /api/admin/projects
-// - GET /api/admin/projects/:id
-// - PUT /api/admin/projects/:id
-// - DELETE /api/admin/projects/:id
-// - POST /api/admin/upload-image
-// - GET /api/admin/categories
+// API Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/projects', publicRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Error handling middleware
 app.use((err: Error, req: express.Request, res: express.Response, _next: express.NextFunction) => {
@@ -56,6 +50,6 @@ app.use((req, res) => {
 
 // Start server
 app.listen(PORT, () => {
-  console.warn(`🚀 Backend API running on http://localhost:${PORT}`);
-  console.warn(`   Health check: http://localhost:${PORT}/health`);
+  console.warn(`🚀 Backend API listening on port ${PORT}`);
+  console.warn(`   Health check: /health`);
 });

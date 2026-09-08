@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { signOut } from "next-auth/react";
+import { useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { LayoutDashboard, FolderKanban, Plus, LogOut } from "lucide-react";
+import { clearAdminToken, getAdminToken } from "@/lib/admin-client";
 
 const adminNavItems = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
@@ -11,8 +12,37 @@ const adminNavItems = [
   { label: "New", href: "/admin/projects/new", icon: Plus },
 ] as const;
 
+function handleSignOut(router: ReturnType<typeof useRouter>) {
+  clearAdminToken();
+  router.push("/admin/login");
+}
+
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const [checked, setChecked] = useState(false);
+
+  useEffect(() => {
+    if (pathname === "/admin/login") {
+      setChecked(true);
+      return;
+    }
+
+    if (!getAdminToken()) {
+      router.replace(`/admin/login?callbackUrl=${encodeURIComponent(pathname)}`);
+      return;
+    }
+
+    setChecked(true);
+  }, [pathname, router]);
+
+  if (pathname === "/admin/login") {
+    return <>{children}</>;
+  }
+
+  if (!checked) {
+    return <div className="flex min-h-screen items-center justify-center bg-paper text-ink-muted">Checking access...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-paper text-ink">
@@ -48,7 +78,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
           <div className="ml-1 flex items-center gap-1 border-l border-cinema-line pl-1.5">
             <button
-              onClick={() => signOut({ redirectTo: "/admin/login" })}
+              onClick={() => handleSignOut(router)}
               aria-label="Log out"
               className="flex h-9 w-9 items-center justify-center rounded-full text-cinema-muted transition-colors hover:bg-red-500/15 hover:text-red-400"
             >

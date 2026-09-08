@@ -235,33 +235,27 @@ See [../../DOCS/API.md](../../DOCS/API.md) for detailed API documentation.
 
 ## Environment Variables
 
-### Required
+All backend secrets live in `apps/backend/.env.local` locally and in the Render environment dashboard in production. The frontend does not receive database, auth, or storage secrets.
+
+Required values:
 
 ```env
-# Server
 NODE_ENV=development
 PORT=3001
-
-# Database (MongoDB)
-DATABASE_URL=mongodb://localhost:27017/geniuzlab_dev
-
-# Authentication
-AUTH_SECRET=your-secure-32-character-secret
-ADMIN_EMAIL=admin@example.com
-ADMIN_PASSWORD_HASH=bcrypt-hash-of-password
+CORS_ORIGIN=http://localhost:3000
+DATABASE_URL=YOUR_MONGODB_URI
+AUTH_SECRET=YOUR_32_PLUS_CHARACTER_SECRET
+ADMIN_EMAIL=admin@geniuzlab.com
+ADMIN_PASSWORD_HASH=YOUR_BCRYPT_HASH
 ```
 
-### Optional
+Optional storage values:
 
 ```env
-# Image Storage
-BLOB_READ_WRITE_TOKEN=vercel-blob-token
-
-# Database Logging (development)
-DATABASE_LOG_LEVEL=query
-
-# Logging
-LOG_LEVEL=info
+CLOUDINARY_CLOUD_NAME=YOUR_CLOUD_NAME
+CLOUDINARY_API_KEY=YOUR_API_KEY
+CLOUDINARY_API_SECRET=YOUR_API_SECRET
+BLOB_READ_WRITE_TOKEN=YOUR_BLOB_TOKEN
 ```
 
 ## Authentication

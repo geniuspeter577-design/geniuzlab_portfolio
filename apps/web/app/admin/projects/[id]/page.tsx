@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { adminProjectSchema } from "@/lib/admin-projects";
+import { adminProjectSchema } from "@/lib/admin-schema";
+import { adminFetch } from "@/lib/admin-client";
 import { useImageUpload } from "@/hooks/useImageUpload";
 
 type CategoryOption = {
@@ -50,7 +51,7 @@ export default function EditProjectPage() {
   useEffect(() => {
     async function loadProject() {
       try {
-        const response = await fetch(`/api/admin/projects/${params.id}`);
+        const response = await adminFetch(`/api/admin/projects/${params.id}`);
         if (!response.ok) {
           throw new Error("Could not load project.");
         }
@@ -69,7 +70,7 @@ export default function EditProjectPage() {
 
     async function loadCategories() {
       try {
-        const response = await fetch("/api/admin/categories");
+        const response = await adminFetch("/api/admin/categories");
         if (response.ok) {
           const data = await response.json();
           setCategories(data.categories ?? []);
@@ -187,7 +188,7 @@ export default function EditProjectPage() {
         galleryImages: form.galleryImages,
       });
 
-      const response = await fetch(`/api/admin/projects/${params.id}`, {
+      const response = await adminFetch(`/api/admin/projects/${params.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -214,7 +215,7 @@ export default function EditProjectPage() {
     setError("");
 
     try {
-      const response = await fetch(`/api/admin/projects/${params.id}`, {
+      const response = await adminFetch(`/api/admin/projects/${params.id}`, {
         method: "DELETE",
       });
 
@@ -366,9 +367,9 @@ export default function EditProjectPage() {
           </div>
 
           {coverImagePreview && (
-            <div className="relative aspect-video overflow-hidden rounded-md">
+            <div className="overflow-hidden rounded-md">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={coverImagePreview} alt="Cover preview" className="h-full w-full object-cover" />
+              <img src={coverImagePreview} alt="Cover preview" className="block h-auto w-full object-contain" />
               <button
                 type="button"
                 onClick={removeCoverImage}
@@ -425,7 +426,7 @@ export default function EditProjectPage() {
                 <div key={index} className="relative overflow-hidden rounded-md">
                   <div className="aspect-square">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={preview} alt={`Gallery preview ${index + 1}`} className="h-full w-full object-cover" />
+                    <img src={preview} alt={`Gallery preview ${index + 1}`} className="block h-auto w-full object-contain" />
                   </div>
                   <button
                     type="button"

@@ -1,11 +1,43 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { listProjectsForAdmin } from "@/lib/admin-projects";
+import { adminFetch } from "@/lib/admin-client";
 
-export const dynamic = "force-dynamic";
+type CategoryTag = { slug: string; label: string };
+type AdminProjectListItem = {
+  id: string;
+  title: string;
+  summary: string;
+  featured: boolean;
+  published: boolean;
+  categories: CategoryTag[];
+  coverImage: { url: string; altText: string | null } | null;
+};
 
-export default async function AdminProjectsPage() {
-  const projects = await listProjectsForAdmin();
+export default function AdminProjectsPage() {
+  const [projects, setProjects] = useState<AdminProjectListItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadProjects() {
+      try {
+        const response = await adminFetch("/api/admin/projects");
+        if (response.ok) {
+          const data = await response.json();
+          setProjects(data.projects ?? []);
+        }
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadProjects();
+  }, []);
+
+  if (loading) {
+    return <div className="container-editorial section-padding text-ink-muted">Loading projects...</div>;
+  }
 
   return (
     <div className="container-editorial section-padding">

@@ -47,7 +47,7 @@ ADMIN_EMAIL=admin@example.com
 ADMIN_PASSWORD_HASH=<bcrypt-hash>
 
 # Backend API
-BACKEND_URL=http://localhost:3001
+NEXT_PUBLIC_BACKEND_URL=http://localhost:3001
 
 # Image storage (optional)
 CLOUDINARY_CLOUD_NAME=
@@ -226,11 +226,11 @@ npm run type-check       # Validate TypeScript
 
 ```env
 # NextAuth
-NEXTAUTH_URL=http://localhost:3000
+AUTH_URL=http://localhost:3000
 NEXTAUTH_SECRET=your-32-character-secret
 
 # API
-NEXT_PUBLIC_API_URL=http://localhost:3001
+NEXT_PUBLIC_BACKEND_URL=http://localhost:3001
 ```
 
 ### Optional

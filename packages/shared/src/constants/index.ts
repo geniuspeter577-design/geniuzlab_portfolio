@@ -29,13 +29,10 @@ export const mainNav = [
 export const whatsappHref = `https://wa.me/234${siteConfig.whatsapp.replace(/^0/, "")}`;
 
 /**
- * Official public social profiles. Instagram and TikTok links are built
- * directly from the handles provided for this brand. The Facebook link is
- * a best-effort URL built from the page name "Geniuz Lab" — double-check
- * it points at the real page and update here if the slug differs.
+ * Official public social profiles.
  */
 export const socialLinks: { label: string; href: string; handle: string }[] = [
-  { label: "Facebook", href: "https://facebook.com/GeniuzLab", handle: "Geniuz Lab" },
+  { label: "Facebook", href: "https://www.facebook.com/people/Geniuz-Lab/61591186839159/", handle: "Geniuz Lab" },
   { label: "Instagram", href: "https://instagram.com/geniuz_lab", handle: "@geniuz_lab" },
-  { label: "TikTok", href: "https://www.tiktok.com/@geniuzlab", handle: "Geniuzlab" },
+  { label: "TikTok", href: "https://www.tiktok.com/@la.trio.g", handle: "@la.trio.g" },
 ];

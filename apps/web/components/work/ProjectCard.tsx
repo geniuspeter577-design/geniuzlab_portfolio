@@ -22,13 +22,16 @@ export function ProjectCard({ project, size = "default", priority = false }: Pro
           "border border-line/50 hover:border-brass/50"
         )}
       >
-        <div className="relative w-full aspect-[4/3] sm:aspect-[16/9]">
+        <div
+          className="relative w-full"
+          style={{ aspectRatio: `${project.coverImage.width} / ${project.coverImage.height}` }}
+        >
           <Image
             src={project.coverImage.src}
             alt={project.coverImage.alt}
             priority={priority}
             sizes={size === "large" ? "(min-width: 768px) 60vw, 100vw" : "(min-width: 768px) 33vw, 100vw"}
-            className="absolute inset-0 h-full w-full object-cover"
+            className="absolute inset-0 h-full w-full object-contain"
             fill
           />
         </div>

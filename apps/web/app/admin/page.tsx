@@ -1,14 +1,21 @@
-import { redirect } from "next/navigation";
-import { auth } from "@/auth";
+"use client";
 
-export const dynamic = "force-dynamic";
+import { useEffect, useState } from "react";
+import { adminFetch } from "@/lib/admin-client";
 
-export default async function AdminDashboardPage() {
-  const session = await auth();
+export default function AdminDashboardPage() {
+  const [email, setEmail] = useState("");
 
-  if (!session?.user) {
-    redirect("/admin/login");
-  }
+  useEffect(() => {
+    async function loadMe() {
+      const response = await adminFetch("/api/auth/me");
+      if (response.ok) {
+        const data = await response.json();
+        setEmail(data.user?.email ?? "");
+      }
+    }
+    loadMe();
+  }, []);
 
   return (
     <div className="container-editorial section-padding">
@@ -30,7 +37,7 @@ export default async function AdminDashboardPage() {
         </div>
         <div className="rounded-2xl border border-line bg-surface p-6">
           <p className="eyebrow text-ink-muted">User</p>
-          <p className="mt-4 text-2xl font-display">{session.user.email}</p>
+          <p className="mt-4 text-2xl font-display">{email || "..."}</p>
         </div>
       </div>
     </div>

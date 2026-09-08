@@ -33,7 +33,7 @@ export function Footer() {
         >
           <div>
             <p className="page-sub" style={{ margin: "0 0 12px", fontWeight: 800, color: "var(--heading)" }}>
-              Let&apos;s build something worth looking twice at.
+              Make work worth a second look.
             </p>
             <a href={`mailto:${siteConfig.email}`} className="chip" style={{ display: "inline-block" }}>
               {siteConfig.email}

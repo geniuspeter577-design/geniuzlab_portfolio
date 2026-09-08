@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { adminProjectSchema } from "@/lib/admin-projects";
+import { adminProjectSchema } from "@/lib/admin-schema";
+import { adminFetch } from "@/lib/admin-client";
 import { useImageUpload } from "@/hooks/useImageUpload";
 
 type CategoryOption = {
@@ -42,7 +43,7 @@ export default function NewProjectPage() {
 
   useEffect(() => {
     async function loadCategories() {
-      const response = await fetch("/api/admin/categories");
+      const response = await adminFetch("/api/admin/categories");
       if (response.ok) {
         const data = await response.json();
         setCategories(data.categories ?? []);
@@ -159,7 +160,7 @@ export default function NewProjectPage() {
         galleryImages: form.galleryImages,
       });
 
-      const response = await fetch("/api/admin/projects", {
+      const response = await adminFetch("/api/admin/projects", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -306,9 +307,9 @@ export default function NewProjectPage() {
           </div>
 
           {coverImagePreview && (
-            <div className="relative aspect-video overflow-hidden rounded-md">
+            <div className="overflow-hidden rounded-md">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={coverImagePreview} alt="Cover preview" className="h-full w-full object-cover" />
+              <img src={coverImagePreview} alt="Cover preview" className="block h-auto w-full object-contain" />
               <button
                 type="button"
                 onClick={removeCoverImage}
@@ -360,7 +361,7 @@ export default function NewProjectPage() {
                 <div key={index} className="relative overflow-hidden rounded-md">
                   <div className="aspect-square">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={preview} alt={`Gallery preview ${index + 1}`} className="h-full w-full object-cover" />
+                    <img src={preview} alt={`Gallery preview ${index + 1}`} className="block h-auto w-full object-contain" />
                   </div>
                   <button
                     type="button"
