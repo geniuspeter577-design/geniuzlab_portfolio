@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requireAdminSession } from "@/lib/auth";
 import { categories as portfolioCategories } from "@/lib/categories";
@@ -97,7 +98,7 @@ const uniqueNonEmptyTags = (tags: string[]) =>
   Array.from(new Set(tags.map((tag) => tag.trim()).filter(Boolean)));
 
 async function attachProjectCategories(
-  tx: Parameters<typeof prisma.$transaction>[0] extends (tx: infer T) => unknown ? T : never,
+  tx: Prisma.TransactionClient,
   projectId: string,
   categorySlugs: string[]
 ) {
@@ -126,7 +127,7 @@ async function attachProjectCategories(
 }
 
 async function attachProjectTags(
-  tx: Parameters<typeof prisma.$transaction>[0] extends (tx: infer T) => unknown ? T : never,
+  tx: Prisma.TransactionClient,
   projectId: string,
   tags: string[]
 ) {
@@ -155,7 +156,7 @@ async function attachProjectTags(
 }
 
 async function attachProjectImages(
-  tx: Parameters<typeof prisma.$transaction>[0] extends (tx: infer T) => unknown ? T : never,
+  tx: Prisma.TransactionClient,
   projectId: string,
   title: string,
   coverImage: { url: string; altText?: string } | null,
