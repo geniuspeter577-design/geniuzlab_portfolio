@@ -21,7 +21,10 @@
     "test:e2e": "cd apps/web && npx playwright test",
     "test:e2e:ui": "cd apps/web && npx playwright test --ui",
     "db:push": "cd apps/backend && npm run db:push",
-    "db:seed": "cd apps/backend && npm run db:seed"
+    "db:seed": "cd apps/backend && npm run db:seed",
+    "build:web": "npm run build --workspace=@geniuzlab/web",
+    "build:backend": "npm run build --workspace=@geniuzlab/backend",
+    "start:backend": "npm run start --workspace=@geniuzlab/backend"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
