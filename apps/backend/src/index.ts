@@ -49,7 +49,7 @@ app.use((req, res) => {
 });
 
 // Start server
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.warn(`🚀 Backend API listening on port ${PORT}`);
   console.warn(`   Health check: /health`);
 });
