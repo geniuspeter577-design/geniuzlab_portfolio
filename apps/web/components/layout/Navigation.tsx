@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, User, Lightbulb, FolderOpen, Headset } from "lucide-react";
+import Image from "next/image";
+import { Menu, X } from "lucide-react";
+import { useState } from "react";
 
 /**
  * Same six-icon set the mockup uses (home / user / bulb / folder / support),
@@ -11,11 +13,10 @@ import { Home, User, Lightbulb, FolderOpen, Headset } from "lucide-react";
  * between Work and Contact to match the mockup's order exactly.
  */
 const navItems = [
-  { label: "Home", href: "/", icon: Home },
-  { label: "About", href: "/about", icon: User },
-  { label: "Work", href: "/work", icon: Lightbulb },
-  { label: "Services", href: "/services", icon: FolderOpen },
-  { label: "Contact", href: "/contact", icon: Headset },
+  { label: "About", href: "/about" },
+  { label: "Work", href: "/work" },
+  { label: "Services", href: "/services" },
+  { label: "Contact", href: "/contact" },
 ] as const;
 
 /**
@@ -29,53 +30,51 @@ const navItems = [
  */
 export function Navigation() {
   const pathname = usePathname();
+  const [isOpen, setIsOpen] = useState(false);
 
   if (pathname?.startsWith("/admin")) {
     return null;
   }
 
-  const activeIndex = Math.max(
-    0,
-    navItems.findIndex((item) =>
-      item.href === "/" ? pathname === "/" : pathname?.startsWith(item.href)
-    )
-  );
-  const activeItem = navItems[activeIndex];
-  const ActiveIcon = activeItem.icon;
-  const pct = (activeIndex + 0.5) * (100 / navItems.length);
 
   return (
-    <div className="nav-wrap">
-      <nav aria-label="Primary" className="pill">
-        {navItems.map((item, i) => {
-          const isActive = i === activeIndex;
-          const Icon = item.icon;
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              aria-current={isActive ? "page" : undefined}
-              aria-label={item.label}
-              className={`pill-item${isActive ? " is-active-slot" : ""}`}
-            >
-              <Icon />
-            </Link>
-          );
-        })}
-      </nav>
+    <header className="site-header">
+      <div className="site-container site-header-inner">
+        <Link href="/" className="brand-link" aria-label="GeniuzLab home">
+          <Image src="/images/brand/geniuzlab-logo-full.png" alt="GeniuzLab" width={180} height={56} priority />
+        </Link>
 
-      <Link
-        href={activeItem.href}
-        className="lift-circle"
-        style={{ left: `${pct}%` }}
-        aria-hidden="true"
-        tabIndex={-1}
-      >
-        <ActiveIcon />
-      </Link>
-      <span className="lift-label" style={{ left: `${pct}%` }}>
-        {activeItem.label}
-      </span>
-    </div>
+        <button
+          type="button"
+          className="menu-toggle"
+          aria-expanded={isOpen}
+          aria-controls="primary-navigation"
+          aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}
+          onClick={() => setIsOpen((open) => !open)}
+        >
+          {isOpen ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
+        </button>
+
+        <nav id="primary-navigation" aria-label="Primary" className={`primary-nav${isOpen ? " is-open" : ""}`}>
+          <Link href="/" className={pathname === "/" ? "is-active" : ""} onClick={() => setIsOpen(false)}>
+            Home
+          </Link>
+          {navItems.map((item) => {
+            const isActive = pathname?.startsWith(item.href);
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                aria-current={isActive ? "page" : undefined}
+                className={isActive ? "is-active" : ""}
+                onClick={() => setIsOpen(false)}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
+        </nav>
+      </div>
+    </header>
   );
 }

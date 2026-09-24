@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 import { mainNav, siteConfig, socialLinks, whatsappHref } from "@/lib/constants";
-import { categories } from "@/lib/categories";
 
 /**
  * NOTE: the mockup has no footer at all — its SPA ends with a single
@@ -21,106 +21,33 @@ export function Footer() {
   }
 
   return (
-    <footer style={{ borderTop: "1px solid var(--nav-border)", background: "var(--bg)" }}>
-      <div className="frame">
-        <div
-          style={{
-            display: "grid",
-            gap: 32,
-            paddingBottom: 32,
-            borderBottom: "1px solid var(--nav-border)",
-          }}
-        >
+    <footer className="site-footer">
+      <div className="site-container">
+        <div className="footer-main">
           <div>
-            <p className="page-sub" style={{ margin: "0 0 12px", fontWeight: 800, color: "var(--heading)" }}>
-              Make work worth a second look.
-            </p>
-            <a href={`mailto:${siteConfig.email}`} className="chip" style={{ display: "inline-block" }}>
-              {siteConfig.email}
-            </a>
-            <div
-              style={{
-                marginTop: 12,
-                display: "flex",
-                flexWrap: "wrap",
-                gap: 16,
-                fontSize: 13,
-                color: "var(--text-muted)",
-              }}
-            >
-              <a href={`tel:${siteConfig.phones[0]}`}>{siteConfig.phones[0]}</a>
-              <a href={`tel:${siteConfig.phones[1]}`}>{siteConfig.phones[1]}</a>
-              <a href={whatsappHref} target="_blank" rel="noopener noreferrer">
-                WhatsApp
-              </a>
-            </div>
+            <Link href="/" className="brand-link footer-brand" aria-label="GeniuzLab home">
+              <Image src="/images/brand/geniuzlab-logo-full.png" alt="GeniuzLab" width={180} height={56} />
+            </Link>
+            <p className="footer-copy">Make work worth a second look.</p>
+            <a href={`mailto:${siteConfig.email}`} className="footer-email">{siteConfig.email}</a>
           </div>
-
-          <nav aria-label="Footer">
-            <p style={{ fontSize: 12, color: "var(--text-muted)", fontWeight: 700, margin: "0 0 10px" }}>
-              Menu
-            </p>
-            <ul style={{ display: "flex", flexWrap: "wrap", gap: 14, listStyle: "none", padding: 0, margin: 0 }}>
-              {mainNav.map((item) => (
-                <li key={item.href}>
-                  <Link href={item.href} style={{ fontSize: 14 }}>
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
+          <nav aria-label="Footer navigation">
+            <p className="footer-label">Explore</p>
+            <ul className="footer-links">
+              {mainNav.map((item) => <li key={item.href}><Link href={item.href}>{item.label}</Link></li>)}
             </ul>
           </nav>
-
-          <nav aria-label="Categories">
-            <p style={{ fontSize: 12, color: "var(--text-muted)", fontWeight: 700, margin: "0 0 10px" }}>
-              Categories
-            </p>
-            <ul
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: 10,
-                listStyle: "none",
-                padding: 0,
-                margin: 0,
-              }}
-            >
-              {categories.map((category) => (
-                <li key={category.slug}>
-                  <Link href={`/category/${category.slug}`} style={{ fontSize: 14, color: "var(--text-muted)" }}>
-                    {category.label}
-                  </Link>
-                </li>
-              ))}
+          <div>
+            <p className="footer-label">Connect</p>
+            <ul className="footer-links">
+              <li><a href={whatsappHref} target="_blank" rel="noopener noreferrer">WhatsApp</a></li>
+              {socialLinks.map((link) => <li key={link.href}><a href={link.href} target="_blank" rel="noopener noreferrer">{link.label}</a></li>)}
             </ul>
-          </nav>
+          </div>
         </div>
-
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: 12,
-            justifyContent: "space-between",
-            paddingTop: 20,
-            fontSize: 12,
-            color: "var(--text-muted)",
-          }}
-        >
-          <p>
-            © {year} {siteConfig.name}. {siteConfig.founder}.
-          </p>
-          {socialLinks.length > 0 && (
-            <ul style={{ display: "flex", gap: 16, listStyle: "none", padding: 0, margin: 0 }}>
-              {socialLinks.map((link) => (
-                <li key={link.href}>
-                  <a href={link.href} target="_blank" rel="noopener noreferrer">
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          )}
+        <div className="footer-bottom">
+          <p>© {year} {siteConfig.name}. {siteConfig.founder}.</p>
+          <a href={`tel:${siteConfig.phones[0]}`}>{siteConfig.phones[0]}</a>
         </div>
       </div>
     </footer>

@@ -22,7 +22,7 @@ export function CTASection({
       <h2
         style={{
           fontSize: 20,
-          fontWeight: 800,
+          fontWeight: 700,
           margin: "0 0 10px",
           color: "var(--heading)",
         }}

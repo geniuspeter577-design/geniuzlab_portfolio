@@ -13,7 +13,7 @@ export function CategoryShowcase() {
       <h2
         style={{
           fontSize: 15,
-          fontWeight: 800,
+          fontWeight: 700,
           color: "var(--chip-text)",
           margin: "0 0 4px",
         }}
