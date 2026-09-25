@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
-import { siteConfig, socialLinks, whatsappHref } from "@/lib/constants";
+import { siteConfig } from "@/lib/constants";
+import { ArrowUpRight } from "lucide-react";
+import { ContactForm } from "@/components/contact/ContactForm";
+import { socialLinks, whatsappHref } from "@/lib/constants";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -22,34 +25,18 @@ export const metadata: Metadata = {
  */
 export default function ContactPage() {
   return (
-    <section>
-      <h1 className="page-heading">Let&apos;s talk about your project.</h1>
-      <p className="page-sub">
-        The fastest way to reach me is by email or WhatsApp. Include a bit
-        about the project, timeline, and budget if you have one in mind.
-      </p>
-
-      <div className="cta-row" style={{ marginBottom: 24 }}>
-        <a href={`mailto:${siteConfig.email}`} className="cta">
-          Email me
-        </a>
-        <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="cta-ghost">
-          WhatsApp me
-        </a>
+    <section className="contact-page">
+      <div className="contact-page-title-row">
+        <h1>Contact Me</h1>
+        <ArrowUpRight aria-hidden="true" size={28} />
       </div>
-
-      <div className="chip-row">
-        {siteConfig.phones.map((phone) => (
-          <a key={phone} href={`tel:${phone}`} className="chip">
-            {phone}
-          </a>
-        ))}
-        {socialLinks.map((link) => (
-          <a key={link.href} href={link.href} target="_blank" rel="noopener noreferrer" className="chip">
-            {link.label}
-          </a>
-        ))}
+      <div className="section-underline" />
+      <div className="contact-direct-channels" aria-label="Direct contact channels">
+        <a href={`mailto:${siteConfig.email}`}>Email <span>{siteConfig.email}</span></a>
+        <a href={whatsappHref} target="_blank" rel="noopener noreferrer">WhatsApp <span>{siteConfig.phones[0]}</span></a>
+        {socialLinks.slice(0, 1).map((link) => <a key={link.href} href={link.href} target="_blank" rel="noopener noreferrer">{link.label} <span>{link.handle}</span></a>)}
       </div>
+      <ContactForm />
     </section>
   );
 }

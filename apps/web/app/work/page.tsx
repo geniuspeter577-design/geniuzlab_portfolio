@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 import { getAllProjects } from "@/lib/projects";
-import { CategoryFilter } from "@/components/work/CategoryFilter";
+import type { Project } from "@/lib/types";
 import { ProjectGrid } from "@/components/work/ProjectGrid";
 
 export const metadata: Metadata = {
@@ -21,15 +23,28 @@ export const metadata: Metadata = {
 export const revalidate = 60;
 
 export default async function WorkPage() {
-  const projects = await getAllProjects();
+  let projects: Project[] = [];
+
+  try {
+    projects = await getAllProjects();
+  } catch {
+    projects = [];
+  }
 
   return (
     <>
-      <section>
-        <h1 className="page-heading">All Work</h1>
+      <section className="work-page-heading">
+        <p className="eyebrow">Portfolio archive // {projects.length.toString().padStart(2, "0")} entries</p>
+        <div className="work-page-title-row">
+          <h1>Our Work</h1>
+          <ArrowUpRight aria-hidden="true" size={28} />
+        </div>
+        <div className="section-underline" />
+        <div className="work-heading-meta">
+          <p>Selected work across the studio archive, presented from the live portfolio.</p>
+          <Link href="/services" className="work-services-link">Explore services</Link>
+        </div>
       </section>
-
-      <CategoryFilter />
 
       <ProjectGrid projects={projects} />
     </>

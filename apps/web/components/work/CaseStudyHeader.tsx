@@ -1,66 +1,65 @@
 import Image from "next/image";
 import type { Project } from "@/lib/types";
 import { getCategoryBySlug } from "@/lib/categories";
-import { Tag } from "@/components/ui/Tag";
+import Link from "next/link";
+import { ArrowLeft, ArrowUpRight } from "lucide-react";
 
 interface CaseStudyHeaderProps {
   project: Project;
 }
 
 export function CaseStudyHeader({ project }: CaseStudyHeaderProps) {
+  const primaryCategory = getCategoryBySlug(project.categories[0]);
+
   return (
-    <header>
-      <div className="container-editorial pt-12">
+    <header className="case-study-header">
+      <div className="site-container">
+        <Link href="/work" className="case-study-back"><ArrowLeft aria-hidden="true" size={16} /> Back to work</Link>
         {project.isPlaceholder && (
-          <p className="eyebrow mb-6 inline-block border border-brass/40 px-3 py-1.5 text-brass">
+          <p className="eyebrow case-study-placeholder">
             Placeholder project — replace with real case study content
           </p>
         )}
 
-        <div className="flex flex-wrap items-center gap-2">
-          {project.categories.map((slug) => {
-            const category = getCategoryBySlug(slug);
-            return category ? <Tag key={slug}>{category.label}</Tag> : null;
-          })}
+        <div className="case-study-kicker">
+          <span className="eyebrow">Case study // {primaryCategory?.label ?? "Portfolio"}</span>
+          <ArrowUpRight aria-hidden="true" size={22} />
         </div>
 
-        <h1 className="mt-6 max-w-4xl font-display text-hero leading-[0.95]">
-          {project.title}
-        </h1>
+        <h1>{project.title}</h1>
+        <p className="case-study-summary">{project.summary}</p>
 
-        <dl className="mt-8 grid grid-cols-2 gap-6 border-t border-line pt-6 text-sm sm:grid-cols-4">
+        <dl className="case-study-meta">
           {project.client && (
             <div>
-              <dt className="eyebrow text-ink-muted">Client</dt>
-              <dd className="mt-1">{project.client}</dd>
+              <dt>Client</dt>
+              <dd>{project.client}</dd>
             </div>
           )}
           <div>
-            <dt className="eyebrow text-ink-muted">Year</dt>
-            <dd className="mt-1">{project.year}</dd>
+            <dt>Year</dt>
+            <dd>{project.year}</dd>
           </div>
           {project.role && (
             <div>
-              <dt className="eyebrow text-ink-muted">Role</dt>
-              <dd className="mt-1">{project.role}</dd>
+              <dt>Role</dt>
+              <dd>{project.role}</dd>
             </div>
           )}
         </dl>
       </div>
 
-      <div className="container-editorial mt-10">
-        <div className="w-full overflow-hidden rounded-2xl bg-surface">
-          <div className="w-full overflow-hidden rounded-2xl bg-surface">
-            <Image
-              src={project.coverImage.src}
-              alt={project.coverImage.alt}
-              width={project.coverImage.width}
-              height={project.coverImage.height}
-              priority
-              sizes="100vw"
-              className="block h-auto w-full"
-            />
-          </div>
+      <div className="site-container case-study-cover-wrap">
+        <div className="case-study-cover">
+          <Image
+            src={project.coverImage.src}
+            alt={project.coverImage.alt}
+            width={project.coverImage.width}
+            height={project.coverImage.height}
+            priority
+            sizes="(min-width: 1024px) 1180px, 100vw"
+            className="block h-auto w-full"
+          />
         </div>
       </div>
     </header>

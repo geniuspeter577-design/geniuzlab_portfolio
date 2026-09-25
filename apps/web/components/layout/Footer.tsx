@@ -5,13 +5,6 @@ import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { mainNav, siteConfig, socialLinks, whatsappHref } from "@/lib/constants";
 
-/**
- * NOTE: the mockup has no footer at all — its SPA ends with a single
- * `<p class="note">`. There's nothing to port 1:1 here, so this keeps your
- * existing footer's structure/content but restyles it with the mockup's
- * light background, --surface cards, and green accent instead of the old
- * dark "cinema" block, so it doesn't clash with the rest of the site.
- */
 export function Footer() {
   const year = new Date().getFullYear();
   const pathname = usePathname();
@@ -28,7 +21,7 @@ export function Footer() {
             <Link href="/" className="brand-link footer-brand" aria-label="GeniuzLab home">
               <Image src="/images/brand/geniuzlab-logo-full.png" alt="GeniuzLab" width={180} height={56} />
             </Link>
-            <p className="footer-copy">Make work worth a second look.</p>
+            <p className="footer-copy">Creating what matters through design, motion, technology and creative strategy.</p>
             <a href={`mailto:${siteConfig.email}`} className="footer-email">{siteConfig.email}</a>
           </div>
           <nav aria-label="Footer navigation">

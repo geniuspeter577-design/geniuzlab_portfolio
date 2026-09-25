@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getAllCategories, getCategoryBySlug } from "@/lib/categories";
 import { getProjectsByCategory } from "@/lib/projects";
+import type { Project } from "@/lib/types";
 import { CategoryFilter } from "@/components/work/CategoryFilter";
 import { ProjectGrid } from "@/components/work/ProjectGrid";
 
@@ -31,19 +32,28 @@ export default async function CategoryPage(props: PageProps<"/category/[category
 
   if (!category) notFound();
 
-  const projects = await getProjectsByCategory(category.slug);
+  let projects: Project[] = [];
+
+  try {
+    projects = await getProjectsByCategory(category.slug);
+  } catch {
+    projects = [];
+  }
 
   return (
     <>
-      <div className="container-editorial pt-16 pb-10">
-        <p className="eyebrow text-brass">Category</p>
-        <h1 className="mt-3 max-w-2xl font-display text-display">{category.label}</h1>
-        <p className="mt-4 max-w-xl text-lead text-ink-muted">{category.description}</p>
+      <div className="category-heading site-container">
+        <div className="category-heading-top">
+          <p className="eyebrow">Category // active archive</p>
+          <span className="status-badge"><span aria-hidden="true" /> {projects.length} projects</span>
+        </div>
+        <h1>{category.label}</h1>
+        <p>{category.description}</p>
       </div>
 
       <CategoryFilter />
 
-      <div className="container-editorial section-padding">
+      <div className="site-container section-padding">
         <ProjectGrid
           projects={projects}
           emptyMessage={`No ${category.label.toLowerCase()} projects published yet.`}

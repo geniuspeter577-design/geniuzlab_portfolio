@@ -40,7 +40,7 @@ export default function AdminProjectsPage() {
   }
 
   return (
-    <div className="container-editorial section-padding">
+    <div className="admin-page container-editorial section-padding">
       <div className="flex flex-col gap-4 border-b border-line pb-8 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="eyebrow text-brass">Portfolio</p>

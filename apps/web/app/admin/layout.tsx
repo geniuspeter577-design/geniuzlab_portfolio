@@ -45,11 +45,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   return (
-    <div className="min-h-screen bg-paper text-ink">
+    <div className="admin-shell min-h-screen bg-paper text-ink">
       <header className="sticky top-3 z-40 flex justify-center px-3 sm:top-4">
         <nav
           aria-label="Admin"
-          className="flex max-w-full items-center gap-1 rounded-full border border-cinema-line bg-cinema/90 px-2 py-2 text-cinema-ink shadow-[0_8px_32px_-8px_rgba(0,0,0,0.5),0_0_0_1px_rgba(126,217,87,0.08)] backdrop-blur-xl sm:gap-1.5"
+          className="admin-nav flex max-w-full items-center gap-1 rounded-full border border-cinema-line bg-cinema/90 px-2 py-2 text-cinema-ink shadow-[0_8px_32px_-8px_rgba(0,0,0,0.5),0_0_0_1px_rgba(126,217,87,0.08)] backdrop-blur-xl sm:gap-1.5"
         >
           <span className="mr-1 hidden shrink-0 items-center gap-1.5 pl-2 pr-1 sm:flex">
             <span className="eyebrow text-brass">GENIUZLAB</span>
@@ -88,7 +88,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </nav>
       </header>
 
-      <main className="container-editorial py-8 sm:py-10">{children}</main>
+      <main className="admin-main container-editorial py-8 sm:py-10">{children}</main>
     </div>
   );
 }

@@ -241,7 +241,7 @@ export default function EditProjectPage() {
   }
 
   return (
-    <div className="container-editorial section-padding">
+    <div className="admin-page container-editorial section-padding">
       <div className="mb-8">
         <p className="eyebrow text-brass">Portfolio</p>
         <h1 className="mt-3 font-display text-display">Edit project</h1>

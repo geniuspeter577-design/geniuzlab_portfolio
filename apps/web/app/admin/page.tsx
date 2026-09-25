@@ -18,7 +18,7 @@ export default function AdminDashboardPage() {
   }, []);
 
   return (
-    <div className="container-editorial section-padding">
+    <div className="admin-page container-editorial section-padding">
       <p className="eyebrow text-brass">Private dashboard</p>
       <h1 className="mt-4 font-display text-display">Welcome back</h1>
       <p className="mt-4 max-w-xl text-lead text-ink-muted">

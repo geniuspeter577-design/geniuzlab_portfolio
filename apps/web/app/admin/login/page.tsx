@@ -44,8 +44,8 @@ function AdminLoginForm() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-paper px-6 py-16 text-ink">
-      <div className="w-full max-w-md rounded-2xl border border-line bg-surface p-8 shadow-[0_0_0_1px_rgba(126,217,87,0.12)]">
+    <div className="admin-login flex min-h-screen items-center justify-center bg-paper px-6 py-16 text-ink">
+      <div className="admin-login-card w-full max-w-md rounded-2xl border border-line bg-surface p-8 shadow-[0_0_0_1px_rgba(126,217,87,0.12)]">
         <div className="mb-8">
           <p className="eyebrow text-brass">Private access</p>
           <h1 className="mt-3 font-display text-3xl">Admin login</h1>

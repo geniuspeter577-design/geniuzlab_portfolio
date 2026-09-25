@@ -1,43 +1,41 @@
 "use client";
 
-import { createContext, useContext, useEffect, type ReactNode } from "react";
+import { createContext, useContext, useState, type ReactNode } from "react";
 
-/**
- * Light theme has been removed entirely per the approved mockup — the site
- * is dark-only now, so there's no theme to toggle or persist. This file is
- * kept (same exports) only so anything still importing ThemeProvider /
- * useTheme / themeInitScript — e.g. layout.tsx wrapping <html> or injecting
- * a pre-paint script — doesn't need to change. All of it now just forces
- * "dark" and does nothing else.
- */
-type Theme = "dark";
+type Theme = "dark" | "light";
 
 interface ThemeContextValue {
   theme: Theme;
+  toggleTheme: () => void;
 }
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
-/**
- * Formerly the pre-paint inline script that picked light vs. dark from
- * localStorage/prefers-color-scheme. With only one theme left there's
- * nothing to decide before paint, so this just sets the attribute for any
- * leftover [data-theme="dark"] selectors and CSS reads directly off :root,
- * so even this attribute is optional. Kept as a no-op string so a
- * layout.tsx that injects it via dangerouslySetInnerHTML keeps working.
- */
 export const themeInitScript = `
 (function () {
-  document.documentElement.setAttribute("data-theme", "dark");
+  var key = "geniuzlab-theme";
+  var stored = window.localStorage.getItem(key);
+  var theme = stored === "light" || stored === "dark"
+    ? stored
+    : "dark";
+  document.documentElement.dataset.theme = theme;
 })();
 `;
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  useEffect(() => {
-    document.documentElement.setAttribute("data-theme", "dark");
-  }, []);
+  const [theme, setTheme] = useState<Theme>(() => {
+    if (typeof document === "undefined") return "dark";
+    return document.documentElement.dataset.theme === "light" ? "light" : "dark";
+  });
 
-  return <ThemeContext.Provider value={{ theme: "dark" }}>{children}</ThemeContext.Provider>;
+  const toggleTheme = () => {
+    const nextTheme = theme === "dark" ? "light" : "dark";
+    setTheme(nextTheme);
+    document.documentElement.dataset.theme = nextTheme;
+    window.localStorage.setItem("geniuzlab-theme", nextTheme);
+  };
+
+  return <ThemeContext.Provider value={{ theme, toggleTheme }}>{children}</ThemeContext.Provider>;
 }
 
 export function useTheme() {

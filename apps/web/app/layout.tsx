@@ -1,16 +1,25 @@
 import Script from "next/script";
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import localFont from "next/font/local";
 import { Navigation } from "@/components/layout/Navigation";
+import { BottomNav } from "@/components/layout/BottomNav";
 import { Footer } from "@/components/layout/Footer";
 import { ThemeProvider, themeInitScript } from "@/components/ui/ThemeProvider";
 import { siteConfig } from "@/lib/constants";
 import "./globals.css";
 
-const brandFont = Geist({
-  variable: "--font-brand",
-  subsets: ["latin"],
-  weight: ["400", "700"],
+const brandFont = localFont({
+  src: [
+    { path: "../public/fonts/general-sans-regular.woff2", weight: "400", style: "normal" },
+    { path: "../public/fonts/general-sans-semibold.woff2", weight: "600", style: "normal" },
+  ],
+  variable: "--font-general-sans",
+});
+const heroFont = localFont({
+  src: "../public/fonts/creato-display-regular.otf",
+  variable: "--font-creato-display",
+  weight: "400",
+  style: "normal",
 });
 
 export const metadata: Metadata = {
@@ -33,7 +42,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       // server-rendered attribute (absent) doesn't match the client value
       // the script just set.
       suppressHydrationWarning
-      className={`${brandFont.variable} h-full antialiased`}
+      className={`${brandFont.variable} ${heroFont.variable} h-full antialiased`}
     >
       <head>
         <Script id="theme-init" strategy="beforeInteractive" dangerouslySetInnerHTML={{ __html: themeInitScript }} />
@@ -44,6 +53,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <Navigation />
             <main className="site-main">{children}</main>
           </div>
+          <BottomNav />
           <Footer />
         </ThemeProvider>
       </body>

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 import type { Project } from "@/lib/types";
 import { getCategoryBySlug } from "@/lib/categories";
 import { cn } from "@/lib/utils";
@@ -16,51 +17,28 @@ export function ProjectCard({ project, size = "default", priority = false }: Pro
 
   return (
     <Link href={`/work/${project.slug}`} className="group block">
-      <div
-        className={cn(
-          "relative overflow-hidden rounded-2xl bg-surface transition-all duration-500 ease-[var(--ease-cinema)]",
-          "border border-line/50 hover:border-brass/50"
-        )}
-      >
+      <div className="project-card">
+        <div className="project-card-heading">
+          <p className="project-card-label">{project.client || primaryCategory?.label}</p>
+          <h2>{project.title}</h2>
+        </div>
         <div
-          className="relative w-full"
+          className={cn("project-card-image relative w-full overflow-hidden", "transition-all duration-500 ease-[var(--ease-cinema)]")}
           style={{ aspectRatio: `${project.coverImage.width} / ${project.coverImage.height}` }}
         >
           <Image
             src={project.coverImage.src}
             alt={project.coverImage.alt}
             priority={priority}
-            sizes={size === "large" ? "(min-width: 768px) 60vw, 100vw" : "(min-width: 768px) 33vw, 100vw"}
-            className="absolute inset-0 h-full w-full object-contain"
+            sizes={size === "large" ? "(min-width: 768px) 60vw, 100vw" : "(min-width: 768px) 70vw, 100vw"}
+            className="absolute inset-0 h-full w-full object-cover"
             fill
           />
-        </div>
-
-        {project.isPlaceholder && (
-          <span className="eyebrow absolute left-3 top-3 bg-cinema/90 px-2 py-1 text-cinema-ink">
-            Placeholder
-          </span>
-        )}
-
-        <span className="absolute bottom-4 right-4 flex h-10 w-10 -translate-y-2 items-center justify-center rounded-full bg-brass text-cinema opacity-0 transition-all duration-300 ease-[var(--ease-cinema)] group-hover:translate-y-0 group-hover:opacity-100 shadow-lg">
-          <span aria-hidden className="text-sm font-bold">
-            ↗
-          </span>
-        </span>
-      </div>
-
-      <div className="mt-5 flex flex-col gap-2 border-t border-line/50 pt-4 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
-        <div className="min-w-0">
-          <h3 className="font-display text-lg sm:text-xl leading-snug text-ink group-hover:text-brass transition-colors">
-            {project.title}
-          </h3>
-          {project.client && (
-            <p className="mt-1 text-sm text-ink-muted">{project.client}</p>
-          )}
-        </div>
-        <div className="eyebrow shrink-0 text-ink-muted text-xs sm:text-right">
-          <p className="font-semibold text-brass/70">{primaryCategory?.label}</p>
-          <p>{project.year}</p>
+          <div className="project-card-tags">
+            {primaryCategory && <span>{primaryCategory.label}</span>}
+            {project.isPlaceholder && <span>Placeholder</span>}
+          </div>
+          <span className="project-card-action" aria-hidden="true"><ArrowUpRight size={18} /></span>
         </div>
       </div>
     </Link>

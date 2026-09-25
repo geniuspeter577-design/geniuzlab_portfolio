@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { CTASection } from "@/components/sections/CTASection";
+import { Testimonials } from "@/components/home/Testimonials";
 import { siteConfig } from "@/lib/constants";
+import { categories } from "@/lib/categories";
 
 export const metadata: Metadata = {
   title: "About",
@@ -76,6 +78,26 @@ export default function AboutPage() {
         </div>
       </section>
 
+      <section className="section" aria-labelledby="about-capabilities-title">
+        <div className="site-container">
+          <div className="section-heading-row">
+            <div>
+              <p className="section-kicker">Capabilities</p>
+              <h2 id="about-capabilities-title" className="section-title">A practical creative practice.</h2>
+            </div>
+          </div>
+          <div className="capability-list">
+            {categories.map((category) => (
+              <div key={category.slug} className="capability-row">
+                <span>{category.label}</span>
+                <span>{category.description}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <Testimonials />
       <CTASection heading="Ready to start a project?" />
     </>
   );

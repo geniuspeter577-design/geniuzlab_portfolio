@@ -15,13 +15,16 @@ export default function ServicesPage() {
   return (
     <>
       <section>
-        <h1 className="page-heading">GeniuzLab Gallery</h1>
-        <p className="page-sub">
-          Design work across seven areas. Each links through to the relevant
-          portfolio category.
-        </p>
+        <div className="category-heading site-container">
+          <div className="category-heading-top">
+            <p className="eyebrow">Capabilities // {categories.length.toString().padStart(2, "0")} disciplines</p>
+            <span className="status-badge"><span aria-hidden="true" /> Active lab</span>
+          </div>
+          <h1>Our Services</h1>
+          <p>Design work across the studio&apos;s existing disciplines. Each service connects to its live portfolio category.</p>
+        </div>
 
-        <div className="services">
+        <div className="services site-container services-page-list">
           {categories.map((category) => (
             <Link key={category.slug} href={`/category/${category.slug}`} className="card">
               <div>
