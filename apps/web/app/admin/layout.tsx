@@ -3,13 +3,16 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, FolderKanban, Plus, LogOut } from "lucide-react";
+import { LayoutDashboard, FolderKanban, Plus, LogOut, Images, Inbox, Settings } from "lucide-react";
 import { clearAdminToken, getAdminToken } from "@/lib/admin-client";
 
 const adminNavItems = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { label: "Projects", href: "/admin/projects", icon: FolderKanban },
-  { label: "New", href: "/admin/projects/new", icon: Plus },
+  { label: "Media", href: "/admin/media", icon: Images },
+  { label: "Inquiries", href: "/admin/inquiries", icon: Inbox },
+  { label: "Settings", href: "/admin/settings", icon: Settings },
+  { label: "New project", href: "/admin/projects/new", icon: Plus },
 ] as const;
 
 const publicAdminPaths = [
@@ -70,6 +73,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <Link
                 key={item.href}
                 href={item.href}
+                aria-label={item.label}
+                title={item.label}
                 aria-current={isActive ? "page" : undefined}
                 className={`flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-medium transition-all duration-300 sm:px-3.5 ${
                   isActive

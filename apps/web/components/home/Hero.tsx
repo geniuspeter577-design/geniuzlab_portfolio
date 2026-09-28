@@ -16,17 +16,14 @@ export function Hero() {
             className="hero-avatar"
             priority
           />
-          <p className="eyebrow">Avant-garde atelier // active lab</p>
-          <h1 className="hero-title"><span>Hey,</span><span>We&apos;re</span><span>GeniuzLab.</span></h1>
-          <p className="hero-copy">Autonomous creative direction, tactile digital artifacts, and bespoke visual architectures.</p>
+          <p className="eyebrow">Independent creative studio // Nigeria + worldwide</p>
+          <h1 className="hero-title"><span>Ideas.</span><span>Design.</span><span>Impact.</span></h1>
+          <p className="hero-copy">{siteConfig.description}</p>
           <div className="hero-pills" aria-label="GeniuzLab services">
-            <Link href="/work" className="hero-pill is-accent">Explore the archive</Link>
-            <Link href="/services" className="hero-pill">Capabilities</Link>
+            <Link href="/work" className="button-primary">Explore selected work</Link>
+            <Link href="/services" className="button-secondary">Studio capabilities</Link>
           </div>
-          <Link href="/about" className="hero-manifesto">
-            <span><small>Studio manifesto</small><strong>Creating what matters through design, motion, technology and strategy.</strong></span>
-            <ArrowUpRight aria-hidden="true" size={22} />
-          </Link>
+          <p className="hero-manifesto"><span><small>Studio status</small><strong>Open for considered collaborations</strong></span><ArrowUpRight aria-hidden="true" size={22} /></p>
         </div>
       </div>
     </section>

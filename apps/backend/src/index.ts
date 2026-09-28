@@ -5,6 +5,7 @@ import { env } from './lib/env';
 import authRoutes from './routes/auth';
 import adminRoutes from './routes/admin';
 import publicRoutes from './routes/public';
+import inquiryRoutes from './routes/inquiries';
 
 // Initialize Cloudinary if configured
 try {
@@ -32,6 +33,7 @@ app.get('/health', (req, res) => {
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/projects', publicRoutes);
+app.use('/api/inquiries', inquiryRoutes);
 app.use('/api/admin', adminRoutes);
 
 // Error handling middleware

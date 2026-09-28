@@ -36,9 +36,9 @@ export function Navigation() {
         </nav>
 
         <div className="header-actions">
-          <button type="button" className="icon-button" aria-label="Search" title="Search">
+          <Link href="/search" className="icon-button" aria-label="Search projects" title="Search projects">
             <Search aria-hidden="true" />
-          </button>
+          </Link>
           <button
             type="button"
             className="theme-toggle icon-button"

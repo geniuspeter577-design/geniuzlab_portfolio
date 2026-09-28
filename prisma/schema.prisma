@@ -115,3 +115,20 @@ model ProjectImage {
 
   @@map("project_images")
 }
+
+model Inquiry {
+  id           String   @id @default(cuid()) @map("_id")
+  name         String
+  email        String
+  disciplines  String[]
+  budgetRange  String?  @map("budget_range")
+  brief        String
+  isRead       Boolean  @default(false) @map("is_read")
+  isFlagged    Boolean  @default(false) @map("is_flagged")
+  isArchived   Boolean  @default(false) @map("is_archived")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@index([createdAt])
+  @@map("inquiries")
+}

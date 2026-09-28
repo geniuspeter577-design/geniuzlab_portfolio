@@ -1,6 +1,8 @@
 import { Router } from "express";
 import multer from "multer";
+import { z } from "zod";
 import { requireAuth } from "../middleware/requireAuth";
+import { attachAdminMedia, getAdminDashboard, listAdminInquiries, listAdminMedia, updateAdminInquiry } from "../lib/admin-content";
 import {
   adminProjectSchema,
   createProject,
@@ -27,6 +29,78 @@ router.use(requireAuth);
 router.get("/categories", async (_req, res) => {
   const categories = await getAdminCategories();
   res.json({ categories });
+});
+
+router.get("/dashboard", async (_req, res) => {
+  res.json(await getAdminDashboard());
+});
+
+router.get("/inquiries", async (req, res) => {
+  const allowedFilters = ["all", "unread", "flagged", "archived"] as const;
+  const requested = typeof req.query.filter === "string" ? req.query.filter : "all";
+  const filter = allowedFilters.includes(requested as (typeof allowedFilters)[number])
+    ? requested as (typeof allowedFilters)[number]
+    : "all";
+  res.json({ inquiries: await listAdminInquiries(filter) });
+});
+
+router.patch("/inquiries/:id", async (req, res) => {
+  const changesSchema = z.object({
+    isRead: z.boolean().optional(),
+    isFlagged: z.boolean().optional(),
+    isArchived: z.boolean().optional(),
+  }).refine((changes) => Object.keys(changes).length > 0);
+  const parsed = changesSchema.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: "Choose an inquiry status to update." });
+    return;
+  }
+
+  try {
+    const inquiry = await updateAdminInquiry(req.params.id, parsed.data);
+    res.json({ inquiry });
+  } catch {
+    res.status(404).json({ error: "Inquiry not found." });
+  }
+});
+
+router.get("/media", async (_req, res) => {
+  res.json({ media: await listAdminMedia() });
+});
+
+router.post("/media", async (req, res) => {
+  const attachmentSchema = z.object({
+    projectId: z.string().min(1),
+    url: z.string().url(),
+    type: z.enum(["GALLERY", "VIDEO"]),
+    posterUrl: z.string().url().nullable().optional(),
+    altText: z.string().max(300).optional(),
+  });
+  const parsed = attachmentSchema.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: "Choose a project and valid media file." });
+    return;
+  }
+
+  try {
+    const media = await attachAdminMedia(parsed.data);
+    res.status(201).json({ media });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Could not attach media.";
+    res.status(message === "Project not found." ? 404 : 409).json({ error: message });
+  }
+});
+
+router.get("/settings", (_req, res) => {
+  const hasCloudinary = Boolean(process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET);
+  const hasBlob = Boolean(process.env.BLOB_READ_WRITE_TOKEN);
+  res.json({
+    database: process.env.DATABASE_URL ? "MongoDB configured" : "Database not configured",
+    mediaStorage: hasCloudinary ? "Cloudinary" : hasBlob ? "Vercel Blob" : "Storage not configured",
+    maxUploadMb: 50,
+    pageRevalidationSeconds: 60,
+    adminEmail: process.env.ADMIN_EMAIL ?? "",
+  });
 });
 
 router.get("/projects", async (_req, res) => {

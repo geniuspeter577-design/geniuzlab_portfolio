@@ -27,7 +27,7 @@ export default function ContactPage() {
   return (
     <section className="contact-page">
       <div className="contact-page-title-row">
-        <h1>Contact Me</h1>
+        <h1>Let&apos;s create something remarkable.</h1>
         <ArrowUpRight aria-hidden="true" size={28} />
       </div>
       <div className="section-underline" />
@@ -36,6 +36,7 @@ export default function ContactPage() {
         <a href={whatsappHref} target="_blank" rel="noopener noreferrer">WhatsApp <span>{siteConfig.phones[0]}</span></a>
         {socialLinks.slice(0, 1).map((link) => <a key={link.href} href={link.href} target="_blank" rel="noopener noreferrer">{link.label} <span>{link.handle}</span></a>)}
       </div>
+      <p className="contact-intro">Tell us what you are building, who it is for, and what a good outcome looks like. We will reply to your brief directly.</p>
       <ContactForm />
     </section>
   );
