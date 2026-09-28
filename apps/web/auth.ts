@@ -40,14 +40,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           return null;
         }
 
-        if (!env.ADMIN_PASSWORD_HASH) {
-          return null;
-        }
+        const authState = await prisma.adminAuthState.findUnique({
+          where: { id: "admin" },
+        });
+        const passwordHash =
+          authState?.passwordHashSource === env.ADMIN_PASSWORD_HASH
+            ? authState.passwordHash
+            : env.ADMIN_PASSWORD_HASH;
 
-        const isAdminPasswordValid = await bcrypt.compare(
-          password,
-          env.ADMIN_PASSWORD_HASH,
-        );
+        if (!passwordHash) return null;
+
+        const isAdminPasswordValid = await bcrypt.compare(password, passwordHash);
 
         if (!isAdminPasswordValid) {
           return null;

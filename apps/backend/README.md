@@ -247,7 +247,11 @@ DATABASE_URL=YOUR_MONGODB_URI
 AUTH_SECRET=YOUR_32_PLUS_CHARACTER_SECRET
 ADMIN_EMAIL=admin@geniuzlab.com
 ADMIN_PASSWORD_HASH=YOUR_BCRYPT_HASH
+ADMIN_PASSWORD_RESET_KEY=OPTIONAL_RANDOM_ONE_TIME_KEY
+ADMIN_PASSWORD_RESET_EXPIRES_AT=OPTIONAL_UTC_EXPIRY
 ```
+
+Password recovery has no email sender configured. To enable a one-time reset, set `ADMIN_PASSWORD_RESET_KEY` to a newly generated value from `openssl rand -hex 32` and `ADMIN_PASSWORD_RESET_EXPIRES_AT` to its UTC ISO-8601 expiration time. Provide the key to the admin through a separate secure channel. The reset key is accepted once and its hash is recorded in MongoDB; rotate both values for another recovery. The new password is stored as a bcrypt hash in the admin auth state and is used by both backend login and Auth.js. Changing `ADMIN_PASSWORD_HASH` later takes precedence over that reset override.
 
 Optional storage values:
 

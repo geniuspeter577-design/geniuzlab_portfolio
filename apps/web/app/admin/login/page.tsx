@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense, useState } from "react";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { backendUrl, setAdminToken } from "@/lib/admin-client";
 
@@ -78,6 +79,12 @@ function AdminLoginForm() {
               className="w-full rounded-md border border-line bg-paper px-4 py-3 text-ink outline-none transition focus:border-brass"
               required
             />
+            <Link
+              href="/admin/forgot-password"
+              className="mt-2 block text-sm text-ink-muted transition hover:text-brass"
+            >
+              Forgot password?
+            </Link>
           </div>
 
           {error ? (

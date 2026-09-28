@@ -17,6 +17,16 @@ model User {
   @@map("users")
 }
 
+model AdminAuthState {
+  id                 String   @id @map("_id")
+  usedResetKeyHashes String[] @default([]) @map("used_reset_key_hashes")
+  resetUsedAt        DateTime @map("reset_used_at")
+  passwordHash       String   @map("password_hash")
+  passwordHashSource String   @map("password_hash_source")
+
+  @@map("admin_auth_state")
+}
+
 model Category {
   id          String            @id @default(cuid()) @map("_id")
   slug        String            @unique
