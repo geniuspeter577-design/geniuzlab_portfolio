@@ -342,7 +342,7 @@ See `prisma/schema.prisma` for detailed schema.
 node -e "const bcrypt=require('bcryptjs'); console.log(bcrypt.hashSync('YourSecurePassword123!', 10));"
 
 # Add to .env.local:
-ADMIN_EMAIL=admin@geniuzlab.com
+ADMIN_EMAIL=geniuzlab577@gmail.com
 ADMIN_PASSWORD_HASH=<generated-hash>
 ```
 

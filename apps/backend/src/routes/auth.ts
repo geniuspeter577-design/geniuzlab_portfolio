@@ -98,8 +98,11 @@ router.post("/forgot-password", async (req, res) => {
 
   try {
     const currentState = await prisma.adminAuthState.findUnique({ where: { id: "admin" } });
-    const currentPasswordHash = currentState?.passwordHash || env.ADMIN_PASSWORD_HASH;
-    const currentPasswordHashSource = currentState?.passwordHashSource || env.ADMIN_PASSWORD_HASH;
+    const storedHashIsCurrent = currentState?.passwordHashSource === env.ADMIN_PASSWORD_HASH;
+    const currentPasswordHash = storedHashIsCurrent
+      ? currentState.passwordHash
+      : env.ADMIN_PASSWORD_HASH;
+    const currentPasswordHashSource = env.ADMIN_PASSWORD_HASH;
 
     if (currentPasswordHash) {
       await prisma.adminAuthState.upsert({

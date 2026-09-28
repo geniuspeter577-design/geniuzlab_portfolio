@@ -13,6 +13,7 @@ import {
 import {
   getDefaultImageProvider,
   getFileSizeLimit,
+  isValidMediaContent,
   isValidMediaFile,
   isValidMediaFilename,
   uploadImage,
@@ -93,7 +94,11 @@ router.post("/upload-image", (req, res) => {
     }
 
     const isVideo = file.mimetype.startsWith("video/");
-    if (!isValidMediaFile(file.mimetype, true) || !isValidMediaFilename(file.originalname, file.mimetype)) {
+    if (
+      !isValidMediaFile(file.mimetype, true) ||
+      !isValidMediaFilename(file.originalname, file.mimetype) ||
+      !isValidMediaContent(file.buffer, file.mimetype)
+    ) {
       res.status(415).json({ error: "Unsupported media type or file extension." });
       return;
     }

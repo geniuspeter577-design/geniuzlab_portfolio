@@ -7,7 +7,7 @@ A professional portfolio and CMS for **GENIUZLAB**, a design studio by Otsaje Ge
 - **Public Portfolio Site** - Browse design work by category with detailed case studies
 - **Admin CMS** - Protected admin panel to manage and publish projects
 - **Project Management** - Create, edit, and organize portfolio projects
-- **Image Uploads** - Upload and manage project images with Vercel Blob
+- **Project Media** - Upload cover/gallery images and optional videos/posters through the existing Cloudinary or Vercel Blob storage path
 - **Authentication** - Secure credential-based admin login
 - **Responsive Design** - Mobile-friendly interface with Tailwind CSS
 - **Type-Safe** - Full TypeScript across all apps and packages
@@ -136,6 +136,12 @@ npm run dev
 ```
 
 For detailed setup instructions, see [HANDOVER_DOCS/SETUP.md](HANDOVER_DOCS/SETUP.md).
+
+### Media and Reset Verification
+
+**IMPLEMENTED:** Project media supports cover images, galleries, optional video and poster media. Admin password reset sends a hashed, expiring, single-use link to `geniuzlab577@gmail.com` through configured SMTP.
+
+**REAL-WORLD VERIFIED:** Not verified in this workspace. Cloudinary is preferred when configured, but `CLOUDINARY_CLOUD_NAME` and `CLOUDINARY_API_KEY` are missing; `BLOB_READ_WRITE_TOKEN` is also missing for the fallback. `SMTP_HOST` and `SMTP_FROM` are missing (set `SMTP_USER` and `SMTP_PASSWORD` together if your SMTP server requires authentication). No local MP4/WebM/MOV fixture under 50 MB was found. See [apps/backend/README.md](apps/backend/README.md) and [HANDOVER_DOCS/DEPLOYMENT.md](HANDOVER_DOCS/DEPLOYMENT.md) for configuration details.
 
 ---
 

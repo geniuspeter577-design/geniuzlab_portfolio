@@ -2,6 +2,7 @@ import {
   uploadImage,
   getDefaultImageProvider,
   isValidMediaFile,
+  isValidMediaContent,
   isValidMediaFilename,
   getFileSizeLimit,
 } from '../../src/lib/image-upload';
@@ -85,6 +86,18 @@ describe('Image Upload Utilities', () => {
     it('rejects mismatched or unsupported extensions', () => {
       expect(isValidMediaFilename('clip.mov', 'video/mp4')).toBe(false);
       expect(isValidMediaFilename('clip.avi', 'video/x-msvideo')).toBe(false);
+    });
+  });
+
+  describe('isValidMediaContent', () => {
+    it('recognizes MP4, QuickTime, and WebM signatures', () => {
+      const mp4 = Buffer.concat([Buffer.from([0, 0, 0, 24]), Buffer.from('ftypisom'), Buffer.alloc(8)]);
+      const mov = Buffer.concat([Buffer.from([0, 0, 0, 24]), Buffer.from('ftypqt  '), Buffer.alloc(8)]);
+
+      expect(isValidMediaContent(mp4, 'video/mp4')).toBe(true);
+      expect(isValidMediaContent(mov, 'video/quicktime')).toBe(true);
+      expect(isValidMediaContent(Buffer.from([0x1a, 0x45, 0xdf, 0xa3]), 'video/webm')).toBe(true);
+      expect(isValidMediaContent(Buffer.from('not a video'), 'video/mp4')).toBe(false);
     });
   });
 

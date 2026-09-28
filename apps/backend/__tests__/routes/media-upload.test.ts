@@ -27,6 +27,15 @@ app.use("/api/admin", adminRoutes);
 const authorization = `Bearer ${signAdminToken({ email: "geniuzlab577@gmail.com" })}`;
 const mockedUploadImage = jest.mocked(uploadImage);
 
+function validVideoBytes(contentType: string): Buffer {
+  if (contentType === "video/webm") {
+    return Buffer.from([0x1a, 0x45, 0xdf, 0xa3, 0x93, 0x42]);
+  }
+
+  const brand = contentType === "video/quicktime" ? "qt  " : "isom";
+  return Buffer.concat([Buffer.from([0, 0, 0, 24]), Buffer.from("ftyp"), Buffer.from(brand), Buffer.alloc(8)]);
+}
+
 beforeEach(() => {
   mockedUploadImage.mockResolvedValue({
     url: "https://media.example.test/video.mp4",
@@ -54,7 +63,7 @@ describe("admin project media upload", () => {
     const response = await request(app)
       .post("/api/admin/upload-image")
       .set("Authorization", authorization)
-      .attach("file", Buffer.from("video-bytes"), { filename, contentType });
+      .attach("file", validVideoBytes(contentType), { filename, contentType });
 
     expect(response.status).toBe(200);
     expect(response.body.url).toMatch(/^https:\/\//);

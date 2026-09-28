@@ -64,6 +64,9 @@ export default function EditProjectPage() {
         }
         const data = await response.json();
         setForm(data.project);
+        setMediaMode(data.project.video
+          ? (data.project.coverImage || data.project.galleryImages?.length ? "mixed" : "video")
+          : "image");
         if (data.project.coverImage?.url) {
           setCoverImagePreview(data.project.coverImage.url);
         }

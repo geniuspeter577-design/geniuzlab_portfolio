@@ -176,4 +176,32 @@ describe("admin authentication routes", () => {
     expect(response.body.error).toBe("Password reset email is not configured.");
     expect(mockedSendResetEmail).not.toHaveBeenCalled();
   });
+
+  it("rejects expired reset tokens", async () => {
+    const token = "expired-token-for-auth-regression-test-0123456789";
+    storedState = {
+      id: "admin",
+      usedResetKeyHashes: [],
+      resetUsedAt: null,
+      resetTokenHash: createHash("sha256").update(token).digest("hex"),
+      resetTokenExpiresAt: new Date(Date.now() - 1000),
+      passwordHash: configuredPasswordHash,
+      passwordHashSource: configuredPasswordHash,
+    };
+
+    const response = await request(app)
+      .post("/api/auth/reset-password")
+      .send({ token, password: "NewAdminPassword123!" });
+
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe("This password reset link is invalid or expired.");
+    expect(storedState.passwordHash).toBe(configuredPasswordHash);
+  });
+
+  it("keeps the existing logout endpoint behavior", async () => {
+    const response = await request(app).post("/api/auth/logout");
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({ success: true });
+  });
 });

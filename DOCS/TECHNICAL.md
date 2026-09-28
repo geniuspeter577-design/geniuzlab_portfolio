@@ -311,7 +311,7 @@ prisma/
    AUTH_URL="http://localhost:3000"
    
    # Admin credentials
-   ADMIN_EMAIL="admin@geniuzlab.com"
+  ADMIN_EMAIL="geniuzlab577@gmail.com"
    ADMIN_PASSWORD_HASH="bcrypt-hash-of-your-password"
    
    # Image storage

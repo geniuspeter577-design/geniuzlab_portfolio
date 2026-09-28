@@ -289,6 +289,9 @@ export async function updateProject(projectId: string, input: z.infer<typeof adm
   const slugBase = parsed.slug?.trim() || slugify(title) || `project-${projectId}`;
 
   await prisma.$transaction(async (tx) => {
+    const existingVideo = parsed.video === undefined
+      ? await tx.projectImage.findFirst({ where: { projectId, type: "VIDEO" } })
+      : null;
     await tx.projectCategory.deleteMany({ where: { projectId } });
     await tx.projectTag.deleteMany({ where: { projectId } });
     await tx.projectImage.deleteMany({ where: { projectId } });
@@ -317,7 +320,11 @@ export async function updateProject(projectId: string, input: z.infer<typeof adm
       title,
       parsed.coverImage ?? null,
       parsed.galleryImages,
-      parsed.video ?? null
+      parsed.video === undefined
+        ? existingVideo
+          ? { url: existingVideo.url, posterUrl: existingVideo.posterUrl }
+          : null
+        : parsed.video
     );
   });
 

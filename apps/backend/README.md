@@ -245,13 +245,25 @@ PORT=3001
 CORS_ORIGIN=http://localhost:3000
 DATABASE_URL=YOUR_MONGODB_URI
 AUTH_SECRET=YOUR_32_PLUS_CHARACTER_SECRET
-ADMIN_EMAIL=admin@geniuzlab.com
+ADMIN_EMAIL=geniuzlab577@gmail.com
 ADMIN_PASSWORD_HASH=YOUR_BCRYPT_HASH
-ADMIN_PASSWORD_RESET_KEY=OPTIONAL_RANDOM_ONE_TIME_KEY
-ADMIN_PASSWORD_RESET_EXPIRES_AT=OPTIONAL_UTC_EXPIRY
+SMTP_HOST=YOUR_SMTP_HOST
+SMTP_PORT=587
+SMTP_SECURE=false
+SMTP_USER=YOUR_SMTP_USER
+SMTP_PASSWORD=YOUR_SMTP_PASSWORD
+SMTP_FROM=GENIUZLAB <verified-sender@example.com>
 ```
 
-Password recovery has no email sender configured. To enable a one-time reset, set `ADMIN_PASSWORD_RESET_KEY` to a newly generated value from `openssl rand -hex 32` and `ADMIN_PASSWORD_RESET_EXPIRES_AT` to its UTC ISO-8601 expiration time. Provide the key to the admin through a separate secure channel. The reset key is accepted once and its hash is recorded in MongoDB; rotate both values for another recovery. The new password is stored as a bcrypt hash in the admin auth state and is used by both backend login and Auth.js. Changing `ADMIN_PASSWORD_HASH` later takes precedence over that reset override.
+Admin password reset uses the configured SMTP server to send a 30-minute, single-use link to `ADMIN_EMAIL`. Tokens are stored only as SHA-256 hashes. Set `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_FROM`, and, when required by the server, `SMTP_USER` and `SMTP_PASSWORD`. Use credentials from your chosen mail provider; no sender or SMTP credentials are bundled with the app. `SMTP_FROM` must be an address authorized by that provider. The reset password is stored as a bcrypt hash and continues to be used by backend login and Auth.js. Changing `ADMIN_PASSWORD_HASH` later takes precedence over that reset override.
+
+Project video media extends the existing MongoDB `ProjectImage` collection with a `VIDEO` type and optional `posterUrl`; existing cover/gallery records remain valid. Apply the additive Prisma schema update with `npm run db:push` before deploying the updated backend. The existing Bearer-protected `/api/admin/upload-image` endpoint uploads image and video files through the configured Cloudinary or Vercel Blob provider; uploads are limited to 50 MB and require matching supported file type, extension, and content signature.
+
+### Verification Status
+
+**IMPLEMENTED:** Admin video/poster upload, backward-compatible project persistence, public player/poster rendering, and emailed admin password reset links.
+
+**REAL-WORLD VERIFIED:** Blocked in the current workspace. Cloudinary is preferred by the backend when all Cloudinary credentials are set; `CLOUDINARY_CLOUD_NAME` and `CLOUDINARY_API_KEY` are missing here. `BLOB_READ_WRITE_TOKEN` is missing for the fallback. SMTP requires `SMTP_HOST` and `SMTP_FROM`; provide `SMTP_USER` and `SMTP_PASSWORD` together when the SMTP server requires authentication. `SMTP_PORT` defaults to `587`, and `SMTP_SECURE` defaults to `false`. No local video fixture under 50 MB was found. Consequently, no real upload, email delivery, or browser playback is claimed as verified.
 
 Optional storage values:
 

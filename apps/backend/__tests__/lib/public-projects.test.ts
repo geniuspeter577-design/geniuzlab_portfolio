@@ -23,6 +23,14 @@ const projectRecord = {
   tags: [],
   images: [
     {
+      type: "COVER",
+      url: "https://media.example.test/cover.jpg",
+      posterUrl: null,
+      altText: "Cover image",
+      width: 1600,
+      height: 1000,
+    },
+    {
       type: "VIDEO",
       url: "https://media.example.test/project.mp4",
       posterUrl: "https://media.example.test/poster.jpg",

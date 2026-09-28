@@ -12,6 +12,12 @@ const adminNavItems = [
   { label: "New", href: "/admin/projects/new", icon: Plus },
 ] as const;
 
+const publicAdminPaths = [
+  "/admin/login",
+  "/admin/forgot-password",
+  "/admin/reset-password",
+];
+
 function handleSignOut(router: ReturnType<typeof useRouter>) {
   clearAdminToken();
   router.push("/admin/login");
@@ -23,8 +29,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [checked, setChecked] = useState(false);
 
   useEffect(() => {
-    if (pathname === "/admin/login") {
-      setChecked(true);
+    if (publicAdminPaths.includes(pathname)) {
       return;
     }
 
@@ -33,10 +38,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       return;
     }
 
+    // The localStorage token check must complete before protected children render.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setChecked(true);
   }, [pathname, router]);
 
-  if (pathname === "/admin/login") {
+  if (publicAdminPaths.includes(pathname)) {
     return <>{children}</>;
   }
 

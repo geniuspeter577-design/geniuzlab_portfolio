@@ -535,7 +535,7 @@ export default function NewProjectPage() {
           </button>
           <button
             type="submit"
-            disabled={saving}
+            disabled={saving || uploadingImage}
             className="rounded-full bg-[image:var(--gradient-brand-button)] px-5 py-3 font-mono text-xs uppercase tracking-[0.18em] text-[#050505] transition hover:brightness-110 disabled:opacity-70"
           >
             {saving ? "Saving..." : "Save project"}

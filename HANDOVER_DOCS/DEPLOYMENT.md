@@ -22,7 +22,7 @@ PORT=3001
 CORS_ORIGIN=http://localhost:3000
 DATABASE_URL=YOUR_MONGODB_URI
 AUTH_SECRET=YOUR_32_PLUS_CHARACTER_SECRET
-ADMIN_EMAIL=admin@geniuzlab.com
+ADMIN_EMAIL=geniuzlab577@gmail.com
 ADMIN_PASSWORD_HASH=YOUR_BCRYPT_HASH
 CLOUDINARY_CLOUD_NAME=YOUR_CLOUD_NAME
 CLOUDINARY_API_KEY=YOUR_API_KEY
@@ -84,8 +84,14 @@ Set these Render environment variables:
 NODE_ENV=production
 DATABASE_URL=YOUR_MONGODB_URI
 AUTH_SECRET=YOUR_PRODUCTION_SECRET
-ADMIN_EMAIL=admin@geniuzlab.com
+ADMIN_EMAIL=geniuzlab577@gmail.com
 ADMIN_PASSWORD_HASH=YOUR_BCRYPT_HASH
+SMTP_HOST=YOUR_SMTP_HOST
+SMTP_PORT=587
+SMTP_SECURE=false
+SMTP_USER=YOUR_SMTP_USER
+SMTP_PASSWORD=YOUR_SMTP_PASSWORD
+SMTP_FROM=GENIUZLAB <verified-sender@example.com>
 CORS_ORIGIN=https://YOUR-FRONTEND.vercel.app
 CLOUDINARY_CLOUD_NAME=YOUR_CLOUD_NAME
 CLOUDINARY_API_KEY=YOUR_API_KEY
@@ -94,6 +100,12 @@ BLOB_READ_WRITE_TOKEN=YOUR_BLOB_TOKEN
 ```
 
 Do not manually set `PORT` on Render unless you have a specific reason; Render provides it.
+
+### Verification Status
+
+**IMPLEMENTED:** The backend uses Cloudinary when `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, and `CLOUDINARY_API_SECRET` are all configured; otherwise it falls back to Vercel Blob. Video uploads and SMTP password-reset flows are implemented, but their live operation depends on credentials from the selected providers.
+
+**REAL-WORLD VERIFIED:** Not verified from the current workspace. Configure the missing Cloudinary names `CLOUDINARY_CLOUD_NAME` and `CLOUDINARY_API_KEY` (the API secret must also be valid), or configure `BLOB_READ_WRITE_TOKEN`. For reset-email delivery, configure `SMTP_HOST` and `SMTP_FROM`, plus both `SMTP_USER` and `SMTP_PASSWORD` if SMTP authentication is required. The runtime currently has none of these storage/email settings complete and contains no local video fixture under 50 MB.
 
 ## 5. MongoDB Atlas
 

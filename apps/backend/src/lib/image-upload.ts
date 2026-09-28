@@ -158,7 +158,7 @@ export const isValidMediaFile = (
     ? [...imageMimeTypes, ...videoMimeTypes]
     : imageMimeTypes;
 
-  return allowedTypes.includes(mimeType);
+  return mimeType.startsWith('image/') || allowedTypes.includes(mimeType);
 };
 
 const mediaExtensions: Record<string, string[]> = {
@@ -174,7 +174,40 @@ const mediaExtensions: Record<string, string[]> = {
 
 export const isValidMediaFilename = (filename: string, mimeType: string): boolean => {
   const extension = filename.slice(filename.lastIndexOf('.')).toLowerCase();
-  return mediaExtensions[mimeType]?.includes(extension) ?? false;
+  if (mediaExtensions[mimeType]) return mediaExtensions[mimeType].includes(extension);
+  if (!mimeType.startsWith('image/') || extension.length < 2) return false;
+  const subtype = mimeType.slice('image/'.length).split(/[;+]/, 1)[0].toLowerCase();
+  const expectedExtensions = subtype === 'jpeg' ? ['.jpg', '.jpeg'] : [`.${subtype}`];
+  return expectedExtensions.includes(extension);
+};
+
+export const isValidMediaContent = (buffer: Buffer, mimeType: string): boolean => {
+  if (mimeType.startsWith('image/') && !mediaExtensions[mimeType]) return buffer.length > 0;
+  if (mimeType === 'image/jpeg') {
+    return buffer.length >= 3 && buffer[0] === 0xff && buffer[1] === 0xd8 && buffer[2] === 0xff;
+  }
+  if (mimeType === 'image/png') {
+    return buffer.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]));
+  }
+  if (mimeType === 'image/webp') {
+    return buffer.toString('ascii', 0, 4) === 'RIFF' && buffer.toString('ascii', 8, 12) === 'WEBP';
+  }
+  if (mimeType === 'image/gif') {
+    return ['GIF87a', 'GIF89a'].includes(buffer.toString('ascii', 0, 6));
+  }
+  if (mimeType === 'image/svg+xml') {
+    const opening = buffer.subarray(0, 1024).toString('utf8').replace(/^\uFEFF/, '').trimStart();
+    return /^(?:<\?xml[^>]*>\s*)?<svg(?:\s|>)/i.test(opening);
+  }
+  if (mimeType === 'video/webm') {
+    return buffer.subarray(0, 4).equals(Buffer.from([0x1a, 0x45, 0xdf, 0xa3]));
+  }
+  if (mimeType === 'video/mp4' || mimeType === 'video/quicktime') {
+    if (buffer.length < 12 || buffer.toString('ascii', 4, 8) !== 'ftyp') return false;
+    const brand = buffer.toString('ascii', 8, 12);
+    return mimeType === 'video/quicktime' ? brand === 'qt  ' : brand !== 'qt  ';
+  }
+  return false;
 };
 
 /**

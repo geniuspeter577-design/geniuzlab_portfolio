@@ -36,17 +36,21 @@ function mapProject(project: PublicProject) {
     role: project.role ?? undefined,
     summary: project.summary,
     description: project.description ?? undefined,
-    coverImage: coverImage ? mapImage(coverImage, project.title) : videoPoster ? {
-      src: videoPoster,
-      alt: `${project.title} video poster`,
-      width: 1600,
-      height: 900,
-    } : {
-      src: "/images/placeholder.svg",
-      alt: "Project image",
-      width: 1600,
-      height: 2000,
-    },
+    coverImage: videoPoster
+      ? {
+          src: videoPoster,
+          alt: `${project.title} video poster`,
+          width: 1600,
+          height: 900,
+        }
+      : coverImage
+        ? mapImage(coverImage, project.title)
+        : {
+            src: "/images/placeholder.svg",
+            alt: "Project image",
+            width: 1600,
+            height: 2000,
+          },
     gallery: galleryImages.map((image, index: number) =>
       mapImage(image, `${project.title} gallery ${index + 1}`)
     ),

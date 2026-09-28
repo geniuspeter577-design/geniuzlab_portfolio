@@ -36,6 +36,18 @@ graph TB
 
 ---
 
+## Current Media and Reset Implementation
+
+The deployed data model is Prisma with MongoDB. Existing `ProjectImage` records keep their `COVER` and `GALLERY` types; the additive `VIDEO` type stores the persistent video URL and optional `posterUrl`. Admin uploads continue through the existing authenticated multipart endpoint and use Cloudinary when fully configured, otherwise Vercel Blob. The endpoint enforces a 50 MB maximum.
+
+Admin password reset sends a 30-minute, single-use link to the configured `ADMIN_EMAIL` (currently `geniuzlab577@gmail.com`). Only a SHA-256 token hash is stored. SMTP credentials must be supplied through backend environment variables; none are embedded in the application.
+
+**IMPLEMENTED:** These code paths and automated tests exist.
+
+**REAL-WORLD VERIFIED:** Not verified in the current workspace. Cloudinary is incomplete (`CLOUDINARY_CLOUD_NAME` and `CLOUDINARY_API_KEY` are missing), the Blob fallback token (`BLOB_READ_WRITE_TOKEN`) is missing, SMTP host/sender settings (`SMTP_HOST`, `SMTP_FROM`) are missing, and no local video fixture under 50 MB is present. No real upload, email delivery, or playback has been confirmed.
+
+---
+
 ## Monorepo Structure
 
 ### Why Monorepo?

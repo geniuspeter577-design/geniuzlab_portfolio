@@ -1,9 +1,10 @@
-import { adminProjectSchema, createProject } from "../../src/lib/admin-projects";
+import { adminProjectSchema, createProject, updateProject } from "../../src/lib/admin-projects";
 import { prisma } from "../../src/lib/prisma";
 
 jest.mock("../../src/lib/prisma", () => ({
   prisma: {
-    project: { create: jest.fn() },
+    project: { create: jest.fn(), update: jest.fn() },
+    $transaction: jest.fn(),
     category: { findUnique: jest.fn() },
     projectCategory: { createMany: jest.fn() },
     tag: { upsert: jest.fn() },
@@ -62,6 +63,40 @@ describe("admin project media persistence", () => {
 
     expect(prisma.projectImage.createMany).toHaveBeenCalledWith({
       data: [expect.objectContaining({ type: "COVER", url: "https://media.example.test/cover.jpg" })],
+    });
+  });
+
+  it("preserves existing video on legacy updates that omit the video field", async () => {
+    const transactionClient = {
+      projectCategory: { deleteMany: jest.fn(), createMany: jest.fn() },
+      projectTag: { deleteMany: jest.fn(), createMany: jest.fn() },
+      projectImage: {
+        findFirst: jest.fn().mockResolvedValue({
+          url: "https://media.example.test/existing.mp4",
+          posterUrl: "https://media.example.test/existing-poster.jpg",
+        }),
+        deleteMany: jest.fn(),
+        createMany: jest.fn(),
+      },
+      project: { update: jest.fn() },
+      category: { findUnique: jest.fn().mockResolvedValue({ id: "category-1" }) },
+      tag: { upsert: jest.fn() },
+    };
+    const transaction = prisma.$transaction as unknown as jest.Mock;
+    transaction.mockImplementation(async (callback: (client: unknown) => Promise<unknown>) => callback(transactionClient));
+    const payload = adminProjectSchema.parse({ ...validProject, galleryImages: [] });
+
+    await updateProject("project-1", payload);
+
+    expect(transactionClient.projectImage.findFirst).toHaveBeenCalledWith({
+      where: { projectId: "project-1", type: "VIDEO" },
+    });
+    expect(transactionClient.projectImage.createMany).toHaveBeenCalledWith({
+      data: [expect.objectContaining({
+        type: "VIDEO",
+        url: "https://media.example.test/existing.mp4",
+        posterUrl: "https://media.example.test/existing-poster.jpg",
+      })],
     });
   });
 });
