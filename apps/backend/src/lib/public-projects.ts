@@ -24,6 +24,8 @@ function mapImage(
 function mapProject(project: PublicProject) {
   const coverImage = project.images.find((image) => image.type === "COVER");
   const galleryImages = project.images.filter((image) => image.type === "GALLERY");
+  const video = project.images.find((image) => image.type === "VIDEO");
+  const videoPoster = video?.posterUrl ?? coverImage?.url;
 
   return {
     slug: project.slug,
@@ -34,7 +36,12 @@ function mapProject(project: PublicProject) {
     role: project.role ?? undefined,
     summary: project.summary,
     description: project.description ?? undefined,
-    coverImage: coverImage ? mapImage(coverImage, project.title) : {
+    coverImage: coverImage ? mapImage(coverImage, project.title) : videoPoster ? {
+      src: videoPoster,
+      alt: `${project.title} video poster`,
+      width: 1600,
+      height: 900,
+    } : {
       src: "/images/placeholder.svg",
       alt: "Project image",
       width: 1600,
@@ -43,6 +50,8 @@ function mapProject(project: PublicProject) {
     gallery: galleryImages.map((image, index: number) =>
       mapImage(image, `${project.title} gallery ${index + 1}`)
     ),
+    videoUrl: video?.url,
+    videoPosterUrl: videoPoster,
     tags: project.tags.map(({ tag }) => tag.name),
     featured: project.featured,
     order: project.orderIndex,

@@ -12,10 +12,14 @@ dotenv.config({ path: ".env.local" });
 const envSchema = z.object({
   DATABASE_URL: z.string().url("DATABASE_URL must be a valid MongoDB URL.").default("mongodb://localhost:27017/geniuzlab"),
   AUTH_SECRET: z.string().min(32, "AUTH_SECRET must be at least 32 characters long.").default("development-secret-change-me-please-32-chars"),
-  ADMIN_EMAIL: z.string().email("ADMIN_EMAIL must be a valid email.").default("admin@geniuzlab.com"),
+  ADMIN_EMAIL: z.string().email("ADMIN_EMAIL must be a valid email.").default("geniuzlab577@gmail.com"),
   ADMIN_PASSWORD_HASH: z.string().min(1, "ADMIN_PASSWORD_HASH cannot be empty.").optional().default(""),
-  ADMIN_PASSWORD_RESET_KEY: z.union([z.literal(""), z.string().min(32)]).default(""),
-  ADMIN_PASSWORD_RESET_EXPIRES_AT: z.union([z.literal(""), z.string().datetime()]).default(""),
+  SMTP_HOST: z.string().optional().default(""),
+  SMTP_PORT: z.coerce.number().int().positive().default(587),
+  SMTP_SECURE: z.enum(["true", "false"]).default("false").transform((value) => value === "true"),
+  SMTP_USER: z.string().optional().default(""),
+  SMTP_PASSWORD: z.string().optional().default(""),
+  SMTP_FROM: z.string().optional().default(""),
   PORT: z.coerce.number().int().positive().default(3001),
   CORS_ORIGIN: z
     .string()

@@ -30,6 +30,7 @@ export type AdminProjectListItem = {
   categories: { slug: string; label: string }[];
   tags: string[];
   coverImage: { url: string; altText: string | null } | null;
+  video: { url: string; posterUrl: string | null } | null;
 };
 
 export const adminProjectSchema = z.object({
@@ -50,6 +51,13 @@ export const adminProjectSchema = z.object({
     .object({
       url: z.string().url(),
       altText: z.string().optional().or(z.literal("")),
+    })
+    .nullable()
+    .optional(),
+  video: z
+    .object({
+      url: z.string().url(),
+      posterUrl: z.string().url().nullable().optional(),
     })
     .nullable()
     .optional(),
@@ -137,7 +145,8 @@ async function attachProjectImages(
   projectId: string,
   title: string,
   coverImage: { url: string; altText?: string } | null,
-  galleryImages: { url: string; altText?: string }[]
+  galleryImages: { url: string; altText?: string }[],
+  video: { url: string; posterUrl?: string | null } | null
 ) {
   const imageRows = [
     ...(coverImage
@@ -150,6 +159,16 @@ async function attachProjectImages(
       altText: image.altText?.trim() || `${title} gallery ${index + 1}`,
       orderIndex: index + 1,
     })),
+    ...(video
+      ? [{
+          projectId,
+          type: "VIDEO" as const,
+          url: video.url,
+          posterUrl: video.posterUrl || null,
+          altText: title,
+          orderIndex: galleryImages.length + 1,
+        }]
+      : []),
   ];
 
   if (!imageRows.length) return;
@@ -185,6 +204,10 @@ export async function listProjectsForAdmin(): Promise<AdminProjectListItem[]> {
       categories: project.categories.map(({ category }) => ({ slug: category.slug, label: category.label })),
       tags: project.tags.map(({ tag }) => tag.name),
       coverImage: coverImage ? { url: coverImage.url, altText: coverImage.altText } : null,
+      video: (() => {
+        const video = project.images.find((image) => image.type === "VIDEO");
+        return video ? { url: video.url, posterUrl: video.posterUrl } : null;
+      })(),
     };
   });
 }
@@ -211,6 +234,12 @@ export async function getProjectForAdmin(projectId: string) {
       ? {
           url: project.images.find((image) => image.type === "COVER")?.url ?? "",
           altText: project.images.find((image) => image.type === "COVER")?.altText ?? "",
+        }
+      : null,
+    video: project.images.find((image) => image.type === "VIDEO")
+      ? {
+          url: project.images.find((image) => image.type === "VIDEO")!.url,
+          posterUrl: project.images.find((image) => image.type === "VIDEO")!.posterUrl,
         }
       : null,
     galleryImages: project.images
@@ -242,7 +271,14 @@ export async function createProject(input: z.infer<typeof adminProjectSchema>) {
 
   await attachProjectCategories(prisma, project.id, parsed.categorySlugs);
   await attachProjectTags(prisma, project.id, parsed.tags);
-  await attachProjectImages(prisma, project.id, title, parsed.coverImage ?? null, parsed.galleryImages);
+  await attachProjectImages(
+    prisma,
+    project.id,
+    title,
+    parsed.coverImage ?? null,
+    parsed.galleryImages,
+    parsed.video ?? null
+  );
 
   return project;
 }
@@ -275,7 +311,14 @@ export async function updateProject(projectId: string, input: z.infer<typeof adm
 
     await attachProjectCategories(tx, projectId, parsed.categorySlugs);
     await attachProjectTags(tx, projectId, parsed.tags);
-    await attachProjectImages(tx, projectId, title, parsed.coverImage ?? null, parsed.galleryImages);
+    await attachProjectImages(
+      tx,
+      projectId,
+      title,
+      parsed.coverImage ?? null,
+      parsed.galleryImages,
+      parsed.video ?? null
+    );
   });
 
   return { success: true };

@@ -51,8 +51,8 @@ export const uploadToCloudinary = async (
         folder: options.folder || 'geniuzlab/portfolio',
         public_id: filename.replace(/\.[^/.]+$/, ''), // Remove extension for public_id
         tags: ['portfolio', ...(options.tags || [])],
-        // Transformation options for optimization
-        eager: [
+        ...(options.resourceType === 'video' ? {} : {
+          eager: [
           {
             quality: 'auto',
             fetch_format: 'auto',
@@ -71,7 +71,8 @@ export const uploadToCloudinary = async (
             width: 400,
             crop: 'fit',
           },
-        ],
+          ],
+        }),
       },
       (error, result) => {
         if (error) {

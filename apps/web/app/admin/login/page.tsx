@@ -8,7 +8,7 @@ import { backendUrl, setAdminToken } from "@/lib/admin-client";
 function AdminLoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [email, setEmail] = useState("admin@geniuzlab.com");
+  const [email, setEmail] = useState("geniuzlab577@gmail.com");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);

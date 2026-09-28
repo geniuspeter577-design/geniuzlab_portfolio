@@ -51,15 +51,27 @@ export function CaseStudyHeader({ project }: CaseStudyHeaderProps) {
 
       <div className="site-container case-study-cover-wrap">
         <div className="case-study-cover">
-          <Image
-            src={project.coverImage.src}
-            alt={project.coverImage.alt}
-            width={project.coverImage.width}
-            height={project.coverImage.height}
-            priority
-            sizes="(min-width: 1024px) 1180px, 100vw"
-            className="block h-auto w-full"
-          />
+            {project.videoUrl ? (
+              <video
+                src={project.videoUrl}
+                poster={project.videoPosterUrl || project.coverImage.src}
+                controls
+                playsInline
+                preload="metadata"
+                aria-label={`${project.title} video`}
+                className="block aspect-video w-full max-w-full bg-black object-contain"
+              />
+            ) : (
+              <Image
+                src={project.coverImage.src}
+                alt={project.coverImage.alt}
+                width={project.coverImage.width}
+                height={project.coverImage.height}
+                priority
+                sizes="(min-width: 1024px) 1180px, 100vw"
+                className="block h-auto w-full"
+              />
+            )}
         </div>
       </div>
     </header>

@@ -1,27 +1,39 @@
 import express from "express";
 import bcrypt from "bcryptjs";
+import { createHash } from "node:crypto";
 import request from "supertest";
 import { prisma } from "../../src/lib/prisma";
 import { env } from "../../src/lib/env";
+import { hasSmtpConfiguration, sendAdminPasswordResetEmail } from "../../src/lib/email";
 import { signAdminToken } from "../../src/lib/jwt";
 import { requireAuth } from "../../src/middleware/requireAuth";
 import authRoutes from "../../src/routes/auth";
 
 jest.mock("../../src/lib/env", () => ({
   env: {
-    ADMIN_EMAIL: "admin@geniuzlab.com",
+    ADMIN_EMAIL: "geniuzlab577@gmail.com",
     ADMIN_PASSWORD_HASH: "",
-    ADMIN_PASSWORD_RESET_KEY: "test-recovery-key-0123456789012345",
-    ADMIN_PASSWORD_RESET_EXPIRES_AT: "2099-01-01T00:00:00.000Z",
+    SMTP_HOST: "smtp.example.test",
+    SMTP_PORT: 587,
+    SMTP_SECURE: false,
+    SMTP_USER: "mailer@example.test",
+    SMTP_PASSWORD: "test-only-password",
+    SMTP_FROM: "GENIUZLAB <mailer@example.test>",
+    CORS_ORIGIN: ["http://localhost:3000"],
     AUTH_SECRET: "test-auth-secret-that-is-at-least-32-chars",
   },
+}));
+
+jest.mock("../../src/lib/email", () => ({
+  hasSmtpConfiguration: jest.fn(() => true),
+  sendAdminPasswordResetEmail: jest.fn(),
 }));
 
 jest.mock("../../src/lib/prisma", () => ({
   prisma: {
     adminAuthState: {
       findUnique: jest.fn(),
-      create: jest.fn(),
+      upsert: jest.fn(),
       updateMany: jest.fn(),
     },
   },
@@ -30,16 +42,21 @@ jest.mock("../../src/lib/prisma", () => ({
 type StoredAuthState = {
   id: string;
   usedResetKeyHashes: string[];
-  resetUsedAt: Date;
+  resetUsedAt: Date | null;
+  resetTokenHash: string | null;
+  resetTokenExpiresAt: Date | null;
   passwordHash: string;
   passwordHashSource: string;
 };
 
 const authState = prisma.adminAuthState as unknown as {
   findUnique: jest.Mock;
-  create: jest.Mock;
+  upsert: jest.Mock;
   updateMany: jest.Mock;
 };
+
+const mockedHasSmtpConfiguration = jest.mocked(hasSmtpConfiguration);
+const mockedSendResetEmail = jest.mocked(sendAdminPasswordResetEmail);
 
 const app = express();
 app.use(express.json());
@@ -56,21 +73,24 @@ beforeAll(async () => {
 beforeEach(() => {
   storedState = null;
   env.ADMIN_PASSWORD_HASH = "";
+  mockedHasSmtpConfiguration.mockReturnValue(true);
+  mockedSendResetEmail.mockResolvedValue(undefined);
   authState.findUnique.mockImplementation(async () => storedState);
-  authState.create.mockImplementation(async ({ data }) => {
-    if (storedState) throw new Error("Admin auth state already exists");
-    storedState = data;
-    return data;
+  authState.upsert.mockImplementation(async ({ create, update }) => {
+    storedState = storedState ? { ...storedState, ...update } : create;
+    return storedState;
   });
   authState.updateMany.mockImplementation(async ({ where, data }) => {
-    if (!storedState || storedState.usedResetKeyHashes.includes(where.NOT.usedResetKeyHashes.has)) {
+    const expiry = where.resetTokenExpiresAt?.gt as Date | undefined;
+    if (
+      !storedState ||
+      storedState.resetTokenHash !== where.resetTokenHash ||
+      !storedState.resetTokenExpiresAt ||
+      (expiry && storedState.resetTokenExpiresAt <= expiry)
+    ) {
       return { count: 0 };
     }
-    storedState = {
-      ...storedState,
-      ...data,
-      usedResetKeyHashes: [...storedState.usedResetKeyHashes, ...data.usedResetKeyHashes.push],
-    };
+    storedState = { ...storedState, ...data };
     return { count: 1 };
   });
 });
@@ -81,42 +101,48 @@ describe("admin authentication routes", () => {
 
     const valid = await request(app)
       .post("/api/auth/login")
-      .send({ email: "admin@geniuzlab.com", password: "ConfiguredPassword123!" });
+      .send({ email: "geniuzlab577@gmail.com", password: "ConfiguredPassword123!" });
     const invalid = await request(app)
       .post("/api/auth/login")
-      .send({ email: "admin@geniuzlab.com", password: "wrong-password" });
+      .send({ email: "geniuzlab577@gmail.com", password: "wrong-password" });
 
     expect(valid.status).toBe(200);
     expect(valid.body.token).toBeTruthy();
     expect(invalid.status).toBe(401);
   });
 
-  it("changes the admin password once and keeps protected routes guarded", async () => {
+  it("emails a hashed one-use reset token and keeps protected routes guarded", async () => {
+    env.ADMIN_PASSWORD_HASH = configuredPasswordHash;
+    const requestReset = await request(app)
+      .post("/api/auth/forgot-password")
+      .send({ email: "geniuzlab577@gmail.com" });
+
+    const resetUrl = new URL(mockedSendResetEmail.mock.calls[0][1]);
+    const token = resetUrl.searchParams.get("token");
+
+    expect(requestReset.status).toBe(200);
+    expect(mockedSendResetEmail).toHaveBeenCalledWith("geniuzlab577@gmail.com", expect.stringContaining("/admin/reset-password"));
+    expect(token).toBeTruthy();
+    expect(requestReset.text).not.toContain(token);
+    expect(storedState?.resetTokenHash).toBe(createHash("sha256").update(token!).digest("hex"));
+    expect(storedState?.resetTokenExpiresAt?.getTime()).toBeGreaterThan(Date.now());
+
     const reset = await request(app)
       .post("/api/auth/reset-password")
-      .send({
-        email: "admin@geniuzlab.com",
-        recoveryKey: "test-recovery-key-0123456789012345",
-        password: "NewAdminPassword123!",
-      });
-
+      .send({ token, password: "NewAdminPassword123!" });
     expect(reset.status).toBe(200);
     expect(storedState?.passwordHash).not.toBe("NewAdminPassword123!");
     expect(await bcrypt.compare("NewAdminPassword123!", storedState!.passwordHash)).toBe(true);
 
     const replay = await request(app)
       .post("/api/auth/reset-password")
-      .send({
-        email: "admin@geniuzlab.com",
-        recoveryKey: "test-recovery-key-0123456789012345",
-        password: "AnotherAdminPassword123!",
-      });
+      .send({ token, password: "AnotherAdminPassword123!" });
     const oldPassword = await request(app)
       .post("/api/auth/login")
-      .send({ email: "admin@geniuzlab.com", password: "wrong-password" });
+      .send({ email: "geniuzlab577@gmail.com", password: "ConfiguredPassword123!" });
     const login = await request(app)
       .post("/api/auth/login")
-      .send({ email: "admin@geniuzlab.com", password: "NewAdminPassword123!" });
+      .send({ email: "geniuzlab577@gmail.com", password: "NewAdminPassword123!" });
     const denied = await request(app).get("/protected");
     const allowed = await request(app)
       .get("/protected")
@@ -131,47 +157,23 @@ describe("admin authentication routes", () => {
 
   it("does not reveal whether a non-admin email exists", async () => {
     const response = await request(app)
-      .post("/api/auth/reset-password")
-      .send({
-        email: "someone@example.com",
-        recoveryKey: "test-recovery-key-0123456789012345",
-        password: "NewAdminPassword123!",
-      });
+      .post("/api/auth/forgot-password")
+      .send({ email: "someone@example.com" });
 
-    expect(response.status).toBe(400);
-    expect(response.body.error).toBe("Unable to reset the admin password with those details.");
-    expect(authState.create).not.toHaveBeenCalled();
+    expect(response.status).toBe(200);
+    expect(response.body.message).toMatch(/If this is the configured admin address/);
+    expect(mockedSendResetEmail).not.toHaveBeenCalled();
   });
 
-  it("never accepts a recovery key again after it was rotated out", async () => {
-    await request(app)
-      .post("/api/auth/reset-password")
-      .send({
-        email: "admin@geniuzlab.com",
-        recoveryKey: "test-recovery-key-0123456789012345",
-        password: "FirstAdminPassword123!",
-      });
+  it("requires SMTP configuration without exposing account existence", async () => {
+    mockedHasSmtpConfiguration.mockReturnValue(false);
 
-    env.ADMIN_PASSWORD_RESET_KEY = "second-recovery-key-012345678901234567";
-    const secondReset = await request(app)
-      .post("/api/auth/reset-password")
-      .send({
-        email: "admin@geniuzlab.com",
-        recoveryKey: "second-recovery-key-012345678901234567",
-        password: "SecondAdminPassword123!",
-      });
+    const response = await request(app)
+      .post("/api/auth/forgot-password")
+      .send({ email: "someone@example.com" });
 
-    env.ADMIN_PASSWORD_RESET_KEY = "test-recovery-key-0123456789012345";
-    const replay = await request(app)
-      .post("/api/auth/reset-password")
-      .send({
-        email: "admin@geniuzlab.com",
-        recoveryKey: "test-recovery-key-0123456789012345",
-        password: "ThirdAdminPassword123!",
-      });
-
-    expect(secondReset.status).toBe(200);
-    expect(replay.status).toBe(400);
-    env.ADMIN_PASSWORD_RESET_KEY = "test-recovery-key-0123456789012345";
+    expect(response.status).toBe(503);
+    expect(response.body.error).toBe("Password reset email is not configured.");
+    expect(mockedSendResetEmail).not.toHaveBeenCalled();
   });
 });

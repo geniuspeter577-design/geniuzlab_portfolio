@@ -1,8 +1,9 @@
 import { Router } from "express";
 import bcrypt from "bcryptjs";
-import { createHash, timingSafeEqual } from "node:crypto";
+import { createHash, randomBytes } from "node:crypto";
 import { z } from "zod";
 import { env } from "../lib/env";
+import { hasSmtpConfiguration, sendAdminPasswordResetEmail } from "../lib/email";
 import { signAdminToken } from "../lib/jwt";
 import { prisma } from "../lib/prisma";
 import { requireAuth } from "../middleware/requireAuth";
@@ -14,9 +15,10 @@ const credentialsSchema = z.object({
   password: z.string().min(1),
 });
 
+const forgotPasswordSchema = z.object({ email: z.string().email() });
+
 const resetSchema = z.object({
-  email: z.string().email(),
-  recoveryKey: z.string().min(32).max(256),
+  token: z.string().min(32).max(128),
   password: z
     .string()
     .min(12)
@@ -24,7 +26,7 @@ const resetSchema = z.object({
     .refine((password) => Buffer.byteLength(password, "utf8") <= 72),
 });
 
-const resetFailure = { error: "Unable to reset the admin password with those details." };
+const resetFailure = { error: "This password reset link is invalid or expired." };
 
 router.post("/login", async (req, res) => {
   const parsed = credentialsSchema.safeParse(req.body);
@@ -71,6 +73,67 @@ router.post("/login", async (req, res) => {
   res.json({ token, user: { email } });
 });
 
+router.post("/forgot-password", async (req, res) => {
+  const parsed = forgotPasswordSchema.safeParse(req.body);
+
+  if (!parsed.success) {
+    res.status(400).json({ error: "Enter a valid email address." });
+    return;
+  }
+
+  if (!hasSmtpConfiguration()) {
+    res.status(503).json({ error: "Password reset email is not configured." });
+    return;
+  }
+
+  if (parsed.data.email.toLowerCase() !== env.ADMIN_EMAIL.toLowerCase()) {
+    res.json({ message: "If this is the configured admin address, a password reset email will be sent." });
+    return;
+  }
+
+  const token = randomBytes(32).toString("base64url");
+  const tokenHash = createHash("sha256").update(token).digest("hex");
+  const expiresAt = new Date(Date.now() + 30 * 60 * 1000);
+  let tokenStored = false;
+
+  try {
+    const currentState = await prisma.adminAuthState.findUnique({ where: { id: "admin" } });
+    const currentPasswordHash = currentState?.passwordHash || env.ADMIN_PASSWORD_HASH;
+    const currentPasswordHashSource = currentState?.passwordHashSource || env.ADMIN_PASSWORD_HASH;
+
+    if (currentPasswordHash) {
+      await prisma.adminAuthState.upsert({
+        where: { id: "admin" },
+        create: {
+          id: "admin",
+          usedResetKeyHashes: [],
+          resetUsedAt: null,
+          resetTokenHash: tokenHash,
+          resetTokenExpiresAt: expiresAt,
+          passwordHash: currentPasswordHash,
+          passwordHashSource: currentPasswordHashSource,
+        },
+        update: { resetTokenHash: tokenHash, resetTokenExpiresAt: expiresAt },
+      });
+      tokenStored = true;
+
+      const resetUrl = new URL("/admin/reset-password", env.CORS_ORIGIN[0]);
+      resetUrl.searchParams.set("token", token);
+      await sendAdminPasswordResetEmail(env.ADMIN_EMAIL, resetUrl.toString());
+    }
+  } catch {
+    if (tokenStored) {
+      await prisma.adminAuthState.updateMany({
+        where: { id: "admin", resetTokenHash: tokenHash },
+        data: { resetTokenHash: null, resetTokenExpiresAt: null },
+      }).catch(() => undefined);
+    }
+    console.error("Admin password reset email delivery failed.");
+  }
+
+  res.json({ message: "If this is the configured admin address, a password reset email will be sent." });
+});
+
 router.post("/reset-password", async (req, res) => {
   const parsed = resetSchema.safeParse(req.body);
 
@@ -79,66 +142,28 @@ router.post("/reset-password", async (req, res) => {
     return;
   }
 
-  const { email, recoveryKey, password } = parsed.data;
-  const configuredKey = env.ADMIN_PASSWORD_RESET_KEY;
-  const expiresAt = Date.parse(env.ADMIN_PASSWORD_RESET_EXPIRES_AT);
-
-  if (!configuredKey || !Number.isFinite(expiresAt) || expiresAt <= Date.now()) {
-    res.status(503).json({ error: "Admin password reset is not configured or has expired." });
-    return;
-  }
-
-  const submittedKey = Buffer.from(recoveryKey);
-  const expectedKey = Buffer.from(configuredKey);
-  const keyMatches =
-    submittedKey.length === expectedKey.length && timingSafeEqual(submittedKey, expectedKey);
-
-  if (email.toLowerCase() !== env.ADMIN_EMAIL.toLowerCase() || !keyMatches) {
-    res.status(400).json(resetFailure);
-    return;
-  }
-
-  const resetKeyHash = createHash("sha256").update(configuredKey).digest("hex");
-  const passwordHash = await bcrypt.hash(password, 12);
+  const tokenHash = createHash("sha256").update(parsed.data.token).digest("hex");
+  const passwordHash = await bcrypt.hash(parsed.data.password, 12);
 
   try {
-    const currentState = await prisma.adminAuthState.findUnique({ where: { id: "admin" } });
+    const updated = await prisma.adminAuthState.updateMany({
+      where: {
+        id: "admin",
+        resetTokenHash: tokenHash,
+        resetTokenExpiresAt: { gt: new Date() },
+      },
+      data: {
+        resetTokenHash: null,
+        resetTokenExpiresAt: null,
+        resetUsedAt: new Date(),
+        passwordHash,
+        passwordHashSource: env.ADMIN_PASSWORD_HASH,
+      },
+    });
 
-    if (currentState?.usedResetKeyHashes.includes(resetKeyHash)) {
+    if (updated.count !== 1) {
       res.status(400).json(resetFailure);
       return;
-    }
-
-    const data = {
-      usedResetKeyHashes: { push: resetKeyHash },
-      resetUsedAt: new Date(),
-      passwordHash,
-      passwordHashSource: env.ADMIN_PASSWORD_HASH,
-    };
-
-    if (currentState) {
-      const claimed = await prisma.adminAuthState.updateMany({
-        where: {
-          id: "admin",
-          NOT: { usedResetKeyHashes: { has: resetKeyHash } },
-        },
-        data,
-      });
-
-      if (claimed.count !== 1) {
-        res.status(400).json(resetFailure);
-        return;
-      }
-    } else {
-      await prisma.adminAuthState.create({
-        data: {
-          id: "admin",
-          usedResetKeyHashes: [resetKeyHash],
-          resetUsedAt: new Date(),
-          passwordHash,
-          passwordHashSource: env.ADMIN_PASSWORD_HASH,
-        },
-      });
     }
 
     res.json({ success: true });

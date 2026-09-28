@@ -20,7 +20,9 @@ model User {
 model AdminAuthState {
   id                 String   @id @map("_id")
   usedResetKeyHashes String[] @default([]) @map("used_reset_key_hashes")
-  resetUsedAt        DateTime @map("reset_used_at")
+  resetUsedAt        DateTime? @map("reset_used_at")
+  resetTokenHash     String?  @map("reset_token_hash")
+  resetTokenExpiresAt DateTime? @map("reset_token_expires_at")
   passwordHash       String   @map("password_hash")
   passwordHashSource String   @map("password_hash_source")
 
@@ -95,12 +97,14 @@ model ProjectTag {
 enum ImageType {
   COVER
   GALLERY
+  VIDEO
 }
 
 model ProjectImage {
   id         String    @id @default(cuid()) @map("_id")
   projectId  String    @map("project_id")
   type       ImageType @default(GALLERY)
+  posterUrl  String?   @map("poster_url")
   url        String
   altText    String?   @map("alt_text")
   width      Int?

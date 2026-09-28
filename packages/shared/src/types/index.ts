@@ -56,6 +56,7 @@ export interface Project {
   gallery: ProjectImage[];
   /** For Motion & Video entries. */
   videoUrl?: string;
+  videoPosterUrl?: string;
   tags?: string[];
   /** Include in the homepage "Featured Work" selection. */
   featured?: boolean;

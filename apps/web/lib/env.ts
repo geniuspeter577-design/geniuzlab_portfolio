@@ -7,7 +7,7 @@ const envSchema = z.object({
     .min(32, "AUTH_SECRET must be at least 32 characters long.")
     .default("development-secret-change-me-please-32-chars"),
   AUTH_URL: z.string().url("AUTH_URL must be a valid URL.").optional().or(z.literal("")).default("http://localhost:3000"),
-  ADMIN_EMAIL: z.string().email("ADMIN_EMAIL must be a valid email.").default("admin@geniuzlab.com"),
+  ADMIN_EMAIL: z.string().email("ADMIN_EMAIL must be a valid email.").default("geniuzlab577@gmail.com"),
   ADMIN_PASSWORD_HASH: z
     .string()
     .min(1, "ADMIN_PASSWORD_HASH cannot be empty.")

@@ -21,6 +21,13 @@ export const adminProjectSchema = z.object({
     })
     .nullable()
     .optional(),
+  video: z
+    .object({
+      url: z.string().url(),
+      posterUrl: z.string().url().nullable().optional(),
+    })
+    .nullable()
+    .optional(),
   galleryImages: z
     .array(
       z.object({

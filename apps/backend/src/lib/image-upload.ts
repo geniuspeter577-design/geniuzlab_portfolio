@@ -15,8 +15,11 @@ export interface UploadResponse {
  * Determine which provider to use based on environment variables
  */
 export const getDefaultImageProvider = (): ImageProvider => {
-  // If Cloudinary is configured, prefer it
-  if (process.env.CLOUDINARY_CLOUD_NAME) {
+  if (
+    process.env.CLOUDINARY_CLOUD_NAME &&
+    process.env.CLOUDINARY_API_KEY &&
+    process.env.CLOUDINARY_API_SECRET
+  ) {
     return 'cloudinary';
   }
   // Fall back to Vercel Blob
@@ -38,6 +41,7 @@ export const uploadImage = async (
     folder?: string;
     tags?: string[];
     isVideo?: boolean;
+    mimeType?: string;
   }
 ): Promise<UploadResponse> => {
   const targetProvider = provider || getDefaultImageProvider();
@@ -45,7 +49,7 @@ export const uploadImage = async (
   if (targetProvider === 'cloudinary') {
     return uploadToCloudinaryProvider(fileBuffer, filename, metadata);
   } else {
-    return uploadToVercelBlob(fileBuffer, filename);
+    return uploadToVercelBlob(fileBuffer, filename, metadata?.mimeType);
   }
 };
 
@@ -59,6 +63,7 @@ const uploadToCloudinaryProvider = async (
     folder?: string;
     tags?: string[];
     isVideo?: boolean;
+    mimeType?: string;
   }
 ): Promise<UploadResponse> => {
   const result = (await uploadToCloudinary(fileBuffer, filename, {
@@ -85,7 +90,8 @@ const uploadToCloudinaryProvider = async (
  */
 const uploadToVercelBlob = async (
   fileBuffer: Buffer,
-  filename: string
+  filename: string,
+  contentType?: string
 ): Promise<UploadResponse> => {
   if (!process.env.BLOB_READ_WRITE_TOKEN) {
     throw new Error('BLOB_READ_WRITE_TOKEN is not configured');
@@ -98,6 +104,7 @@ const uploadToVercelBlob = async (
   const blob = await put(blobFilename, fileBuffer, {
     access: 'public',
     token: process.env.BLOB_READ_WRITE_TOKEN,
+    contentType,
   });
 
   return {
@@ -154,14 +161,30 @@ export const isValidMediaFile = (
   return allowedTypes.includes(mimeType);
 };
 
+const mediaExtensions: Record<string, string[]> = {
+  'image/jpeg': ['.jpg', '.jpeg'],
+  'image/png': ['.png'],
+  'image/webp': ['.webp'],
+  'image/gif': ['.gif'],
+  'image/svg+xml': ['.svg'],
+  'video/mp4': ['.mp4'],
+  'video/webm': ['.webm'],
+  'video/quicktime': ['.mov'],
+};
+
+export const isValidMediaFilename = (filename: string, mimeType: string): boolean => {
+  const extension = filename.slice(filename.lastIndexOf('.')).toLowerCase();
+  return mediaExtensions[mimeType]?.includes(extension) ?? false;
+};
+
 /**
  * Get file size limit in bytes
  */
 export const getFileSizeLimit = (provider: ImageProvider): number => {
   // Cloudinary free tier: 2GB per file, 25GB storage
-  // Vercel Blob: 1000 GB total storage, 4.5GB per file
+  // The backend upload endpoint intentionally caps in-memory uploads at 50MB.
   if (provider === 'cloudinary') {
     return 2 * 1024 * 1024 * 1024; // 2GB
   }
-  return 30 * 1024 * 1024; // 50MB for Vercel Blob
+  return 50 * 1024 * 1024;
 };

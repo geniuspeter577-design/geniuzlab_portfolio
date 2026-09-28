@@ -2,7 +2,7 @@ import { useState } from "react";
 import { backendUrl, getAdminToken } from "@/lib/admin-client";
 
 type ImageUploadHook = {
-  uploadImage: (file: File) => Promise<{ url: string; filename: string }>;
+  uploadImage: (file: File, allowVideo?: boolean) => Promise<{ url: string; filename: string }>;
   uploading: boolean;
   error: string;
   progress: number;
@@ -14,22 +14,27 @@ export function useImageUpload(): ImageUploadHook {
   const [progress, setProgress] = useState(0);
 
   const uploadImage = async (
-    file: File
+    file: File,
+    allowVideo = false
   ): Promise<{ url: string; filename: string }> => {
     setUploading(true);
     setError("");
     setProgress(0);
 
     try {
-      if (!file.type.startsWith("image/")) {
-        throw new Error("File must be an image");
+      const validType = allowVideo
+        ? ["video/mp4", "video/webm", "video/quicktime"].includes(file.type)
+        : file.type.startsWith("image/");
+
+      if (!validType) {
+        throw new Error(allowVideo ? "Choose an MP4, WebM, or MOV video." : "File must be an image.");
       }
 
       const maxSizeInMB = 50;
       const maxSizeInBytes = maxSizeInMB * 1024 * 1024;
 
       if (file.size > maxSizeInBytes) {
-        throw new Error(`File size must be less than ${maxSizeInMB}MB`);
+        throw new Error(`File size must be ${maxSizeInMB}MB or less.`);
       }
 
       const formData = new FormData();

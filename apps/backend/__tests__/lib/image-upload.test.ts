@@ -2,16 +2,21 @@ import {
   uploadImage,
   getDefaultImageProvider,
   isValidMediaFile,
+  isValidMediaFilename,
   getFileSizeLimit,
 } from '../../src/lib/image-upload';
 
 describe('Image Upload Utilities', () => {
   describe('getDefaultImageProvider', () => {
-    it('returns cloudinary when CLOUDINARY_CLOUD_NAME is set', () => {
+    it('returns cloudinary only when all credentials are set', () => {
       process.env.CLOUDINARY_CLOUD_NAME = 'test-cloud';
+      process.env.CLOUDINARY_API_KEY = 'test-key';
+      process.env.CLOUDINARY_API_SECRET = 'test-secret';
       const provider = getDefaultImageProvider();
       expect(provider).toBe('cloudinary');
       delete process.env.CLOUDINARY_CLOUD_NAME;
+      delete process.env.CLOUDINARY_API_KEY;
+      delete process.env.CLOUDINARY_API_SECRET;
     });
 
     it('returns vercel-blob when Cloudinary is not configured', () => {
@@ -64,6 +69,22 @@ describe('Image Upload Utilities', () => {
     it('returns 50MB limit for Vercel Blob', () => {
       const limit = getFileSizeLimit('vercel-blob');
       expect(limit).toBe(50 * 1024 * 1024); // 50MB in bytes
+    });
+  });
+
+  describe('isValidMediaFilename', () => {
+    it.each([
+      ['clip.mp4', 'video/mp4'],
+      ['clip.webm', 'video/webm'],
+      ['clip.mov', 'video/quicktime'],
+      ['cover.jpeg', 'image/jpeg'],
+    ])('accepts %s with matching MIME type', (filename, mimeType) => {
+      expect(isValidMediaFilename(filename, mimeType)).toBe(true);
+    });
+
+    it('rejects mismatched or unsupported extensions', () => {
+      expect(isValidMediaFilename('clip.mov', 'video/mp4')).toBe(false);
+      expect(isValidMediaFilename('clip.avi', 'video/x-msvideo')).toBe(false);
     });
   });
 

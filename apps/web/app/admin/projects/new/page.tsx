@@ -16,6 +16,11 @@ type GalleryImage = {
   altText: string;
 };
 
+type VideoMedia = {
+  url: string;
+  posterUrl: string | null;
+};
+
 export default function NewProjectPage() {
   const router = useRouter();
   const { uploadImage, uploading: uploadingImage, error: uploadError, progress: uploadProgress } = useImageUpload();
@@ -24,6 +29,7 @@ export default function NewProjectPage() {
   const [categories, setCategories] = useState<CategoryOption[]>([]);
   const [coverImagePreview, setCoverImagePreview] = useState("");
   const [galleryImagePreviews, setGalleryImagePreviews] = useState<string[]>([]);
+  const [mediaMode, setMediaMode] = useState<"image" | "video" | "mixed">("image");
   const [form, setForm] = useState({
     title: "",
     client: "",
@@ -39,6 +45,7 @@ export default function NewProjectPage() {
     coverImageUrl: "",
     coverImageAlt: "",
     galleryImages: [] as GalleryImage[],
+    video: null as VideoMedia | null,
   });
 
   useEffect(() => {
@@ -77,35 +84,64 @@ export default function NewProjectPage() {
   };
 
   const handleGalleryImageSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.currentTarget.files ?? []);
+    event.currentTarget.value = "";
+
+    for (const file of files) {
+      try {
+        const reader = new FileReader();
+        const previewUrl = await new Promise<string>((resolve) => {
+          reader.onload = (e) => resolve((e.target?.result as string) ?? "");
+          reader.readAsDataURL(file);
+        });
+        const { url } = await uploadImage(file);
+
+        setForm((current) => ({
+          ...current,
+          galleryImages: [
+            ...current.galleryImages,
+            { url, altText: `${current.title || "Project"} - ${current.galleryImages.length + 1}` },
+          ],
+        }));
+        setGalleryImagePreviews((current) => [...current, previewUrl]);
+        setError("");
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Failed to upload gallery image");
+        break;
+      }
+    }
+  };
+
+  const handleVideoSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.currentTarget.files?.[0];
+    event.currentTarget.value = "";
     if (!file) return;
 
     try {
-      const reader = new FileReader();
-      const previewUrl = await new Promise<string>((resolve) => {
-        reader.onload = (e) => {
-          resolve((e.target?.result as string) ?? "");
-        };
-        reader.readAsDataURL(file);
-      });
-
-      const { url } = await uploadImage(file);
-
+      const { url } = await uploadImage(file, true);
       setForm((current) => ({
         ...current,
-        galleryImages: [
-          ...current.galleryImages,
-          {
-            url,
-            altText: `${current.title || "Project"} - ${current.galleryImages.length + 1}`,
-          },
-        ],
+        video: { url, posterUrl: current.video?.posterUrl ?? null },
       }));
-
-      setGalleryImagePreviews((current) => [...current, previewUrl]);
       setError("");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to upload gallery image");
+      setError(err instanceof Error ? err.message : "Failed to upload video");
+    }
+  };
+
+  const handleVideoPosterSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.currentTarget.files?.[0];
+    event.currentTarget.value = "";
+    if (!file || !form.video) return;
+
+    try {
+      const { url } = await uploadImage(file);
+      setForm((current) => current.video
+        ? { ...current, video: { ...current.video, posterUrl: url } }
+        : current);
+      setError("");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to upload video poster");
     }
   };
 
@@ -158,6 +194,7 @@ export default function NewProjectPage() {
             }
           : null,
         galleryImages: form.galleryImages,
+        video: form.video,
       });
 
       const response = await adminFetch("/api/admin/projects", {
@@ -299,6 +336,27 @@ export default function NewProjectPage() {
           />
         </label>
 
+        <section className="space-y-4 rounded-lg border border-line bg-surface p-4" aria-labelledby="project-media-heading">
+          <div>
+            <h2 id="project-media-heading" className="text-sm font-medium text-ink-muted">UPLOAD PROJECT MEDIA</h2>
+            <div className="mt-3 flex flex-wrap gap-2" role="tablist" aria-label="Project media view">
+              {(["image", "video", "mixed"] as const).map((mode) => (
+                <button
+                  key={mode}
+                  type="button"
+                  role="tab"
+                  aria-selected={mediaMode === mode}
+                  onClick={() => setMediaMode(mode)}
+                  className={`rounded-md border px-4 py-2 text-xs uppercase text-ink transition ${mediaMode === mode ? "border-brass bg-brass/10 text-brass" : "border-line hover:border-brass"}`}
+                >
+                  {mode === "mixed" ? "Mixed" : mode === "image" ? "Image" : "Video"}
+                </button>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {(mediaMode === "image" || mediaMode === "mixed") && <>
         {/* Cover Image Section */}
         <div className="space-y-4 rounded-lg border border-line bg-surface p-4">
           <div>
@@ -389,6 +447,63 @@ export default function NewProjectPage() {
             />
           </label>
         </div>
+        </>}
+
+        {(mediaMode === "video" || mediaMode === "mixed") && (
+          <section className="space-y-4 rounded-lg border border-line bg-surface p-4" aria-label="Project video">
+            <div>
+              <h2 className="text-sm font-medium text-ink-muted">Video</h2>
+              <p className="mt-1 text-xs text-ink-muted">MP4, WebM, or MOV. Maximum file size 50MB.</p>
+            </div>
+
+            {form.video ? (
+              <div className="space-y-3">
+                <video
+                  controls
+                  playsInline
+                  preload="metadata"
+                  poster={form.video.posterUrl || form.coverImageUrl || undefined}
+                  src={form.video.url}
+                  className="aspect-video w-full rounded-md bg-black object-contain"
+                />
+                <div className="flex flex-wrap gap-3">
+                  <label className="block">
+                    <span className="block cursor-pointer rounded-md border border-line px-4 py-2 text-center text-xs uppercase text-ink transition hover:border-brass hover:text-brass">Replace video</span>
+                    <input type="file" accept="video/mp4,video/webm,video/quicktime,.mp4,.webm,.mov" onChange={handleVideoSelect} className="hidden" disabled={uploadingImage} />
+                  </label>
+                  <button type="button" onClick={() => setForm((current) => ({ ...current, video: null }))} className="rounded-md border border-red-500/40 px-4 py-2 text-xs uppercase text-red-400 hover:border-red-500">Remove video</button>
+                </div>
+              </div>
+            ) : (
+              <label className="block">
+                <span className="block cursor-pointer rounded-md border border-line px-4 py-3 text-center text-xs uppercase tracking-[0.18em] text-ink transition hover:border-brass hover:text-brass">Select video</span>
+                <input type="file" accept="video/mp4,video/webm,video/quicktime,.mp4,.webm,.mov" onChange={handleVideoSelect} className="hidden" disabled={uploadingImage} />
+              </label>
+            )}
+
+            {form.video && (
+              <div className="space-y-3 border-t border-line pt-4">
+                <p className="text-sm text-ink-muted">Video poster / thumbnail</p>
+                {form.video.posterUrl ? (
+                  <div className="space-y-3">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={form.video.posterUrl} alt="Video poster preview" className="max-h-64 w-full rounded-md object-contain" />
+                    <button type="button" onClick={() => setForm((current) => current.video ? { ...current, video: { ...current.video, posterUrl: null } } : current)} className="text-xs text-red-400 hover:text-red-300">Remove poster</button>
+                  </div>
+                ) : null}
+                <div className="flex flex-wrap gap-3">
+                  <label className="block">
+                    <span className="block cursor-pointer rounded-md border border-line px-4 py-2 text-center text-xs uppercase text-ink transition hover:border-brass hover:text-brass">{form.video.posterUrl ? "Replace poster" : "Upload poster"}</span>
+                    <input type="file" accept="image/*" onChange={handleVideoPosterSelect} className="hidden" disabled={uploadingImage} />
+                  </label>
+                  {form.coverImageUrl && form.video.posterUrl !== form.coverImageUrl && (
+                    <button type="button" onClick={() => setForm((current) => current.video ? { ...current, video: { ...current.video, posterUrl: current.coverImageUrl || null } } : current)} className="rounded-md border border-line px-4 py-2 text-xs uppercase text-ink hover:border-brass">Use cover image</button>
+                  )}
+                </div>
+              </div>
+            )}
+          </section>
+        )}
 
         <div className="flex flex-wrap gap-4 text-sm text-ink-muted">
           <label className="flex items-center gap-2">

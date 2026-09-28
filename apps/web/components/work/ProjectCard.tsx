@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Play } from "lucide-react";
 import type { Project } from "@/lib/types";
 import { getCategoryBySlug } from "@/lib/categories";
 import { cn } from "@/lib/utils";
@@ -38,6 +38,12 @@ export function ProjectCard({ project, size = "default", priority = false }: Pro
             {primaryCategory && <span>{primaryCategory.label}</span>}
             {project.isPlaceholder && <span>Placeholder</span>}
           </div>
+          {project.videoUrl && (
+            <span className="absolute left-3 top-3 z-10 inline-flex items-center gap-1.5 rounded-full bg-black/75 px-3 py-1.5 text-xs text-white">
+              <Play size={12} fill="currentColor" aria-hidden="true" />
+              Video
+            </span>
+          )}
           <span className="project-card-action" aria-hidden="true"><ArrowUpRight size={18} /></span>
         </div>
       </div>
