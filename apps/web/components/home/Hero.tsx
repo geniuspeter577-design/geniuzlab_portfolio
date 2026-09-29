@@ -4,6 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArrowUpRight, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
+import { getCategoryBySlug } from "@/lib/categories";
+import { shuffleItems } from "@/lib/shuffle";
 import type { Project } from "@/lib/types";
 
 type SlideKind = "video" | "brand" | "mixed";
@@ -17,51 +19,55 @@ interface HeroSlide {
   project?: Project;
 }
 
-function createHeroSlides(projects: Project[]): HeroSlide[] {
-  const usedProjects = new Set<string>();
-  const chooseProject = (matches: (project: Project) => boolean) => {
-    const available = projects.filter((project) => !usedProjects.has(project.slug));
-    const project = available.find(matches) ?? available[0] ?? projects[0];
-    if (project) usedProjects.add(project.slug);
-    return project;
-  };
+function createHeroSlides(projects: Project[], shouldShuffle = false): HeroSlide[] {
+  const orderedProjects = shouldShuffle ? shuffleItems(projects) : [...projects];
+  const firstVideoIndex = orderedProjects.findIndex((project) => Boolean(project.videoUrl));
 
-  return [
-    {
+  if (firstVideoIndex > 0) {
+    [orderedProjects[0], orderedProjects[firstVideoIndex]] = [orderedProjects[firstVideoIndex], orderedProjects[0]];
+  }
+
+  if (!orderedProjects.length) {
+    return [{
       kind: "video",
       kicker: "Motion & video",
       title: "Make every frame",
       highlight: "move the story forward.",
-      description: "Video editing and motion design that bring campaigns, stories, and ideas to life.",
-      project: chooseProject((project) => Boolean(project.videoUrl)),
-    },
-    {
-      kind: "brand",
-      kicker: "Brand identity",
-      title: "Build a brand",
-      highlight: "people recognize and remember.",
-      description: "Distinctive logo systems and visual identities designed to stay clear, consistent, and memorable.",
-      project: chooseProject((project) => project.categories.includes("branding-identity")),
-    },
-    {
-      kind: "mixed",
-      kicker: "Connected brand experiences",
-      title: "Bring every",
-      highlight: "brand touchpoint together.",
-      description: "Social, digital, and campaign design working together to help businesses show up with intent.",
-      project: chooseProject((project) => project.categories.includes("social-media") || project.categories.includes("client-projects")),
-    },
-  ];
+      description: "Video and design projects will appear here as they are added to the portfolio.",
+    }];
+  }
+
+  return orderedProjects.map((project) => {
+    const isVideo = Boolean(project.videoUrl);
+    const isBrand = project.categories.includes("branding-identity");
+    const category = getCategoryBySlug(project.categories[0]);
+    const kind: SlideKind = isVideo ? "video" : isBrand ? "brand" : "mixed";
+
+    return {
+      kind,
+      kicker: isVideo ? "Motion & video" : category?.label ?? "Selected work",
+      title: project.title,
+      highlight: project.client ? `for ${project.client}` : `${project.year}`,
+      description: project.summary,
+      project,
+    };
+  });
 }
 
 export function Hero({ projects }: { projects: Project[] }) {
-  const slides = createHeroSlides(projects);
+  const [slides, setSlides] = useState(() => createHeroSlides(projects));
   const slideCount = slides.length;
   const [activeIndex, setActiveIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const activeSlide = slides[activeIndex] ?? slides[0];
   const shouldPause = isHovered || isPaused;
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setSlides(createHeroSlides(projects, true));
+    setActiveIndex(0);
+  }, [projects]);
 
   useEffect(() => {
     if (shouldPause || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -107,7 +113,7 @@ export function Hero({ projects }: { projects: Project[] }) {
               {slides.map((slide, index) => (
                 <button
                   type="button"
-                  key={slide.kind}
+                  key={slide.project?.slug ?? slide.kind}
                   className={`hero-slider-indicator${index === activeIndex ? " is-active" : ""}`}
                   aria-label={`Show slide ${index + 1}: ${slide.kicker}`}
                   aria-current={index === activeIndex ? "true" : undefined}
