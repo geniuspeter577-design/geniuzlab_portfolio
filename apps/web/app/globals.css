@@ -17,9 +17,9 @@
   --error-surface: #690005;
   --shadow: rgba(0, 0, 0, 0.68);
   --glow: 0 0 24px -4px rgba(50, 230, 133, 0.4);
-  --font-display: "Outfit", "General Sans", sans-serif;
-  --font-body: "Geist", "General Sans", sans-serif;
-  --font-meta: "Space Grotesk", "General Sans", sans-serif;
+  --font-display: Inter, system-ui, sans-serif;
+  --font-body: Inter, system-ui, sans-serif;
+  --font-meta: Inter, system-ui, sans-serif;
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
   color-scheme: dark;
 }
@@ -31,7 +31,7 @@
   --surface-high: #eeedf7;
   --surface-highest: #e3e1ec;
   --text: #09090b;
-  --text-muted: #52525b;
+  --text-muted: #4b5563;
   --line: #e4e4e7;
   --primary: #059669;
   --primary-strong: #10b981;
@@ -652,4 +652,118 @@ body::before {
 @media (prefers-reduced-motion: reduce) {
   .hero-slider-copy { animation: none; }
   .hero-slider-progress-fill.is-active { animation: none; width: 100%; }
+}
+
+/* Shared portfolio type scale across public and admin routes. */
+body .site-main h1,
+body .site-main h2,
+body .site-main .page-heading,
+body .site-main h2.section-title {
+  color: var(--text);
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 36px;
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 1.25;
+}
+body .site-main h3 {
+  color: var(--text);
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1.35;
+}
+body .site-main h3.section-title { font-size: 20px; font-weight: 500; line-height: 1.35; }
+body .site-main h4 {
+  color: var(--text);
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1.4;
+}
+body .site-main p:not(.eyebrow):not(.section-kicker):not(.project-card-label):not(.testimonial-headline):not(.hero-slider-kicker):not(.hero-slider-project):not(.hero-slider-media-caption):not(.scroll-hint):not(.search-results-count):not(.form-status-success):not(.form-status-error):not(.admin-alert):not(.admin-notice) {
+  color: var(--text-muted);
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.6;
+}
+body .site-main .section-kicker,
+body .site-main .eyebrow,
+body .site-main .project-card-label,
+body .site-main .project-card-tags span,
+body .site-main .project-card-video-badge,
+body .site-main .testimonial-headline,
+body .site-main .hero-slider-kicker,
+body .site-main .hero-slider-project,
+body .site-main .status-badge,
+body .site-main .category-chip,
+body .site-main .search-category-filters button,
+body .site-main .search-results-heading button,
+body .site-main .case-study-tags span,
+body .site-main .case-study-meta dt,
+body .site-main .contact-field > span,
+body .site-main .brief-fieldset legend,
+body .site-main .service-card-top,
+body .site-main .footer-label {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+body .site-main .section-kicker,
+body .site-main .eyebrow { text-transform: uppercase; }
+body .site-main .project-card-label,
+body .site-main .project-card-tags span,
+body .site-main .project-card-video-badge,
+body .site-main .testimonial-headline,
+body .site-main .hero-slider-kicker,
+body .site-main .status-badge,
+body .site-main .category-chip,
+body .site-main .case-study-tags span {
+  border-radius: 999px;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+body .site-main .search-category-filters button,
+body .site-main .search-results-heading button {
+  border-radius: 999px;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+body .site-main .contact-field > span,
+body .site-main .brief-fieldset legend { text-transform: uppercase; }
+body .site-main .profile-name {
+  color: var(--text);
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+body .site-main .search-results-heading p,
+body .site-main .scroll-hint,
+body .site-main .hero-slider-media-caption,
+body .site-main .hero-slider-empty p,
+body .site-main .hero-slider-project {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+}
+body .site-main .form-status-success { color: var(--primary); }
+body .site-main .form-status-error,
+body .site-main .admin-alert { color: var(--error); }
+@media (max-width: 700px) {
+  body .site-main h1,
+  body .site-main h2,
+  body .site-main .page-heading,
+  body .site-main h2.section-title { font-size: 26px; line-height: 1.25; }
+  body .site-main h3 { font-size: 18px; }
+  body .site-main h3.section-title { font-size: 18px; line-height: 1.35; }
+  body .site-main h4 { font-size: 16px; }
+  body .site-main p:not(.eyebrow):not(.section-kicker):not(.project-card-label):not(.testimonial-headline):not(.hero-slider-kicker):not(.hero-slider-project):not(.hero-slider-media-caption):not(.scroll-hint):not(.search-results-count):not(.form-status-success):not(.form-status-error):not(.admin-alert):not(.admin-notice) { font-size: 15px; }
 }

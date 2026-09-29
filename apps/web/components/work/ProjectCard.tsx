@@ -13,7 +13,7 @@ interface ProjectCardProps {
   headingLevel?: "h2" | "h3";
 }
 
-export function ProjectCard({ project, size = "default", priority = false, headingLevel = "h2" }: ProjectCardProps) {
+export function ProjectCard({ project, size = "default", priority = false, headingLevel = "h3" }: ProjectCardProps) {
   const primaryCategory = getCategoryBySlug(project.categories[0]);
   const Title = headingLevel;
 

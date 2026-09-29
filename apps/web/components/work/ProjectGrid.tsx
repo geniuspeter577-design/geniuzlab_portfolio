@@ -23,7 +23,7 @@ export function ProjectGrid({
   projects,
   emptyMessage = "No projects here yet.",
   limit,
-  headingLevel = "h2",
+  headingLevel = "h3",
 }: ProjectGridProps) {
   const [shuffledProjects, setShuffledProjects] = useState(projects);
 
