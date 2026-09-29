@@ -10,10 +10,12 @@ interface ProjectCardProps {
   /** "large" is used for featured/hero-style placements. */
   size?: "default" | "large";
   priority?: boolean;
+  headingLevel?: "h2" | "h3";
 }
 
-export function ProjectCard({ project, size = "default", priority = false }: ProjectCardProps) {
+export function ProjectCard({ project, size = "default", priority = false, headingLevel = "h2" }: ProjectCardProps) {
   const primaryCategory = getCategoryBySlug(project.categories[0]);
+  const Title = headingLevel;
 
   return (
     <Link href={`/work/${project.slug}`} className="project-card-link group">
@@ -49,7 +51,7 @@ export function ProjectCard({ project, size = "default", priority = false }: Pro
         </div>
 
         <div className="project-card-footer">
-          <h2>{project.title}</h2>
+          <Title>{project.title}</Title>
           <span className="project-card-arrow">↗</span>
         </div>
       </article>

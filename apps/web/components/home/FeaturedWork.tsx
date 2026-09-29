@@ -8,7 +8,7 @@ interface FeaturedWorkProps {
 
 export function FeaturedWork({ projects }: FeaturedWorkProps) {
   return (
-    <section id="work" className="section section-muted">
+    <section id="work" className="section section-muted home-featured-work">
       <div className="site-container">
         <div className="section-heading section-heading-row">
           <div>
@@ -18,7 +18,7 @@ export function FeaturedWork({ projects }: FeaturedWorkProps) {
           <Link href="/work" className="button-secondary">View all work</Link>
         </div>
         {projects.length > 0 ? (
-          <ProjectGrid projects={projects} limit={6} />
+          <ProjectGrid projects={projects} limit={6} headingLevel="h3" />
         ) : (
           <p className="section-lead">New projects are on the way. Browse the work archive for the latest updates.</p>
         )}

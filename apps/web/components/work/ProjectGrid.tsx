@@ -10,6 +10,7 @@ interface ProjectGridProps {
   projects: Project[];
   emptyMessage?: string;
   limit?: number;
+  headingLevel?: "h2" | "h3";
 }
 
 /**
@@ -22,6 +23,7 @@ export function ProjectGrid({
   projects,
   emptyMessage = "No projects here yet.",
   limit,
+  headingLevel = "h2",
 }: ProjectGridProps) {
   const [shuffledProjects, setShuffledProjects] = useState(projects);
 
@@ -44,7 +46,7 @@ export function ProjectGrid({
     <div className="portfolio-grid">
       {visibleProjects.map((project, index) => (
         <Reveal key={project.slug} delay={(index % 3) * 80}>
-          <ProjectCard project={project} priority={index < 3} />
+          <ProjectCard project={project} priority={index < 3} headingLevel={headingLevel} />
         </Reveal>
       ))}
     </div>

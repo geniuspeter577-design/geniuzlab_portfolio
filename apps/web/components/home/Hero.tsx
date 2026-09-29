@@ -12,6 +12,7 @@ interface HeroSlide {
   kind: SlideKind;
   kicker: string;
   title: string;
+  highlight: string;
   description: string;
   project?: Project;
 }
@@ -29,21 +30,24 @@ function createHeroSlides(projects: Project[]): HeroSlide[] {
     {
       kind: "video",
       kicker: "Motion & video",
-      title: "Make every frame move the story forward.",
+      title: "Make every frame",
+      highlight: "move the story forward.",
       description: "Video editing and motion design that bring campaigns, stories, and ideas to life.",
       project: chooseProject((project) => Boolean(project.videoUrl)),
     },
     {
       kind: "brand",
       kicker: "Brand identity",
-      title: "Build a brand people recognize and remember.",
+      title: "Build a brand",
+      highlight: "people recognize and remember.",
       description: "Distinctive logo systems and visual identities designed to stay clear, consistent, and memorable.",
       project: chooseProject((project) => project.categories.includes("branding-identity")),
     },
     {
       kind: "mixed",
       kicker: "Connected brand experiences",
-      title: "Bring every brand touchpoint together.",
+      title: "Bring every",
+      highlight: "brand touchpoint together.",
       description: "Social, digital, and campaign design working together to help businesses show up with intent.",
       project: chooseProject((project) => project.categories.includes("social-media") || project.categories.includes("client-projects")),
     },
@@ -84,7 +88,9 @@ export function Hero({ projects }: { projects: Project[] }) {
       <div className="site-container hero-slider" role="region" aria-roledescription="carousel" aria-label="Featured portfolio work">
         <div className="hero-slider-copy" key={`copy-${activeIndex}`}>
           <p className="eyebrow hero-slider-kicker">{activeSlide.kicker} <span aria-hidden="true">/</span> GeniuzLab</p>
-          <h1 className="hero-slider-title">{activeSlide.title}</h1>
+          <h1 className="hero-slider-title">
+            {activeSlide.title} <span className="hero-slider-highlight">{activeSlide.highlight}</span>
+          </h1>
           <p className="hero-slider-description">{activeSlide.description}</p>
           {activeSlide.project && <p className="hero-slider-project">Featured project: {activeSlide.project.title}</p>}
 
