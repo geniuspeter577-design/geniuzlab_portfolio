@@ -1,10 +1,6 @@
 import type { Project } from "./types";
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
-
-if (!BACKEND_URL) {
-  throw new Error("NEXT_PUBLIC_BACKEND_URL is not configured");
-}
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL ?? "http://localhost:3001";
 
 async function backendFetch<T>(path: string): Promise<T> {
   const response = await fetch(`${BACKEND_URL}${path}`, {

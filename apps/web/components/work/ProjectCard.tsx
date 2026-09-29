@@ -16,14 +16,15 @@ export function ProjectCard({ project, size = "default", priority = false }: Pro
   const primaryCategory = getCategoryBySlug(project.categories[0]);
 
   return (
-    <Link href={`/work/${project.slug}`} className="group block">
-      <div className="project-card">
+    <Link href={`/work/${project.slug}`} className="project-card-link group">
+      <article className="project-card">
         <div className="project-card-heading">
           <p className="project-card-label">{project.client || primaryCategory?.label}</p>
-          <h2>{project.title}</h2>
+          <span className="project-card-year">{project.year}</span>
         </div>
+
         <div
-          className={cn("project-card-image relative w-full overflow-hidden", "transition-all duration-500 ease-[var(--ease-cinema)]")}
+          className={cn("project-card-image", "transition-all duration-500 ease-[var(--ease-cinema)]")}
           style={{ aspectRatio: `${project.coverImage.width} / ${project.coverImage.height}` }}
         >
           <Image
@@ -34,19 +35,27 @@ export function ProjectCard({ project, size = "default", priority = false }: Pro
             className="absolute inset-0 h-full w-full object-cover"
             fill
           />
+
           <div className="project-card-tags">
             {primaryCategory && <span>{primaryCategory.label}</span>}
             {project.isPlaceholder && <span>Placeholder</span>}
           </div>
+
           {project.videoUrl && (
-            <span className="absolute left-3 top-3 z-10 inline-flex items-center gap-1.5 rounded-full bg-black/75 px-3 py-1.5 text-xs text-white">
+            <span className="project-card-video-badge" aria-label="Video project">
               <Play size={12} fill="currentColor" aria-hidden="true" />
               Video
             </span>
           )}
+
           <span className="project-card-action" aria-hidden="true"><ArrowUpRight size={18} /></span>
         </div>
-      </div>
+
+        <div className="project-card-footer">
+          <h2>{project.title}</h2>
+          <span className="project-card-arrow">↗</span>
+        </div>
+      </article>
     </Link>
   );
 }

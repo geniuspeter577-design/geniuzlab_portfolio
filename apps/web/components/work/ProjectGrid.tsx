@@ -19,14 +19,14 @@ export function ProjectGrid({
 }: ProjectGridProps) {
   if (projects.length === 0) {
     return (
-      <div className="border-t border-line py-24 text-center">
-        <p className="eyebrow text-ink-muted">{emptyMessage}</p>
+      <div className="portfolio-empty-state">
+        <p className="eyebrow">{emptyMessage}</p>
       </div>
     );
   }
 
   return (
-    <div className="grid work-grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-8 lg:grid-cols-3 lg:gap-10">
+    <div className="portfolio-grid">
       {projects.map((project, index) => (
         <Reveal key={project.slug} delay={(index % 3) * 80}>
           <ProjectCard project={project} priority={index < 3} />

@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
+import { CategoryFilter } from "@/components/work/CategoryFilter";
+import { ProjectGrid } from "@/components/work/ProjectGrid";
 import { getAllProjects } from "@/lib/projects";
 import type { Project } from "@/lib/types";
-import { ProjectGrid } from "@/components/work/ProjectGrid";
 
 export const metadata: Metadata = {
   title: "Work",
@@ -33,20 +33,28 @@ export default async function WorkPage() {
 
   return (
     <>
-      <section className="work-page-heading">
-        <p className="eyebrow">Portfolio archive // {projects.length.toString().padStart(2, "0")} entries</p>
-        <div className="work-page-title-row">
-          <h1>Our Work</h1>
-          <ArrowUpRight aria-hidden="true" size={28} />
+      <section className="work-page-shell">
+        <div className="site-container work-page-heading">
+          <div className="work-page-header-row">
+            <div>
+              <p className="eyebrow">Portfolio archive // {projects.length.toString().padStart(2, "0")} entries</p>
+              <h1>Our Work</h1>
+            </div>
+            <Link href="/services" className="button-secondary">Explore services</Link>
+          </div>
+
+          <div className="work-heading-meta">
+            <p>Selected work across the studio archive, presented from the live portfolio.</p>
+            <span className="status-badge"><span aria-hidden="true" /> live archive</span>
+          </div>
         </div>
-        <div className="section-underline" />
-        <div className="work-heading-meta">
-          <p>Selected work across the studio archive, presented from the live portfolio.</p>
-          <Link href="/services" className="work-services-link">Explore services</Link>
+
+        <CategoryFilter />
+
+        <div className="site-container work-grid-shell">
+          <ProjectGrid projects={projects} />
         </div>
       </section>
-
-      <ProjectGrid projects={projects} />
     </>
   );
 }

@@ -6,16 +6,40 @@ export function AboutPreview() {
     <section id="about" className="section">
       <div className="site-container about-grid">
         <article className="about-card">
-          <h2 className="about-card-title">About me</h2>
+          <p className="section-kicker">About the studio</p>
+          <h2 className="about-card-title">Creative systems for brands that want to move with intent.</h2>
           <div className="about-copy">
             <p>
               I&apos;m Otsaje Genius Peter, a creative designer, developer,
-              educator, and entrepreneur from Nigeria.
+              educator, and entrepreneur from Nigeria, building visual identities,
+              digital experiences, and growth-focused storytelling for ambitious teams.
             </p>
           </div>
+
+          <div className="about-meta">
+            <div>
+              <span>Based in</span>
+              <strong>Lagos, Nigeria</strong>
+            </div>
+            <div>
+              <span>Working with</span>
+              <strong>Brands &amp; founders</strong>
+            </div>
+          </div>
+
           <Link href="/about" className="about-card-link">Read more <ArrowUpRight aria-hidden="true" size={16} /></Link>
         </article>
-        <p className="scroll-hint"><span>Scroll down</span><ArrowDown aria-hidden="true" size={16} /></p>
+
+        <div className="about-side-panel">
+          <p className="section-kicker">selected focus</p>
+          <ul className="about-focus-list">
+            <li>Brand strategy</li>
+            <li>Web experience design</li>
+            <li>Social campaigns</li>
+            <li>Motion and content systems</li>
+          </ul>
+          <p className="scroll-hint"><span>Scroll down</span><ArrowDown aria-hidden="true" size={16} /></p>
+        </div>
       </div>
     </section>
   );

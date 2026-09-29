@@ -1,9 +1,10 @@
 import { adminProjectSchema, createProject, updateProject } from "../../src/lib/admin-projects";
+import { listPublicProjects } from "../../src/lib/public-projects";
 import { prisma } from "../../src/lib/prisma";
 
 jest.mock("../../src/lib/prisma", () => ({
   prisma: {
-    project: { create: jest.fn(), update: jest.fn() },
+    project: { create: jest.fn(), update: jest.fn(), findMany: jest.fn() },
     $transaction: jest.fn(),
     category: { findUnique: jest.fn() },
     projectCategory: { createMany: jest.fn() },
@@ -64,6 +65,61 @@ describe("admin project media persistence", () => {
     expect(prisma.projectImage.createMany).toHaveBeenCalledWith({
       data: [expect.objectContaining({ type: "COVER", url: "https://media.example.test/cover.jpg" })],
     });
+  });
+
+  it("preserves the submitted video URL through create and public mapping", async () => {
+    const payload = adminProjectSchema.parse({
+      ...validProject,
+      coverImage: { url: "https://media.example.test/cover.jpg", altText: "Cover" },
+      galleryImages: [],
+      video: {
+        url: "https://media.example.test/roundtrip.mp4",
+        posterUrl: "https://media.example.test/roundtrip-poster.jpg",
+      },
+    });
+
+    await createProject(payload);
+
+    const createdImages = jest.mocked(prisma.projectImage.createMany).mock.calls.at(-1)?.[0]?.data as Array<Record<string, unknown>>;
+    const videoRow = createdImages.find((image) => image.type === "VIDEO");
+
+    expect(videoRow).toEqual(expect.objectContaining({
+      type: "VIDEO",
+      url: "https://media.example.test/roundtrip.mp4",
+      posterUrl: "https://media.example.test/roundtrip-poster.jpg",
+    }));
+
+    jest.mocked(prisma.project.findMany).mockResolvedValue([
+      {
+        slug: "roundtrip-project",
+        title: "Roundtrip project",
+        client: null,
+        year: 2026,
+        role: null,
+        summary: "A roundtrip project",
+        description: null,
+        featured: false,
+        published: true,
+        orderIndex: 0,
+        categories: [],
+        tags: [],
+        images: [
+          {
+            type: "VIDEO",
+            url: "https://media.example.test/roundtrip.mp4",
+            posterUrl: "https://media.example.test/roundtrip-poster.jpg",
+            altText: "Roundtrip video",
+            width: null,
+            height: null,
+          },
+        ],
+      },
+    ] as never);
+
+    const [project] = await listPublicProjects();
+
+    expect(project.videoUrl).toBe("https://media.example.test/roundtrip.mp4");
+    expect(project.videoPosterUrl).toBe("https://media.example.test/roundtrip-poster.jpg");
   });
 
   it("preserves existing video on legacy updates that omit the video field", async () => {

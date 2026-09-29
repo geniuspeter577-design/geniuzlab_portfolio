@@ -53,7 +53,7 @@ export default async function CategoryPage(props: PageProps<"/category/[category
 
       <CategoryFilter />
 
-      <div className="site-container section-padding">
+      <div className="site-container section-padding category-grid-shell">
         <ProjectGrid
           projects={projects}
           emptyMessage={`No ${category.label.toLowerCase()} projects published yet.`}
