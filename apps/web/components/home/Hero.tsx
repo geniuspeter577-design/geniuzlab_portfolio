@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { siteConfig } from "@/lib/constants";
@@ -12,15 +11,6 @@ export function Hero() {
             <span className="hero-badge-dot" aria-hidden="true" />
             <span>Atelier dispatch // 04.2025 edition</span>
           </div>
-
-          <Image
-            src="/images/otsaje-genius-peter.jpg"
-            alt={siteConfig.founder}
-            width={64}
-            height={64}
-            className="hero-avatar"
-            priority
-          />
 
           <p className="eyebrow">Independent creative studio // Nigeria + worldwide</p>
           <h1 className="hero-title">
