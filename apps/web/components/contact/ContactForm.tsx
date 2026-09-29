@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { ArrowUpRight } from "lucide-react";
 import { backendUrl } from "@/lib/admin-client";
 import { categories } from "@/lib/categories";
+import { budgetRangeOptions } from "@/lib/budget-ranges";
 
 type FormStatus = "idle" | "submitting" | "error";
 type InquiryFields = {
@@ -105,14 +106,14 @@ export function ContactForm() {
         {errors.disciplines && <small className="field-error">{errors.disciplines}</small>}
       </fieldset>
       <label className="contact-field">
-        <span>04 / Estimated investment</span>
+        <span>04 / What&apos;s your budget?</span>
         <select value={form.budgetRange} onChange={(event) => update("budgetRange", event.target.value)}>
-          <option value="">Choose a range (optional)</option>
-          <option value="5k-10k">$5k–$10k</option>
-          <option value="10k-25k">$10k–$25k</option>
-          <option value="25k-plus">$25k+</option>
-          <option value="to-discuss">Let&apos;s discuss</option>
+          <option value="">Choose a budget range (optional)</option>
+          {budgetRangeOptions.map((option) => (
+            <option key={option.value} value={option.value}>{option.label}</option>
+          ))}
         </select>
+        <small className="budget-note">Approximate equivalents at ₦1,329 per US dollar.</small>
       </label>
       <label className="contact-field">
         <span>05 / Project brief <b aria-hidden="true">*</b></span>
@@ -132,7 +133,7 @@ export function ContactForm() {
       </label>
       <div className="contact-actions">
         <button type="submit" className="button-primary" disabled={status === "submitting"}>
-          {status === "submitting" ? "Sending brief..." : "Send studio inquiry"}<ArrowUpRight aria-hidden="true" size={16} />
+          {status === "submitting" ? "Sending..." : "Send message"}<ArrowUpRight aria-hidden="true" size={16} />
         </button>
         <span className="brief-privacy">Your brief is shared only with the studio.</span>
       </div>

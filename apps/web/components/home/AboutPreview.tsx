@@ -1,10 +1,10 @@
 import Link from "next/link";
-import { ArrowDown, ArrowUpRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 
 export function AboutPreview() {
   return (
     <section id="about" className="section">
-      <div className="site-container about-grid">
+      <div className="site-container">
         <article className="about-card">
           <p className="section-kicker">About the studio</p>
           <h2 className="about-card-title">Creative systems for brands that want to move with intent.</h2>
@@ -30,16 +30,6 @@ export function AboutPreview() {
           <Link href="/about" className="about-card-link">Read more <ArrowUpRight aria-hidden="true" size={16} /></Link>
         </article>
 
-        <div className="about-side-panel">
-          <p className="section-kicker">selected focus</p>
-          <ul className="about-focus-list">
-            <li>Brand strategy</li>
-            <li>Web experience design</li>
-            <li>Social campaigns</li>
-            <li>Motion and content systems</li>
-          </ul>
-          <p className="scroll-hint"><span>Scroll down</span><ArrowDown aria-hidden="true" size={16} /></p>
-        </div>
       </div>
     </section>
   );

@@ -1,10 +1,15 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import type { Project } from "@/lib/types";
 import { ProjectCard } from "./ProjectCard";
 import { Reveal } from "@/components/ui/Reveal";
+import { shuffleItems } from "@/lib/shuffle";
 
 interface ProjectGridProps {
   projects: Project[];
   emptyMessage?: string;
+  limit?: number;
 }
 
 /**
@@ -16,7 +21,15 @@ interface ProjectGridProps {
 export function ProjectGrid({
   projects,
   emptyMessage = "No projects here yet.",
+  limit,
 }: ProjectGridProps) {
+  const [shuffledProjects, setShuffledProjects] = useState(projects);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setShuffledProjects(shuffleItems(projects));
+  }, [projects]);
+
   if (projects.length === 0) {
     return (
       <div className="portfolio-empty-state">
@@ -25,9 +38,11 @@ export function ProjectGrid({
     );
   }
 
+  const visibleProjects = shuffledProjects.slice(0, limit);
+
   return (
     <div className="portfolio-grid">
-      {projects.map((project, index) => (
+      {visibleProjects.map((project, index) => (
         <Reveal key={project.slug} delay={(index % 3) * 80}>
           <ProjectCard project={project} priority={index < 3} />
         </Reveal>

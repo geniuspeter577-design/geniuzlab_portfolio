@@ -1,24 +1,31 @@
 "use client";
 
-import { useDeferredValue, useState } from "react";
+import { useDeferredValue, useEffect, useState } from "react";
 import Link from "next/link";
 import { Search, X } from "lucide-react";
 import type { Project } from "@/lib/types";
 import { categories } from "@/lib/categories";
 import { ProjectCard } from "@/components/work/ProjectCard";
+import { shuffleItems } from "@/lib/shuffle";
 
 interface SearchExperienceProps {
   projects: Project[];
 }
 
 export function SearchExperience({ projects }: SearchExperienceProps) {
+  const [shuffledProjects, setShuffledProjects] = useState(projects);
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("all");
   const [year, setYear] = useState("all");
   const deferredQuery = useDeferredValue(query.trim().toLocaleLowerCase());
-  const years = Array.from(new Set(projects.map((project) => project.year).filter(Boolean))).sort((a, b) => b - a);
+  const years = Array.from(new Set(shuffledProjects.map((project) => project.year).filter(Boolean))).sort((a, b) => b - a);
 
-  const results = projects.filter((project) => {
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setShuffledProjects(shuffleItems(projects));
+  }, [projects]);
+
+  const results = shuffledProjects.filter((project) => {
     const categoryMatches = category === "all" || project.categories.includes(category as Project["categories"][number]);
     const yearMatches = year === "all" || String(project.year) === year;
     const searchable = [project.title, project.client, project.summary, project.description, ...project.tags ?? []]
@@ -57,7 +64,7 @@ export function SearchExperience({ projects }: SearchExperienceProps) {
         </label>
         <div className="search-filter-row">
           <div className="search-category-filters" role="group" aria-label="Filter by category">
-            <button type="button" className={category === "all" ? "is-active" : ""} onClick={() => setCategory("all")}>All work <span>{projects.length}</span></button>
+            <button type="button" className={category === "all" ? "is-active" : ""} onClick={() => setCategory("all")}>All work <span>{shuffledProjects.length}</span></button>
             {categories.map((item) => (
               <button key={item.slug} type="button" className={category === item.slug ? "is-active" : ""} onClick={() => setCategory(item.slug)}>{item.label}</button>
             ))}

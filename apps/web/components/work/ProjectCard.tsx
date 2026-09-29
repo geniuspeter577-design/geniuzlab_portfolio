@@ -23,10 +23,7 @@ export function ProjectCard({ project, size = "default", priority = false }: Pro
           <span className="project-card-year">{project.year}</span>
         </div>
 
-        <div
-          className={cn("project-card-image", "transition-all duration-500 ease-[var(--ease-cinema)]")}
-          style={{ aspectRatio: `${project.coverImage.width} / ${project.coverImage.height}` }}
-        >
+        <div className={cn("project-card-image", project.videoUrl && "project-card-image-video", "transition-all duration-500 ease-[var(--ease-cinema)]")}>
           <Image
             src={project.coverImage.src}
             alt={project.coverImage.alt}

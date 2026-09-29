@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { ArrowUpRight, Archive, Flag, Mail, MailOpen } from "lucide-react";
 import { adminFetch } from "@/lib/admin-client";
+import { formatBudgetRange } from "@/lib/budget-ranges";
 
 type Inquiry = {
   id: string;
@@ -121,7 +122,7 @@ export default function AdminInquiriesPage() {
                 <button type="button" title="Archive inquiry" aria-label="Archive inquiry" disabled={updating || selected.isArchived} onClick={() => void updateInquiry(selected.id, { isArchived: true })}><Archive size={17} /></button>
               </div>
             </div>
-            <dl className="inquiry-meta"><div><dt>Discipline</dt><dd>{selected.disciplines.join(", ")}</dd></div><div><dt>Estimated investment</dt><dd>{selected.budgetRange || "Not provided"}</dd></div></dl>
+            <dl className="inquiry-meta"><div><dt>Discipline</dt><dd>{selected.disciplines.join(", ")}</dd></div><div><dt>Budget</dt><dd>{formatBudgetRange(selected.budgetRange)}</dd></div></dl>
             <div className="inquiry-brief"><p className="eyebrow">Project brief</p><p>{selected.brief}</p></div>
             <a className="button-primary inquiry-reply" href={`mailto:${selected.email}?subject=${encodeURIComponent("Re: Your GeniuzLab project inquiry")}`}>Reply by email <ArrowUpRight size={15} /></a>
           </article>}

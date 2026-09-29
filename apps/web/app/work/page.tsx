@@ -37,7 +37,6 @@ export default async function WorkPage() {
         <div className="site-container work-page-heading">
           <div className="work-page-header-row">
             <div>
-              <p className="eyebrow">Portfolio archive // {projects.length.toString().padStart(2, "0")} entries</p>
               <h1>Our Work</h1>
             </div>
             <Link href="/services" className="button-secondary">Explore services</Link>

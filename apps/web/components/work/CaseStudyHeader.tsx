@@ -2,7 +2,7 @@ import Image from "next/image";
 import type { Project } from "@/lib/types";
 import { getCategoryBySlug } from "@/lib/categories";
 import Link from "next/link";
-import { ArrowLeft, ArrowUpRight } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
 interface CaseStudyHeaderProps {
   project: Project;
@@ -53,7 +53,7 @@ export function CaseStudyHeader({ project }: CaseStudyHeaderProps) {
       </div>
 
       <div className="site-container case-study-cover-wrap">
-        <div className="case-study-cover">
+        <div className={`case-study-cover${project.videoUrl ? " case-study-cover-video" : ""}`}>
           {project.videoUrl ? (
             <video
               src={project.videoUrl}
@@ -62,17 +62,16 @@ export function CaseStudyHeader({ project }: CaseStudyHeaderProps) {
               playsInline
               preload="metadata"
               aria-label={`${project.title} video`}
-              className="block aspect-video w-full max-w-full bg-black object-contain"
+              className="block h-full w-full bg-black object-contain"
             />
           ) : (
             <Image
               src={project.coverImage.src}
               alt={project.coverImage.alt}
-              width={project.coverImage.width}
-              height={project.coverImage.height}
+              fill
               priority
               sizes="(min-width: 1024px) 1180px, 100vw"
-              className="block h-auto w-full"
+              className="object-cover"
             />
           )}
         </div>
