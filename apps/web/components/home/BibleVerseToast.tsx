@@ -37,7 +37,7 @@ export function BibleVerseToast() {
 
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setVerse(nextVerse);
-    const timeout = window.setTimeout(() => setVerse(null), 5000);
+    const timeout = window.setTimeout(() => setVerse(null), 10000);
 
     return () => window.clearTimeout(timeout);
   }, []);

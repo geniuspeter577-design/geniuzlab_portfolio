@@ -19,7 +19,7 @@ export function AboutPreview() {
           <div className="about-meta">
             <div>
               <span>Based in</span>
-              <strong>Lagos, Nigeria</strong>
+              <strong>Abuja, Nigeria</strong>
             </div>
             <div>
               <span>Working with</span>

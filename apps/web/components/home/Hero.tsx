@@ -64,7 +64,7 @@ export function Hero({ projects }: { projects: Project[] }) {
 
     const timeout = window.setTimeout(() => {
       setActiveIndex((current) => (current + 1) % slideCount);
-    }, 3000);
+    }, 15000);
 
     return () => window.clearTimeout(timeout);
   }, [activeIndex, shouldPause, slideCount]);

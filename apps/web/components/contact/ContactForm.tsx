@@ -113,7 +113,6 @@ export function ContactForm() {
             <option key={option.value} value={option.value}>{option.label}</option>
           ))}
         </select>
-        <small className="budget-note">Approximate equivalents at ₦1,329 per US dollar.</small>
       </label>
       <label className="contact-field">
         <span>05 / Project brief <b aria-hidden="true">*</b></span>

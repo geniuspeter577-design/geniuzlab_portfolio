@@ -17,7 +17,6 @@ export default function ServicesPage() {
       <section>
         <div className="category-heading site-container">
           <div className="category-heading-top">
-            <p className="eyebrow">Capabilities // {categories.length.toString().padStart(2, "0")} disciplines</p>
             <span className="status-badge"><span aria-hidden="true" /> Active lab</span>
           </div>
           <h1>Our Services</h1>
